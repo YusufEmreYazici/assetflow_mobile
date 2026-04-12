@@ -38,7 +38,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
     showDialog(
       context: context,
-      builder: (_) => Dialog(
+      builder: (dialogCtx) => Dialog(
         backgroundColor: AppColors.dark800,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Padding(
@@ -80,7 +80,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 children: [
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => Navigator.pop(dialogCtx),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppColors.textTertiary,
                         side: const BorderSide(color: AppColors.border),
@@ -95,8 +95,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context);
-                        // Dialog kapandıktan sonra parent context ile paneli aç
+                        Navigator.pop(dialogCtx);
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           if (!mounted) return;
                           final d = ref.read(dashboardProvider).valueOrNull;
