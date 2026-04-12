@@ -5,18 +5,45 @@ import 'package:shimmer/shimmer.dart';
 import 'package:intl/intl.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/data/models/assignment_model.dart';
+import 'package:assetflow_mobile/data/models/dashboard_model.dart';
 import 'package:assetflow_mobile/features/auth/providers/auth_provider.dart';
 import 'package:assetflow_mobile/features/dashboard/providers/dashboard_provider.dart';
 import 'package:assetflow_mobile/features/dashboard/widgets/stat_card.dart';
 import 'package:assetflow_mobile/features/dashboard/widgets/device_type_chart.dart';
 
-class DashboardScreen extends ConsumerWidget {
+class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+  bool _bannerDismissed = false;
+
+  void _openNotifications(BuildContext context, dynamic data, List<Assignment> recent) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _NotificationPanel(
+        data: data,
+        recentAssignments: recent,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final dashboardAsync = ref.watch(dashboardProvider);
+    final recentAsync = ref.watch(recentAssignmentsProvider);
     final authState = ref.watch(authProvider);
+
+    // Bildirim sayısı: API verisi hazırsa hesapla
+    final notifCount = dashboardAsync.maybeWhen(
+      data: (d) => (d.expiredWarranties) + (d.expiringWarranties),
+      orElse: () => 0,
+    );
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -24,17 +51,41 @@ class DashboardScreen extends ConsumerWidget {
         color: AppColors.primary500,
         backgroundColor: AppColors.dark800,
         onRefresh: () async {
+          setState(() => _bannerDismissed = false);
           ref.invalidate(dashboardProvider);
           await ref.read(dashboardProvider.future);
         },
         child: CustomScrollView(
           slivers: [
-            _DashboardAppBar(authState: authState, ref: ref),
+            // ── App Bar ──
+            _DashboardAppBar(
+              authState: authState,
+              notifCount: notifCount,
+              onNotifTap: () {
+                final data = dashboardAsync.valueOrNull;
+                final recent = recentAsync.valueOrNull ?? [];
+                if (data != null) _openNotifications(context, data, recent);
+              },
+            ),
+
+            // ── Body ──
             dashboardAsync.when(
-              data: (data) => _DashboardBody(data: data),
+              data: (data) => SliverToBoxAdapter(
+                child: _DashboardContent(
+                  data: data,
+                  recentAsync: recentAsync,
+                  bannerDismissed: _bannerDismissed,
+                  onBannerDismiss: () => setState(() => _bannerDismissed = true),
+                ),
+              ),
               loading: () => const SliverToBoxAdapter(child: _DashboardShimmer()),
               error: (error, _) => SliverToBoxAdapter(
-                child: _DashboardError(error: error, onRetry: () => ref.invalidate(dashboardProvider)),
+                child: _DashboardError(
+                  error: error,
+                  onRetry: () {
+                    ref.invalidate(dashboardProvider);
+                  },
+                ),
               ),
             ),
           ],
@@ -48,9 +99,14 @@ class DashboardScreen extends ConsumerWidget {
 
 class _DashboardAppBar extends StatelessWidget {
   final AuthState authState;
-  final WidgetRef ref;
+  final int notifCount;
+  final VoidCallback onNotifTap;
 
-  const _DashboardAppBar({required this.authState, required this.ref});
+  const _DashboardAppBar({
+    required this.authState,
+    required this.notifCount,
+    required this.onNotifTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -75,11 +131,10 @@ class _DashboardAppBar extends StatelessWidget {
         background: Container(
           decoration: const BoxDecoration(
             color: AppColors.dark900,
-            border: Border(
-              bottom: BorderSide(color: AppColors.border, width: 0.5),
-            ),
+            border: Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
           ),
-          padding: EdgeInsets.fromLTRB(20, MediaQuery.of(context).padding.top + 14, 20, 14),
+          padding: EdgeInsets.fromLTRB(
+            20, MediaQuery.of(context).padding.top + 14, 20, 14),
           child: Row(
             children: [
               Expanded(
@@ -102,12 +157,52 @@ class _DashboardAppBar extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 12,
                         color: AppColors.textTertiary,
-                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ],
                 ),
               ),
+              // Bildirim zili
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  IconButton(
+                    onPressed: onNotifTap,
+                    icon: const Icon(Icons.notifications_outlined,
+                        color: AppColors.textSecondary, size: 24),
+                    style: IconButton.styleFrom(
+                      backgroundColor: AppColors.dark800,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      fixedSize: const Size(42, 42),
+                    ),
+                  ),
+                  if (notifCount > 0)
+                    Positioned(
+                      top: 4,
+                      right: 4,
+                      child: Container(
+                        width: 18,
+                        height: 18,
+                        decoration: const BoxDecoration(
+                          color: AppColors.error,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Text(
+                            notifCount > 99 ? '99+' : '$notifCount',
+                            style: const TextStyle(
+                              fontSize: 9,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(width: 10),
               // Avatar
               GestureDetector(
                 onTap: () => context.go('/more'),
@@ -149,37 +244,54 @@ class _DashboardAppBar extends StatelessWidget {
   }
 }
 
-// ─── Dashboard Body ───────────────────────────────────────────────────────────
+// ─── Dashboard Content ────────────────────────────────────────────────────────
 
-class _DashboardBody extends ConsumerWidget {
+class _DashboardContent extends StatelessWidget {
   final dynamic data;
-  const _DashboardBody({required this.data});
+  final AsyncValue<List<Assignment>> recentAsync;
+  final bool bannerDismissed;
+  final VoidCallback onBannerDismiss;
+
+  const _DashboardContent({
+    required this.data,
+    required this.recentAsync,
+    required this.bannerDismissed,
+    required this.onBannerDismiss,
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final recentAsync = ref.watch(recentAssignmentsProvider);
+  Widget build(BuildContext context) {
     final hasExpired = (data.expiredWarranties as int) > 0;
     final hasExpiring = (data.expiringWarranties as int) > 0;
 
-    return SliverList(
-      delegate: SliverChildListDelegate([
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
         const SizedBox(height: 16),
 
-        // ── Kritik Uyarı Banner ──────────────────────────
-        if (hasExpired)
-          _AlertBanner(
-            color: AppColors.error,
-            icon: Icons.gpp_bad_outlined,
-            message: '${data.expiredWarranties} cihazın garantisi bitti — acil işlem gerekiyor',
-          )
-        else if (hasExpiring)
-          _AlertBanner(
-            color: AppColors.warning,
-            icon: Icons.shield_outlined,
-            message: '${data.expiringWarranties} cihazın garantisi yakında bitiyor',
-          ),
+        // ── Kritik Uyarı Banner (dismiss edilebilir) ──
+        if (!bannerDismissed) ...[
+          if (hasExpired)
+            _DismissibleBanner(
+              color: AppColors.error,
+              icon: Icons.gpp_bad_outlined,
+              message:
+                  '${data.expiredWarranties} cihazın garantisi bitti — acil işlem gerekiyor',
+              onDismiss: onBannerDismiss,
+              onTap: () => context.go('/more'),
+            )
+          else if (hasExpiring)
+            _DismissibleBanner(
+              color: AppColors.warning,
+              icon: Icons.shield_outlined,
+              message:
+                  '${data.expiringWarranties} cihazın garantisi yakında bitiyor',
+              onDismiss: onBannerDismiss,
+              onTap: () {},
+            ),
+        ],
 
-        // ── KPI Grid ────────────────────────────────────
+        // ── KPI Grid ──────────────────────────────────
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: _SectionHeader(title: 'GENEL BAKIŞ'),
@@ -240,7 +352,7 @@ class _DashboardBody extends ConsumerWidget {
         ),
         const SizedBox(height: 24),
 
-        // ── Hızlı İşlemler ──────────────────────────────
+        // ── Hızlı İşlemler ──
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: _SectionHeader(title: 'HIZLI İŞLEMLER'),
@@ -284,7 +396,7 @@ class _DashboardBody extends ConsumerWidget {
         ),
         const SizedBox(height: 24),
 
-        // ── Cihaz Dağılımı ───────────────────────────────
+        // ── Cihaz Dağılımı ──
         if (data.devicesByType.isNotEmpty) ...[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -297,7 +409,7 @@ class _DashboardBody extends ConsumerWidget {
           const SizedBox(height: 24),
         ],
 
-        // ── Son Aktiviteler ──────────────────────────────
+        // ── Son Aktiviteler ──
         recentAsync.when(
           data: (items) => items.isEmpty
               ? const SizedBox.shrink()
@@ -312,7 +424,7 @@ class _DashboardBody extends ConsumerWidget {
           error: (e, _) => const SizedBox.shrink(),
         ),
 
-        // ── Garanti Yaklaşanlar ──────────────────────────
+        // ── Garanti Yaklaşanlar ──
         if (data.upcomingWarrantyExpirations.isNotEmpty) ...[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -324,7 +436,7 @@ class _DashboardBody extends ConsumerWidget {
           ),
         ],
         const SizedBox(height: 32),
-      ]),
+      ],
     );
   }
 
@@ -332,53 +444,428 @@ class _DashboardBody extends ConsumerWidget {
     return Shimmer.fromColors(
       baseColor: AppColors.dark800,
       highlightColor: AppColors.dark700,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Container(
+            height: 14,
+            width: 130,
+            margin: const EdgeInsets.only(bottom: 12),
+            decoration: BoxDecoration(
+                color: AppColors.dark800,
+                borderRadius: BorderRadius.circular(4))),
+        Container(
+            height: 180,
+            decoration: BoxDecoration(
+                color: AppColors.dark800,
+                borderRadius: BorderRadius.circular(12))),
+        const SizedBox(height: 20),
+      ]),
+    );
+  }
+}
+
+// ─── Dismissible Alert Banner ─────────────────────────────────────────────────
+
+class _DismissibleBanner extends StatelessWidget {
+  final Color color;
+  final IconData icon;
+  final String message;
+  final VoidCallback onDismiss;
+  final VoidCallback onTap;
+
+  const _DismissibleBanner({
+    required this.color,
+    required this.icon,
+    required this.message,
+    required this.onDismiss,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        padding: const EdgeInsets.fromLTRB(14, 12, 8, 12),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withValues(alpha: 0.35)),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: color, size: 20),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                message,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: color,
+                ),
+              ),
+            ),
+            const SizedBox(width: 4),
+            // Detay oku
+            Text(
+              'Gör',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: color,
+              ),
+            ),
+            const SizedBox(width: 2),
+            // Kapat
+            GestureDetector(
+              onTap: onDismiss,
+              child: Padding(
+                padding: const EdgeInsets.all(6),
+                child: Icon(Icons.close, color: color.withValues(alpha: 0.7), size: 16),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Notification Panel ───────────────────────────────────────────────────────
+
+class _NotificationPanel extends StatelessWidget {
+  final DashboardData data;
+  final List<Assignment> recentAssignments;
+
+  const _NotificationPanel({
+    required this.data,
+    required this.recentAssignments,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final warrantyItems = data.upcomingWarrantyExpirations;
+    final totalCount = warrantyItems.length + recentAssignments.length;
+
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppColors.dark800,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.75,
+      ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Container(height: 14, width: 130,
-              decoration: BoxDecoration(color: AppColors.dark800, borderRadius: BorderRadius.circular(4))),
-          const SizedBox(height: 12),
-          Container(height: 180,
-              decoration: BoxDecoration(color: AppColors.dark800, borderRadius: BorderRadius.circular(12))),
-          const SizedBox(height: 20),
+          // Handle
+          Container(
+            margin: const EdgeInsets.only(top: 12),
+            width: 36,
+            height: 4,
+            decoration: BoxDecoration(
+              color: AppColors.border,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          // Başlık
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 8, 12),
+            child: Row(
+              children: [
+                const Icon(Icons.notifications_rounded,
+                    color: AppColors.primary400, size: 20),
+                const SizedBox(width: 8),
+                const Text(
+                  'Bildirimler',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                if (totalCount > 0)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: AppColors.error.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      '$totalCount',
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.error,
+                      ),
+                    ),
+                  ),
+                const Spacer(),
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.close, color: AppColors.textTertiary, size: 20),
+                ),
+              ],
+            ),
+          ),
+          const Divider(height: 1, color: AppColors.border),
+
+          // İçerik
+          if (totalCount == 0)
+            const Padding(
+              padding: EdgeInsets.all(40),
+              child: Column(
+                children: [
+                  Icon(Icons.notifications_none_rounded,
+                      color: AppColors.textTertiary, size: 48),
+                  SizedBox(height: 12),
+                  Text(
+                    'Yeni bildirim yok',
+                    style: TextStyle(color: AppColors.textTertiary, fontSize: 14),
+                  ),
+                ],
+              ),
+            )
+          else
+            Flexible(
+              child: ListView(
+                padding: const EdgeInsets.only(bottom: 24),
+                shrinkWrap: true,
+                children: [
+                  // Garanti uyarıları
+                  if (warrantyItems.isNotEmpty) ...[
+                    _PanelSectionHeader(
+                      title: 'GARANTİ UYARILARI',
+                      count: warrantyItems.length,
+                      color: data.expiredWarranties > 0
+                          ? AppColors.error
+                          : AppColors.warning,
+                    ),
+                    ...warrantyItems.map((item) => _WarrantyNotifTile(
+                          item: item,
+                          onTap: () {
+                            Navigator.pop(context);
+                            context.go('/devices/${item.deviceId}');
+                          },
+                        )),
+                  ],
+
+                  // Son zimmetler
+                  if (recentAssignments.isNotEmpty) ...[
+                    _PanelSectionHeader(
+                      title: 'SON ZİMMETLER',
+                      count: recentAssignments.length,
+                      color: AppColors.success,
+                    ),
+                    ...recentAssignments.map((a) => _AssignmentNotifTile(
+                          assignment: a,
+                          onTap: () {
+                            Navigator.pop(context);
+                            context.go('/assignments');
+                          },
+                        )),
+                  ],
+                ],
+              ),
+            ),
         ],
       ),
     );
   }
 }
 
-// ─── Alert Banner ─────────────────────────────────────────────────────────────
-
-class _AlertBanner extends StatelessWidget {
+class _PanelSectionHeader extends StatelessWidget {
+  final String title;
+  final int count;
   final Color color;
-  final IconData icon;
-  final String message;
-  const _AlertBanner({required this.color, required this.icon, required this.message});
+
+  const _PanelSectionHeader({
+    required this.title,
+    required this.count,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.35)),
-      ),
+      padding: const EdgeInsets.fromLTRB(20, 14, 20, 8),
       child: Row(
         children: [
-          Icon(icon, color: color, size: 20),
-          const SizedBox(width: 10),
-          Expanded(
+          Container(
+            width: 3,
+            height: 12,
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textTertiary,
+              letterSpacing: 0.8,
+            ),
+          ),
+          const SizedBox(width: 6),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(8),
+            ),
             child: Text(
-              message,
+              '$count',
               style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
                 color: color,
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _WarrantyNotifTile extends StatelessWidget {
+  final WarrantyAlertItem item;
+  final VoidCallback onTap;
+
+  const _WarrantyNotifTile({required this.item, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final isExpired = item.daysRemaining <= 0;
+    final isCritical = item.daysRemaining <= 30;
+    final color = isExpired || isCritical ? AppColors.error : AppColors.warning;
+    final label = isExpired
+        ? 'Bitti'
+        : isCritical
+            ? '${item.daysRemaining} gün kaldı'
+            : '${item.daysRemaining} gün kaldı';
+    final dateStr =
+        DateFormat('dd MMM yyyy', 'tr_TR').format(item.warrantyEndDate);
+
+    return ListTile(
+      onTap: onTap,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+      leading: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(Icons.verified_user_outlined, color: color, size: 20),
+      ),
+      title: Text(
+        item.deviceName,
+        style: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimary,
+        ),
+      ),
+      subtitle: Text(
+        item.assignedTo != null
+            ? '${item.assignedTo} · $dateStr'
+            : dateStr,
+        style: const TextStyle(fontSize: 11, color: AppColors.textTertiary),
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: color,
+              ),
+            ),
+          ),
+          const SizedBox(width: 4),
+          const Icon(Icons.chevron_right, color: AppColors.textTertiary, size: 18),
+        ],
+      ),
+    );
+  }
+}
+
+class _AssignmentNotifTile extends StatelessWidget {
+  final Assignment assignment;
+  final VoidCallback onTap;
+
+  const _AssignmentNotifTile({required this.assignment, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final typeLabel = AssignmentTypeLabels[assignment.type] ?? 'Zimmet';
+    final typeColor = assignment.type == 0
+        ? AppColors.success
+        : assignment.type == 1
+            ? AppColors.info
+            : AppColors.warning;
+    final dateStr =
+        DateFormat('dd MMM, HH:mm', 'tr_TR').format(assignment.assignedAt);
+
+    return ListTile(
+      onTap: onTap,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+      leading: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: typeColor.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(Icons.assignment_turned_in_rounded,
+            color: typeColor, size: 20),
+      ),
+      title: Text(
+        assignment.deviceName ?? '-',
+        style: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimary,
+        ),
+      ),
+      subtitle: Text(
+        '${assignment.employeeName ?? '-'} · $dateStr',
+        style: const TextStyle(fontSize: 11, color: AppColors.textTertiary),
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+            decoration: BoxDecoration(
+              color: typeColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              typeLabel,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: typeColor,
+              ),
+            ),
+          ),
+          const SizedBox(width: 4),
+          const Icon(Icons.chevron_right, color: AppColors.textTertiary, size: 18),
         ],
       ),
     );
@@ -485,7 +972,6 @@ class _RecentActivitySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat('dd MMM', 'tr_TR');
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -506,91 +992,62 @@ class _RecentActivitySection extends StatelessWidget {
                   : a.type == 1
                       ? AppColors.info
                       : AppColors.warning;
-
               return Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-                    child: Row(
+                  ListTile(
+                    onTap: () => context.go('/assignments'),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                    leading: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: typeColor.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(Icons.assignment_turned_in_rounded,
+                          color: typeColor, size: 17),
+                    ),
+                    title: Text(
+                      a.deviceName ?? '-',
+                      style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Text(
+                      a.employeeName ?? '-',
+                      style: const TextStyle(
+                          fontSize: 11, color: AppColors.textTertiary),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    trailing: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        // Timeline indicator
-                        Column(
-                          children: [
-                            Container(
-                              width: 34,
-                              height: 34,
-                              decoration: BoxDecoration(
-                                color: typeColor.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Icon(
-                                Icons.assignment_turned_in_rounded,
-                                color: typeColor,
-                                size: 17,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                a.deviceName ?? '-',
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textPrimary,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                a.employeeName ?? '-',
-                                style: const TextStyle(
-                                  fontSize: 11,
-                                  color: AppColors.textTertiary,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: typeColor.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(5),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: typeColor.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Text(
-                                typeLabel,
-                                style: TextStyle(
+                          child: Text(typeLabel,
+                              style: TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.w600,
-                                  color: typeColor,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 3),
-                            Text(
-                              dateFormat.format(a.assignedAt),
-                              style: const TextStyle(
-                                fontSize: 11,
-                                color: AppColors.textTertiary,
-                              ),
-                            ),
-                          ],
+                                  color: typeColor)),
                         ),
+                        const SizedBox(height: 3),
+                        Text(dateFormat.format(a.assignedAt),
+                            style: const TextStyle(
+                                fontSize: 10, color: AppColors.textTertiary)),
                       ],
                     ),
                   ),
                   if (!isLast)
-                    const Divider(height: 1, indent: 60, color: AppColors.border),
+                    const Divider(height: 1, indent: 62, color: AppColors.border),
                 ],
               );
             }),
@@ -628,78 +1085,90 @@ class _WarrantySection extends StatelessWidget {
             accentColor = AppColors.success;
             urgencyLabel = 'NORMAL';
           }
-          final dateStr = DateFormat('dd MMM yyyy', 'tr_TR').format(item.warrantyEndDate);
+          final dateStr =
+              DateFormat('dd MMM yyyy', 'tr_TR').format(item.warrantyEndDate);
 
-          return Container(
-            margin: const EdgeInsets.only(bottom: 8),
-            decoration: BoxDecoration(
-              color: AppColors.dark800,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: accentColor.withValues(alpha: urgencyLabel == 'NORMAL' ? 0.15 : 0.3),
-              ),
-            ),
-            padding: const EdgeInsets.all(14),
-            child: Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: accentColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Icon(Icons.verified_user_outlined, color: accentColor, size: 20),
+          return GestureDetector(
+            onTap: () => context.go('/devices/${item.deviceId}'),
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: AppColors.dark800,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: accentColor.withValues(
+                      alpha: urgencyLabel == 'NORMAL' ? 0.15 : 0.3),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              ),
+              padding: const EdgeInsets.all(14),
+              child: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: accentColor.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(Icons.verified_user_outlined,
+                        color: accentColor, size: 20),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.deviceName,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          item.assignedTo ?? 'Atanmamış',
+                          style: const TextStyle(
+                              fontSize: 11, color: AppColors.textTertiary),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(
-                        item.deviceName,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 7, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: accentColor.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          item.daysRemaining <= 0
+                              ? urgencyLabel
+                              : '${item.daysRemaining} gün',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: accentColor,
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 3),
                       Text(
-                        item.assignedTo ?? 'Atanmamış',
-                        style: const TextStyle(fontSize: 11, color: AppColors.textTertiary),
+                        dateStr,
+                        style: const TextStyle(
+                            fontSize: 10, color: AppColors.textTertiary),
                       ),
                     ],
                   ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: accentColor.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        item.daysRemaining <= 0
-                            ? urgencyLabel
-                            : '${item.daysRemaining} gün',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: accentColor,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      dateStr,
-                      style: const TextStyle(fontSize: 10, color: AppColors.textTertiary),
-                    ),
-                  ],
-                ),
-              ],
+                  const SizedBox(width: 4),
+                  const Icon(Icons.chevron_right,
+                      color: AppColors.textTertiary, size: 16),
+                ],
+              ),
             ),
           );
         }),
@@ -724,7 +1193,6 @@ class _DashboardShimmer extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Grid shimmer
             GridView.count(
               crossAxisCount: 2,
               mainAxisSpacing: 10,
@@ -732,31 +1200,33 @@ class _DashboardShimmer extends StatelessWidget {
               childAspectRatio: 1.25,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              children: List.generate(6, (_) => Container(
-                decoration: BoxDecoration(
-                  color: AppColors.dark800,
-                  borderRadius: BorderRadius.circular(14),
-                ),
-              )),
+              children: List.generate(
+                  6,
+                  (_) => Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.dark800,
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      )),
             ),
             const SizedBox(height: 24),
-            // Quick actions shimmer
             SizedBox(
               height: 82,
               child: Row(
-                children: List.generate(4, (_) => Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.only(right: 10),
-                    decoration: BoxDecoration(
-                      color: AppColors.dark800,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                )),
+                children: List.generate(
+                    4,
+                    (_) => Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.only(right: 10),
+                            decoration: BoxDecoration(
+                              color: AppColors.dark800,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        )),
               ),
             ),
             const SizedBox(height: 24),
-            // Activity shimmer
             Container(
               height: 200,
               decoration: BoxDecoration(
@@ -795,17 +1265,22 @@ class _DashboardError extends StatelessWidget {
                   color: AppColors.error.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Icon(Icons.cloud_off_rounded, color: AppColors.error, size: 32),
+                child: const Icon(Icons.cloud_off_rounded,
+                    color: AppColors.error, size: 32),
               ),
               const SizedBox(height: 16),
               const Text(
                 'Veriler yüklenemedi',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary),
               ),
               const SizedBox(height: 6),
               const Text(
                 'Sunucu bağlantısını kontrol edin',
-                style: TextStyle(fontSize: 13, color: AppColors.textTertiary),
+                style:
+                    TextStyle(fontSize: 13, color: AppColors.textTertiary),
               ),
               const SizedBox(height: 24),
               ElevatedButton.icon(
@@ -815,8 +1290,10 @@ class _DashboardError extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary600,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
                 ),
               ),
             ],

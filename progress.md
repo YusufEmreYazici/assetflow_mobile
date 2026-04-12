@@ -1,6 +1,6 @@
 # AssetFlow Mobile — İlerleme Takibi
 
-Son güncelleme: 2026-04-12 (Dashboard redesign tamamlandı)
+Son güncelleme: 2026-04-12 (Bildirim paneli + kapatılabilir uyarı banner'ları)
 
 ---
 
@@ -91,6 +91,8 @@ Son güncelleme: 2026-04-12 (Dashboard redesign tamamlandı)
 - [x] Garanti Uyarıları — BİTTİ/KRİTİK/UYARI/NORMAL etiketleri, renk yoğunluğu urgency'ye göre
 - [x] Hata ekranı — bulut ikon, net mesaj, Tekrar Dene butonu
 - [x] Shimmer — grid + quick actions + activity için ayrı iskeletler
+- [x] Kapatılabilir uyarı banner'ları — X butonu ile dismiss, "Gör" ile ilgili ekrana git, pull-to-refresh ile sıfırlanır
+- [x] Bildirim paneli (bottom sheet) — AppBar'da çan ikonu + kırmızı rozet (expired+expiring sayısı), garanti uyarıları → cihaz detayı, son zimmetler → zimmetler ekranı
 
 ### Faz 5 — Polishing ✅
 - [x] `print()` debug satırları temizlendi — auth_provider.dart'tan 4 print kaldırıldı, catch bloğu da temizlendi
