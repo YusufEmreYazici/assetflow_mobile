@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Outer circle background -->
+    <path
+        android:fillColor="#1E3A8A"
+        android:pathData="M54,10 A44,44 0 1,1 53.99,10 Z"/>
+
+    <!-- Shield shape -->
+    <path
+        android:fillColor="#3B82F6"
+        android:pathData="M54,24 L36,32 L36,52 C36,63 44,72.5 54,76 C64,72.5 72,63 72,52 L72,32 Z"/>
+
+    <!-- Shield highlight -->
+    <path
+        android:fillColor="#60A5FA"
+        android:pathData="M54,28 L39,35.2 L39,52 C39,61.5 45.8,70 54,73 L54,28 Z"/>
+
+    <!-- "AF" letters -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M44,44 L44,62 L47,62 L47,55 L52,55 L52,52 L47,52 L47,47 L53,47 L53,44 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M56,44 L60,62 L63,62 L67,44 L64,44 L61.5,55.5 L59,44 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M57.5,52 L65.5,52 L65,49 L58,49 Z"/>
+</vector>

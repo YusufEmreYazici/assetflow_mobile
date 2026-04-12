@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:assetflow_mobile/data/models/employee_model.dart';
 import 'package:assetflow_mobile/data/services/employee_service.dart';
+import 'package:assetflow_mobile/core/utils/cache_manager.dart';
 
 final employeeServiceProvider = Provider<EmployeeService>((ref) => EmployeeService());
 
@@ -55,6 +56,11 @@ class EmployeeNotifier extends StateNotifier<EmployeeListState> {
     }
     try {
       final result = await _service.getAll(page: 1, pageSize: _pageSize);
+      await CacheManager.instance.set(
+        'employees_page1',
+        result.items.map((e) => e.toJson()).toList(),
+        ttl: const Duration(minutes: 15),
+      );
       state = state.copyWith(
         employees: result.items,
         isLoading: false,
@@ -62,8 +68,20 @@ class EmployeeNotifier extends StateNotifier<EmployeeListState> {
         hasMore: result.page < result.totalPages,
       );
     } on DioException catch (e) {
+      final cached = await CacheManager.instance.getStale('employees_page1');
+      if (cached != null) {
+        final items = (cached as List).map((j) => Employee.fromJson(j as Map<String, dynamic>)).toList();
+        state = state.copyWith(employees: items, isLoading: false, page: 1, hasMore: false);
+        return;
+      }
       state = state.copyWith(isLoading: false, error: _extractError(e));
     } catch (_) {
+      final cached = await CacheManager.instance.getStale('employees_page1');
+      if (cached != null) {
+        final items = (cached as List).map((j) => Employee.fromJson(j as Map<String, dynamic>)).toList();
+        state = state.copyWith(employees: items, isLoading: false, page: 1, hasMore: false);
+        return;
+      }
       state = state.copyWith(isLoading: false, error: 'Beklenmeyen bir hata olustu.');
     }
   }

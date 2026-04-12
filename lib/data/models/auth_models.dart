@@ -44,7 +44,7 @@ class AuthResponse {
   final String email;
   final String fullName;
   final String role;
-  final int companyId;
+  final String companyId;
 
   AuthResponse({
     required this.token,
@@ -64,7 +64,7 @@ class AuthResponse {
       email: json['email'] as String,
       fullName: json['fullName'] as String,
       role: json['role'] as String,
-      companyId: json['companyId'] as int,
+      companyId: json['companyId'].toString(),
     );
   }
 

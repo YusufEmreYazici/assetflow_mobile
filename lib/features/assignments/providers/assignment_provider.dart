@@ -2,8 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:assetflow_mobile/data/models/assignment_model.dart';
 import 'package:assetflow_mobile/data/services/assignment_service.dart';
+import 'package:assetflow_mobile/core/utils/notification_service.dart';
+import 'package:assetflow_mobile/core/utils/cache_manager.dart';
 
 final assignmentServiceProvider = Provider<AssignmentService>((ref) => AssignmentService());
+
+enum AssignmentFilter { all, active, returned }
 
 class AssignmentListState {
   final List<Assignment> assignments;
@@ -13,6 +17,7 @@ class AssignmentListState {
   final int page;
   final String? error;
   final String searchQuery;
+  final AssignmentFilter filter;
 
   const AssignmentListState({
     this.assignments = const [],
@@ -22,6 +27,7 @@ class AssignmentListState {
     this.page = 1,
     this.error,
     this.searchQuery = '',
+    this.filter = AssignmentFilter.all,
   });
 
   AssignmentListState copyWith({
@@ -32,6 +38,7 @@ class AssignmentListState {
     int? page,
     String? error,
     String? searchQuery,
+    AssignmentFilter? filter,
   }) {
     return AssignmentListState(
       assignments: assignments ?? this.assignments,
@@ -41,6 +48,7 @@ class AssignmentListState {
       page: page ?? this.page,
       error: error,
       searchQuery: searchQuery ?? this.searchQuery,
+      filter: filter ?? this.filter,
     );
   }
 }
@@ -53,6 +61,17 @@ class AssignmentNotifier extends StateNotifier<AssignmentListState> {
     loadAssignments();
   }
 
+  bool? get _activeFilter {
+    switch (state.filter) {
+      case AssignmentFilter.active:
+        return true;
+      case AssignmentFilter.returned:
+        return false;
+      case AssignmentFilter.all:
+        return null;
+    }
+  }
+
   Future<void> loadAssignments({bool reset = true}) async {
     if (reset) {
       state = state.copyWith(isLoading: true, error: null, page: 1);
@@ -62,7 +81,16 @@ class AssignmentNotifier extends StateNotifier<AssignmentListState> {
         page: 1,
         pageSize: _pageSize,
         search: state.searchQuery.isNotEmpty ? state.searchQuery : null,
+        isActive: _activeFilter,
       );
+      final cacheKey = 'assignments_${state.filter.name}_page1';
+      if (state.searchQuery.isEmpty) {
+        await CacheManager.instance.set(
+          cacheKey,
+          result.items.map((a) => a.toJson()).toList(),
+          ttl: const Duration(minutes: 15),
+        );
+      }
       state = state.copyWith(
         assignments: result.items,
         isLoading: false,
@@ -70,8 +98,26 @@ class AssignmentNotifier extends StateNotifier<AssignmentListState> {
         hasMore: result.page < result.totalPages,
       );
     } on DioException catch (e) {
+      if (state.searchQuery.isEmpty) {
+        final cacheKey = 'assignments_${state.filter.name}_page1';
+        final cached = await CacheManager.instance.getStale(cacheKey);
+        if (cached != null) {
+          final items = (cached as List).map((j) => Assignment.fromJson(j as Map<String, dynamic>)).toList();
+          state = state.copyWith(assignments: items, isLoading: false, page: 1, hasMore: false);
+          return;
+        }
+      }
       state = state.copyWith(isLoading: false, error: _extractError(e));
     } catch (_) {
+      if (state.searchQuery.isEmpty) {
+        final cacheKey = 'assignments_${state.filter.name}_page1';
+        final cached = await CacheManager.instance.getStale(cacheKey);
+        if (cached != null) {
+          final items = (cached as List).map((j) => Assignment.fromJson(j as Map<String, dynamic>)).toList();
+          state = state.copyWith(assignments: items, isLoading: false, page: 1, hasMore: false);
+          return;
+        }
+      }
       state = state.copyWith(isLoading: false, error: 'Beklenmeyen bir hata olustu.');
     }
   }
@@ -85,6 +131,7 @@ class AssignmentNotifier extends StateNotifier<AssignmentListState> {
         page: nextPage,
         pageSize: _pageSize,
         search: state.searchQuery.isNotEmpty ? state.searchQuery : null,
+        isActive: _activeFilter,
       );
       state = state.copyWith(
         assignments: [...state.assignments, ...result.items],
@@ -102,9 +149,26 @@ class AssignmentNotifier extends StateNotifier<AssignmentListState> {
     await loadAssignments(reset: true);
   }
 
+  Future<void> setFilter(AssignmentFilter filter) async {
+    if (state.filter == filter) return;
+    state = state.copyWith(filter: filter, searchQuery: '');
+    await loadAssignments(reset: true);
+  }
+
   Future<bool> returnDevice(String id) async {
     try {
+      // Find assignment info before returning for notification
+      final assignment = state.assignments.where((a) => a.id == id).firstOrNull;
       await _service.returnDevice(id);
+
+      // Send return notification
+      if (assignment != null) {
+        await NotificationService.instance.notifyAssignmentReturned(
+          employeeName: assignment.employeeName ?? 'Bilinmiyor',
+          deviceName: assignment.deviceName ?? 'Bilinmiyor',
+        );
+      }
+
       await loadAssignments(reset: true);
       return true;
     } catch (_) {

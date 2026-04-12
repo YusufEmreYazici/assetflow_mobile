@@ -6,6 +6,7 @@ import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/features/devices/providers/device_provider.dart';
 import 'package:assetflow_mobile/features/devices/widgets/device_list_item.dart';
 import 'package:assetflow_mobile/features/devices/screens/device_form_screen.dart';
+import 'package:assetflow_mobile/features/devices/screens/device_import_screen.dart';
 
 class DevicesScreen extends ConsumerStatefulWidget {
   const DevicesScreen({super.key});
@@ -79,13 +80,17 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
   Future<void> _navigateToForm() async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => const DeviceFormScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const DeviceFormScreen()),
     );
-    if (result == true) {
-      ref.read(deviceProvider.notifier).refresh();
-    }
+    if (result == true) ref.read(deviceProvider.notifier).refresh();
+  }
+
+  Future<void> _navigateToImport() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const DeviceImportScreen()),
+    );
+    if (result == true) ref.read(deviceProvider.notifier).refresh();
   }
 
   @override
@@ -96,6 +101,11 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
       appBar: AppBar(
         title: const Text('Cihazlar'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.upload_file_outlined),
+            tooltip: 'CSV İçe Aktar',
+            onPressed: _navigateToImport,
+          ),
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: _navigateToForm,

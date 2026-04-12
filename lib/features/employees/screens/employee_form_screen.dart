@@ -56,9 +56,7 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
       _deptC.text = emp.department ?? '';
       _titleC.text = emp.title ?? '';
       _phoneC.text = emp.phone ?? '';
-      if (emp.hireDate != null) {
-        _hireDate = DateTime.tryParse(emp.hireDate!);
-      }
+      _hireDate = emp.hireDate;
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

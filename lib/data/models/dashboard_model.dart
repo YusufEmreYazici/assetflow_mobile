@@ -41,10 +41,22 @@ class DashboardData {
       upcomingWarrantyExpirations: warranties,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'totalDevices': totalDevices,
+        'assignedDevices': assignedDevices,
+        'inStorageDevices': inStorageDevices,
+        'expiringWarranties': expiringWarranties,
+        'expiredWarranties': expiredWarranties,
+        'totalEmployees': totalEmployees,
+        'devicesByType': devicesByType,
+        'upcomingWarrantyExpirations':
+            upcomingWarrantyExpirations.map((e) => e.toJson()).toList(),
+      };
 }
 
 class WarrantyAlertItem {
-  final int deviceId;
+  final String deviceId;
   final String deviceName;
   final String? assignedTo;
   final DateTime warrantyEndDate;
@@ -60,11 +72,19 @@ class WarrantyAlertItem {
 
   factory WarrantyAlertItem.fromJson(Map<String, dynamic> json) {
     return WarrantyAlertItem(
-      deviceId: json['deviceId'] as int,
+      deviceId: json['deviceId'].toString(),
       deviceName: json['deviceName'] as String,
       assignedTo: json['assignedTo'] as String?,
       warrantyEndDate: DateTime.parse(json['warrantyEndDate'] as String),
       daysRemaining: json['daysRemaining'] as int,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'deviceId': deviceId,
+        'deviceName': deviceName,
+        'assignedTo': assignedTo,
+        'warrantyEndDate': warrantyEndDate.toIso8601String(),
+        'daysRemaining': daysRemaining,
+      };
 }

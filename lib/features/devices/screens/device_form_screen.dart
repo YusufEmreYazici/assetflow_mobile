@@ -5,8 +5,9 @@ import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/app_text_field.dart';
 import 'package:assetflow_mobile/core/widgets/app_button.dart';
 import 'package:assetflow_mobile/core/widgets/loading_overlay.dart';
-import 'package:assetflow_mobile/data/models/device_model.dart';
+import 'package:assetflow_mobile/data/models/device_model.dart' show Device, DeviceTypeLabels, DeviceStatusLabels;
 import 'package:assetflow_mobile/data/services/device_service.dart';
+import 'package:assetflow_mobile/core/utils/notification_service.dart';
 
 class DeviceFormScreen extends ConsumerStatefulWidget {
   final Device? device;
@@ -140,6 +141,21 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
         await service.create(data);
       }
 
+      // Send notification for new device
+      if (!widget.isEditing) {
+        await NotificationService.instance.notifyNewDevicesAdded(count: 1);
+      } else if (_selectedStatus == 4) {
+        // Status 4 = Retired
+        await NotificationService.instance.notifyDeviceRetired(
+          deviceName: _nameController.text.trim(),
+        );
+      } else if (_selectedStatus == 3) {
+        // Status 3 = Maintenance
+        await NotificationService.instance.notifyDeviceMaintenance(
+          deviceName: _nameController.text.trim(),
+        );
+      }
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -225,7 +241,7 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
                 const SizedBox(height: 16),
                 // Type dropdown
                 DropdownButtonFormField<int>(
-                  value: _selectedType,
+                  initialValue: _selectedType,
                   decoration: const InputDecoration(
                     labelText: 'Cihaz Tipi',
                   ),
@@ -244,7 +260,7 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
                 // Status dropdown (only on edit)
                 if (widget.isEditing) ...[
                   DropdownButtonFormField<int>(
-                    value: _selectedStatus,
+                    initialValue: _selectedStatus,
                     decoration: const InputDecoration(
                       labelText: 'Durum',
                     ),

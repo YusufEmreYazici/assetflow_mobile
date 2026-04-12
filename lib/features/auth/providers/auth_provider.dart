@@ -10,7 +10,7 @@ class AuthState {
   final String? email;
   final String? fullName;
   final String? role;
-  final int? companyId;
+  final String? companyId;
   final String? error;
 
   const AuthState({
@@ -29,7 +29,7 @@ class AuthState {
     String? email,
     String? fullName,
     String? role,
-    int? companyId,
+    String? companyId,
     String? error,
   }) {
     return AuthState(
@@ -70,9 +70,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
           email: user['email'],
           fullName: user['fullName'],
           role: user['role'],
-          companyId: user['companyId'] != null
-              ? int.tryParse(user['companyId']!)
-              : null,
+          companyId: user['companyId'],
         );
       } else {
         state = const AuthState();
@@ -98,7 +96,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } on DioException catch (e) {
       final message = _extractErrorMessage(e);
       state = state.copyWith(isLoading: false, error: message);
-    } catch (e) {
+    } catch (_) {
       state = state.copyWith(
         isLoading: false,
         error: 'Beklenmeyen bir hata olustu.',
@@ -160,6 +158,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
   String _extractErrorMessage(DioException e) {
     if (e.response?.data is Map<String, dynamic>) {
       final data = e.response!.data as Map<String, dynamic>;
+      if (data.containsKey('error')) {
+        return data['error'] as String;
+      }
       if (data.containsKey('message')) {
         return data['message'] as String;
       }

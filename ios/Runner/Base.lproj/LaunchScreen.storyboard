@@ -16,13 +16,45 @@
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="YRO-k0-Ey4">
-                            </imageView>
+                            <!-- Kalkan arka plan çemberi -->
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="shield-bg" layer.cornerRadius="36">
+                                <color key="backgroundColor" red="0.118" green="0.227" blue="0.541" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                            <!-- AF Etiketi -->
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AF" textAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="af-label">
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="32"/>
+                                <color key="textColor" red="0.376" green="0.643" blue="0.980" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <!-- AssetFlow başlık etiketi -->
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AssetFlow" textAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="title-label">
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
+                                <color key="textColor" red="0.941" green="0.953" blue="0.988" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <!-- Alt yazı -->
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="IT Varlık Yönetimi" textAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="subtitle-label">
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="textColor" red="0.427" green="0.490" blue="0.600" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.067" green="0.094" blue="0.153" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="1a2-6s-vTC"/>
-                            <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="4X2-HB-R7a"/>
+                            <!-- Kalkan arka plan: 72x72, merkez -->
+                            <constraint firstItem="shield-bg" firstAttribute="width" constant="72" id="sbw"/>
+                            <constraint firstItem="shield-bg" firstAttribute="height" constant="72" id="sbh"/>
+                            <constraint firstItem="shield-bg" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="sbcx"/>
+                            <constraint firstItem="shield-bg" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" constant="-60" id="sbcy"/>
+                            <!-- AF etiketi: kalkan üstünde -->
+                            <constraint firstItem="af-label" firstAttribute="centerX" secondItem="shield-bg" secondAttribute="centerX" id="afcx"/>
+                            <constraint firstItem="af-label" firstAttribute="centerY" secondItem="shield-bg" secondAttribute="centerY" id="afcy"/>
+                            <!-- Başlık: kalkanın 20pt altı -->
+                            <constraint firstItem="title-label" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="tlcx"/>
+                            <constraint firstItem="title-label" firstAttribute="top" secondItem="shield-bg" secondAttribute="bottom" constant="20" id="tlcy"/>
+                            <!-- Alt yazı: başlığın 6pt altı -->
+                            <constraint firstItem="subtitle-label" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="slcx"/>
+                            <constraint firstItem="subtitle-label" firstAttribute="top" secondItem="title-label" secondAttribute="bottom" constant="6" id="slcy"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -31,7 +63,4 @@
             <point key="canvasLocation" x="53" y="375"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="LaunchImage" width="168" height="185"/>
-    </resources>
 </document>

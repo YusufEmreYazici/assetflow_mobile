@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/app_button.dart';
+import 'package:assetflow_mobile/core/widgets/qr_scanner_screen.dart';
 import 'package:assetflow_mobile/data/models/device_model.dart';
 import 'package:assetflow_mobile/data/models/employee_model.dart';
 import 'package:assetflow_mobile/data/services/device_service.dart';
 import 'package:assetflow_mobile/data/services/employee_service.dart';
 import 'package:assetflow_mobile/data/services/assignment_service.dart';
+import 'package:assetflow_mobile/core/utils/notification_service.dart';
 
 class AssignDeviceScreen extends StatefulWidget {
   const AssignDeviceScreen({super.key});
@@ -41,6 +43,44 @@ class _AssignDeviceScreenState extends State<AssignDeviceScreen> {
   void dispose() {
     _notesController.dispose();
     super.dispose();
+  }
+
+  Future<void> _scanQr() async {
+    final scanned = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const QrScannerScreen(
+          title: 'Cihaz Tara',
+          hint: 'Seri no veya barkodu tarayın',
+        ),
+      ),
+    );
+    if (scanned == null || scanned.isEmpty) return;
+
+    // Match against serialNumber or assetCode
+    final match = _devices.where((d) =>
+      (d.serialNumber?.toLowerCase() == scanned.toLowerCase()) ||
+      (d.assetCode?.toLowerCase() == scanned.toLowerCase()),
+    ).firstOrNull;
+
+    if (match != null) {
+      setState(() => _selectedDeviceId = match.id);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Cihaz bulundu: ${match.name}'),
+          backgroundColor: AppColors.success,
+          behavior: SnackBarBehavior.floating,
+        ));
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Eşleşen cihaz bulunamadı: $scanned'),
+          backgroundColor: AppColors.warning,
+          behavior: SnackBarBehavior.floating,
+        ));
+      }
+    }
   }
 
   Future<void> _loadFormData() async {
@@ -99,6 +139,15 @@ class _AssignDeviceScreenState extends State<AssignDeviceScreen> {
         'notes': _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
       });
 
+      // Send notification
+      final selectedDevice = _devices.firstWhere((d) => d.id == _selectedDeviceId);
+      final selectedEmployee = _employees.firstWhere((e) => e.id == _selectedEmployeeId);
+      await NotificationService.instance.notifyAssignmentCreated(
+        employeeName: selectedEmployee.fullName,
+        deviceName: selectedDevice.name,
+        department: selectedEmployee.department,
+      );
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Cihaz zimmetlendi'), backgroundColor: AppColors.success),
@@ -126,8 +175,32 @@ class _AssignDeviceScreenState extends State<AssignDeviceScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Device dropdown
-                  const Text('Cihaz *', style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+                  // Device dropdown + QR scan
+                  Row(
+                    children: [
+                      const Text('Cihaz *', style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: _scanQr,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary600.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: AppColors.primary600.withValues(alpha: 0.4)),
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.qr_code_scanner, size: 14, color: AppColors.primary400),
+                              SizedBox(width: 4),
+                              Text('QR Tara', style: TextStyle(fontSize: 11, color: AppColors.primary400)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 6),
                   DropdownButtonFormField<String>(
                     value: _selectedDeviceId,
@@ -161,7 +234,7 @@ class _AssignDeviceScreenState extends State<AssignDeviceScreen> {
                   const Text('Personel *', style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
                   const SizedBox(height: 6),
                   DropdownButtonFormField<String>(
-                    value: _selectedEmployeeId,
+                    initialValue: _selectedEmployeeId,
                     hint: const Text('Personel secin...'),
                     dropdownColor: AppColors.dark800,
                     isExpanded: true,
@@ -193,7 +266,7 @@ class _AssignDeviceScreenState extends State<AssignDeviceScreen> {
                             const Text('Zimmet Tipi', style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
                             const SizedBox(height: 6),
                             DropdownButtonFormField<int>(
-                              value: _type,
+                              initialValue: _type,
                               dropdownColor: AppColors.dark800,
                               items: const [
                                 DropdownMenuItem(value: 0, child: Text('Kalici')),

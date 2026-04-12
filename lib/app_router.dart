@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/features/auth/providers/auth_provider.dart';
 import 'package:assetflow_mobile/features/auth/screens/login_screen.dart';
 import 'package:assetflow_mobile/features/auth/screens/register_screen.dart';
@@ -10,52 +11,163 @@ import 'package:assetflow_mobile/features/devices/screens/device_detail_screen.d
 import 'package:assetflow_mobile/features/employees/screens/employees_screen.dart';
 import 'package:assetflow_mobile/features/assignments/screens/assignments_screen.dart';
 import 'package:assetflow_mobile/features/locations/screens/locations_screen.dart';
+import 'package:assetflow_mobile/features/profile/screens/profile_screen.dart';
+import 'package:assetflow_mobile/features/sap/screens/sap_screen.dart';
+import 'package:assetflow_mobile/core/widgets/connectivity_wrapper.dart';
 
 // Shell route scaffold with bottom navigation
-class _ShellScaffold extends StatelessWidget {
+class _ShellScaffold extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
 
   const _ShellScaffold({required this.navigationShell});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      body: navigationShell,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: navigationShell.currentIndex,
-        onTap: (index) {
+      body: Column(
+        children: [
+          const OfflineBanner(),
+          Expanded(child: navigationShell),
+        ],
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: navigationShell.currentIndex,
+        onDestinationSelected: (index) {
           navigationShell.goBranch(
             index,
             initialLocation: index == navigationShell.currentIndex,
           );
         },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard_outlined),
-            activeIcon: Icon(Icons.dashboard),
-            label: 'Dashboard',
+        backgroundColor: AppColors.dark800,
+        indicatorColor: AppColors.primary600.withValues(alpha: 0.2),
+        surfaceTintColor: Colors.transparent,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+        height: 65,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.dashboard_outlined, size: 22),
+            selectedIcon: Icon(Icons.dashboard, size: 22, color: AppColors.primary400),
+            label: 'Ana Sayfa',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.devices_outlined),
-            activeIcon: Icon(Icons.devices),
+          NavigationDestination(
+            icon: Icon(Icons.devices_outlined, size: 22),
+            selectedIcon: Icon(Icons.devices, size: 22, color: AppColors.primary400),
             label: 'Cihazlar',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people_outline),
-            activeIcon: Icon(Icons.people),
+          NavigationDestination(
+            icon: Icon(Icons.people_outline, size: 22),
+            selectedIcon: Icon(Icons.people, size: 22, color: AppColors.primary400),
             label: 'Personel',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment_outlined),
-            activeIcon: Icon(Icons.assignment),
+          NavigationDestination(
+            icon: Icon(Icons.assignment_outlined, size: 22),
+            selectedIcon: Icon(Icons.assignment, size: 22, color: AppColors.primary400),
             label: 'Zimmet',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.location_on_outlined),
-            activeIcon: Icon(Icons.location_on),
-            label: 'Lokasyon',
+          NavigationDestination(
+            icon: Icon(Icons.more_horiz, size: 22),
+            selectedIcon: Icon(Icons.more_horiz, size: 22, color: AppColors.primary400),
+            label: 'Daha Fazla',
           ),
         ],
+      ),
+    );
+  }
+}
+
+// "Daha Fazla" menu - Lokasyonlar + Profil
+class _MoreScreen extends StatelessWidget {
+  const _MoreScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Daha Fazla')),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          _MoreTile(
+            icon: Icons.location_on,
+            color: AppColors.info,
+            title: 'Lokasyonlar',
+            subtitle: 'Ofis, bina ve oda yonetimi',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const LocationsScreen()),
+            ),
+          ),
+          const SizedBox(height: 8),
+          _MoreTile(
+            icon: Icons.account_tree_outlined,
+            color: const Color(0xFFE8A800),
+            title: 'SAP Entegrasyonu',
+            subtitle: 'Personel & varlik aktarimi, butce onaylari',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SapScreen()),
+            ),
+          ),
+          const SizedBox(height: 8),
+          _MoreTile(
+            icon: Icons.person,
+            color: AppColors.primary500,
+            title: 'Profil & Ayarlar',
+            subtitle: 'Hesap bilgileri, sifre degistirme',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ProfileScreen()),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MoreTile extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  const _MoreTile({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.dark800,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: ListTile(
+        leading: Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, color: color, size: 22),
+        ),
+        title: Text(
+          title,
+          style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: const TextStyle(fontSize: 12, color: AppColors.textTertiary),
+        ),
+        trailing: const Icon(Icons.chevron_right, color: AppColors.textTertiary),
+        onTap: onTap,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
@@ -136,8 +248,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/locations',
-                builder: (context, state) => const LocationsScreen(),
+                path: '/more',
+                builder: (context, state) => const _MoreScreen(),
               ),
             ],
           ),

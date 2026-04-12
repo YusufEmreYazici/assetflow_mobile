@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:intl/intl.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/data/models/assignment_model.dart';
 import 'package:assetflow_mobile/features/auth/providers/auth_provider.dart';
 import 'package:assetflow_mobile/features/dashboard/providers/dashboard_provider.dart';
 import 'package:assetflow_mobile/features/dashboard/widgets/stat_card.dart';
+import 'package:assetflow_mobile/features/dashboard/widgets/device_type_chart.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -58,7 +60,7 @@ class DashboardScreen extends ConsumerWidget {
           await ref.read(dashboardProvider.future);
         },
         child: dashboardAsync.when(
-          data: (data) => _buildContent(context, data),
+          data: (data) => _buildContent(context, data, ref),
           loading: () => _buildShimmer(),
           error: (error, _) => _buildError(context, ref, error),
         ),
@@ -73,15 +75,18 @@ class DashboardScreen extends ConsumerWidget {
     return 'Iyi aksamlar';
   }
 
-  Widget _buildContent(BuildContext context, dynamic data) {
+  Widget _buildContent(BuildContext context, dynamic data, WidgetRef ref) {
+    final recentAsync = ref.watch(recentAssignmentsProvider);
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        // ── Stat Cards ──────────────────────────────────
         GridView.count(
           crossAxisCount: 2,
           mainAxisSpacing: 12,
           crossAxisSpacing: 12,
-          childAspectRatio: 1.4,
+          childAspectRatio: 1.3,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children: [
@@ -118,17 +123,34 @@ class DashboardScreen extends ConsumerWidget {
             StatCard(
               icon: Icons.schedule,
               value: '${data.expiringWarranties}',
-              label: 'Garanti Uyari',
+              label: 'Garanti Uyarı',
               color: AppColors.warning,
             ),
           ],
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 20),
+
+        // ── Cihaz Tipi Grafiği ───────────────────────────
+        if (data.devicesByType.isNotEmpty) ...[
+          DeviceTypeChart(devicesByType: data.devicesByType),
+          const SizedBox(height: 20),
+        ],
+
+        // ── Son Aktiviteler ──────────────────────────────
+        recentAsync.when(
+          data: (items) => items.isEmpty
+              ? const SizedBox.shrink()
+              : _buildRecentActivity(items),
+          loading: () => _buildRecentActivityShimmer(),
+          error: (_, __) => const SizedBox.shrink(),
+        ),
+
+        // ── Garanti Yaklaşanlar ──────────────────────────
         if (data.upcomingWarrantyExpirations.isNotEmpty) ...[
           const Text(
-            'Garanti Yaklasanlar',
+            'Garanti Yaklaşanlar',
             style: TextStyle(
-              fontSize: 16,
+              fontSize: 15,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
             ),
@@ -143,9 +165,8 @@ class DashboardScreen extends ConsumerWidget {
             } else {
               accentColor = AppColors.success;
             }
-
-            final dateStr = DateFormat('dd MMM yyyy', 'tr_TR')
-                .format(item.warrantyEndDate);
+            final dateStr =
+                DateFormat('dd MMM yyyy', 'tr_TR').format(item.warrantyEndDate);
 
             return Container(
               margin: const EdgeInsets.only(bottom: 8),
@@ -182,7 +203,7 @@ class DashboardScreen extends ConsumerWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          item.assignedTo ?? 'Atanmamis',
+                          item.assignedTo ?? 'Atanmamış',
                           style: const TextStyle(
                             fontSize: 12,
                             color: AppColors.textSecondary,
@@ -202,7 +223,7 @@ class DashboardScreen extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
-                          '${item.daysRemaining} gun',
+                          '${item.daysRemaining} gün',
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
@@ -229,6 +250,124 @@ class DashboardScreen extends ConsumerWidget {
     );
   }
 
+  Widget _buildRecentActivity(List<Assignment> items) {
+    final dateFormat = DateFormat('dd MMM', 'tr_TR');
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Son Aktiviteler',
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          decoration: BoxDecoration(
+            color: AppColors.dark800,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Column(
+            children: List.generate(items.length, (i) {
+              final a = items[i];
+              final isLast = i == items.length - 1;
+              final typeLabel = AssignmentTypeLabels[a.type] ?? 'Zimmet';
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: AppColors.success.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Icon(Icons.assignment_turned_in,
+                              color: AppColors.success, size: 18),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                a.deviceName ?? '-',
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.textPrimary,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                '${a.employeeName ?? '-'} · $typeLabel',
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: AppColors.textSecondary,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text(
+                          dateFormat.format(a.assignedAt),
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: AppColors.textTertiary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (!isLast)
+                    const Divider(height: 1, indent: 62, color: AppColors.border),
+                ],
+              );
+            }),
+          ),
+        ),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  Widget _buildRecentActivityShimmer() {
+    return Shimmer.fromColors(
+      baseColor: AppColors.dark800,
+      highlightColor: AppColors.dark700,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 18,
+            width: 130,
+            decoration: BoxDecoration(
+              color: AppColors.dark800,
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Container(
+            height: 200,
+            decoration: BoxDecoration(
+              color: AppColors.dark800,
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          const SizedBox(height: 20),
+        ],
+      ),
+    );
+  }
+
   Widget _buildShimmer() {
     return Shimmer.fromColors(
       baseColor: AppColors.dark800,
@@ -240,7 +379,7 @@ class DashboardScreen extends ConsumerWidget {
             crossAxisCount: 2,
             mainAxisSpacing: 12,
             crossAxisSpacing: 12,
-            childAspectRatio: 1.4,
+            childAspectRatio: 1.3,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             children: List.generate(

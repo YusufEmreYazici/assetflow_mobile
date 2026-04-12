@@ -64,6 +64,16 @@ class AuthService {
     }
   }
 
+  Future<void> changePassword(String currentPassword, String newPassword) async {
+    await _dio.post(
+      ApiConstants.changePassword,
+      data: {
+        'currentPassword': currentPassword,
+        'newPassword': newPassword,
+      },
+    );
+  }
+
   Future<void> logout() async {
     try {
       await revoke();
