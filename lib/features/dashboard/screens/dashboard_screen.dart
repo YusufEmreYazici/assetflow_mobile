@@ -19,9 +19,110 @@ class DashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
-  bool _bannerDismissed = false;
-  bool _panelSeen = false; // panel en az bir kere açıldı → zil filled
-  final Set<String> _readNotifIds = {}; // 'w_<deviceId>' | 'a_<assignmentId>'
+  bool _panelSeen = false;
+  bool _alertShown = false; // session başına bir kez kritik popup göster
+  final Set<String> _readNotifIds = {};
+
+  void _showCriticalAlert(BuildContext context, DashboardData data) {
+    final hasExpired = data.expiredWarranties > 0;
+    final hasExpiring = data.expiringWarranties > 0;
+    if (!hasExpired && !hasExpiring) return;
+
+    final isExpired = hasExpired;
+    final color = isExpired ? AppColors.error : AppColors.warning;
+    final icon = isExpired ? Icons.gpp_bad_rounded : Icons.shield_outlined;
+    final title = isExpired ? 'Kritik: Garanti Süresi Doldu' : 'Uyarı: Garanti Yaklaşıyor';
+    final message = isExpired
+        ? '${data.expiredWarranties} cihazın garanti süresi dolmuş. Acil işlem gerekiyor.'
+        : '${data.expiringWarranties} cihazın garanti süresi 90 gün içinde bitiyor.';
+
+    showDialog(
+      context: context,
+      builder: (_) => Dialog(
+        backgroundColor: AppColors.dark800,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: color, size: 28),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: color,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textSecondary,
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.textTertiary,
+                        side: const BorderSide(color: AppColors.border),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      child: const Text('Tamam'),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        // Bildirim panelini aç
+                        final d = ref.read(dashboardProvider).valueOrNull;
+                        final r = ref.read(recentAssignmentsProvider).valueOrNull ?? [];
+                        if (d != null) _openNotifications(context, d, r);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: color,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      child: const Text(
+                        'İncele',
+                        style: TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   void _openNotifications(BuildContext context, DashboardData data, List<Assignment> recent) {
     setState(() => _panelSeen = true);
@@ -44,6 +145,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final recentAsync = ref.watch(recentAssignmentsProvider);
     final authState = ref.watch(authProvider);
 
+    // İlk başarılı yüklemede kritik uyarı popup'ı — session başına bir kez
+    ref.listen<AsyncValue<DashboardData>>(dashboardProvider, (prev, next) {
+      if (!_alertShown && next is AsyncData<DashboardData>) {
+        _alertShown = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _showCriticalAlert(context, next.value);
+        });
+      }
+    });
+
     // Sadece okunmayan bildirimler sayılır
     final notifCount = dashboardAsync.maybeWhen(
       data: (d) {
@@ -65,8 +176,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         backgroundColor: AppColors.dark800,
         onRefresh: () async {
           setState(() {
-            _bannerDismissed = false;
             _panelSeen = false;
+            _alertShown = false;
             _readNotifIds.clear();
           });
           ref.invalidate(dashboardProvider);
@@ -92,8 +203,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 child: _DashboardContent(
                   data: data,
                   recentAsync: recentAsync,
-                  bannerDismissed: _bannerDismissed,
-                  onBannerDismiss: () => setState(() => _bannerDismissed = true),
                 ),
               ),
               loading: () => const SliverToBoxAdapter(child: _DashboardShimmer()),
@@ -301,14 +410,10 @@ class _DashboardAppBar extends StatelessWidget {
 class _DashboardContent extends StatelessWidget {
   final dynamic data;
   final AsyncValue<List<Assignment>> recentAsync;
-  final bool bannerDismissed;
-  final VoidCallback onBannerDismiss;
 
   const _DashboardContent({
     required this.data,
     required this.recentAsync,
-    required this.bannerDismissed,
-    required this.onBannerDismiss,
   });
 
   @override
@@ -320,28 +425,6 @@ class _DashboardContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 16),
-
-        // ── Kritik Uyarı Banner (dismiss edilebilir) ──
-        if (!bannerDismissed) ...[
-          if (hasExpired)
-            _DismissibleBanner(
-              color: AppColors.error,
-              icon: Icons.gpp_bad_outlined,
-              message:
-                  '${data.expiredWarranties} cihazın garantisi bitti — acil işlem gerekiyor',
-              onDismiss: onBannerDismiss,
-              onTap: () => context.go('/more'),
-            )
-          else if (hasExpiring)
-            _DismissibleBanner(
-              color: AppColors.warning,
-              icon: Icons.shield_outlined,
-              message:
-                  '${data.expiringWarranties} cihazın garantisi yakında bitiyor',
-              onDismiss: onBannerDismiss,
-              onTap: () {},
-            ),
-        ],
 
         // ── KPI Grid ──────────────────────────────────
         Padding(
@@ -515,74 +598,6 @@ class _DashboardContent extends StatelessWidget {
   }
 }
 
-// ─── Dismissible Alert Banner ─────────────────────────────────────────────────
-
-class _DismissibleBanner extends StatelessWidget {
-  final Color color;
-  final IconData icon;
-  final String message;
-  final VoidCallback onDismiss;
-  final VoidCallback onTap;
-
-  const _DismissibleBanner({
-    required this.color,
-    required this.icon,
-    required this.message,
-    required this.onDismiss,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-        padding: const EdgeInsets.fromLTRB(14, 12, 8, 12),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color.withValues(alpha: 0.35)),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: color, size: 20),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                message,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: color,
-                ),
-              ),
-            ),
-            const SizedBox(width: 4),
-            // Detay oku
-            Text(
-              'Gör',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: color,
-              ),
-            ),
-            const SizedBox(width: 2),
-            // Kapat
-            GestureDetector(
-              onTap: onDismiss,
-              child: Padding(
-                padding: const EdgeInsets.all(6),
-                child: Icon(Icons.close, color: color.withValues(alpha: 0.7), size: 16),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 // ─── Notification Panel ───────────────────────────────────────────────────────
 
