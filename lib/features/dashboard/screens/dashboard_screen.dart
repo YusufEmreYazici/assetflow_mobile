@@ -708,6 +708,29 @@ class _NotificationPanelState extends State<_NotificationPanel> {
                     ),
                   ),
                 const Spacer(),
+                if (unreadCount > 0)
+                  TextButton(
+                    onPressed: () {
+                      final allIds = {
+                        ...warrantyItems.map((e) => 'w_${e.deviceId}'),
+                        ...recentAssignments.map((a) => 'a_${a.id}'),
+                      };
+                      setState(() => _localRead.addAll(allIds));
+                      for (final id in allIds) {
+                        widget.onMarkRead(id);
+                      }
+                    },
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.primary400,
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: const Text(
+                      'Tümünü Okundu İşaretle',
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                    ),
+                  ),
                 IconButton(
                   onPressed: () => Navigator.pop(context),
                   icon: const Icon(Icons.close, color: AppColors.textTertiary, size: 20),
