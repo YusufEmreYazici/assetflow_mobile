@@ -96,10 +96,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        // Bildirim panelini aç
-                        final d = ref.read(dashboardProvider).valueOrNull;
-                        final r = ref.read(recentAssignmentsProvider).valueOrNull ?? [];
-                        if (d != null) _openNotifications(context, d, r);
+                        // Dialog kapandıktan sonra parent context ile paneli aç
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          if (!mounted) return;
+                          final d = ref.read(dashboardProvider).valueOrNull;
+                          final r = ref.read(recentAssignmentsProvider).valueOrNull ?? [];
+                          if (d != null) _openNotifications(this.context, d, r);
+                        });
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: color,
@@ -794,8 +797,9 @@ class _NotificationPanelState extends State<_NotificationPanel> {
                         item: item,
                         isRead: isRead,
                         onTap: () => _markRead(id, () {
+                          final router = GoRouter.of(context);
                           Navigator.pop(context);
-                          context.go('/devices/${item.deviceId}');
+                          router.go('/devices/${item.deviceId}');
                         }),
                       );
                     }),
@@ -816,8 +820,9 @@ class _NotificationPanelState extends State<_NotificationPanel> {
                         assignment: a,
                         isRead: isRead,
                         onTap: () => _markRead(id, () {
+                          final router = GoRouter.of(context);
                           Navigator.pop(context);
-                          context.go('/assignments');
+                          router.go('/assignments');
                         }),
                       );
                     }),

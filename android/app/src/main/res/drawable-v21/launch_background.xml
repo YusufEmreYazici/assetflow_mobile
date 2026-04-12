@@ -3,16 +3,8 @@
     <!-- Dark background matching app theme (API 21+) -->
     <item android:drawable="@color/splash_background"/>
 
-    <!-- Centered logo -->
-    <item android:gravity="center">
-        <inset
-            android:insetBottom="0dp"
-            android:insetLeft="0dp"
-            android:insetRight="0dp"
-            android:insetTop="0dp">
-            <bitmap
-                android:gravity="center"
-                android:src="@drawable/ic_splash"/>
-        </inset>
-    </item>
+    <!-- Centered logo (vector drawable — use item directly, not bitmap) -->
+    <item
+        android:gravity="center"
+        android:drawable="@drawable/ic_splash"/>
 </layer-list>
