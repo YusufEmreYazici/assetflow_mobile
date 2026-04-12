@@ -20,8 +20,11 @@ class DashboardScreen extends ConsumerStatefulWidget {
 
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   bool _bannerDismissed = false;
+  bool _panelSeen = false; // panel en az bir kere açıldı → zil filled
+  final Set<String> _readNotifIds = {}; // 'w_<deviceId>' | 'a_<assignmentId>'
 
-  void _openNotifications(BuildContext context, dynamic data, List<Assignment> recent) {
+  void _openNotifications(BuildContext context, DashboardData data, List<Assignment> recent) {
+    setState(() => _panelSeen = true);
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -29,6 +32,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       builder: (_) => _NotificationPanel(
         data: data,
         recentAssignments: recent,
+        readNotifIds: Set.from(_readNotifIds),
+        onMarkRead: (id) => setState(() => _readNotifIds.add(id)),
       ),
     );
   }
@@ -39,9 +44,17 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final recentAsync = ref.watch(recentAssignmentsProvider);
     final authState = ref.watch(authProvider);
 
-    // Bildirim sayısı: API verisi hazırsa hesapla
+    // Sadece okunmayan bildirimler sayılır
     final notifCount = dashboardAsync.maybeWhen(
-      data: (d) => (d.expiredWarranties) + (d.expiringWarranties),
+      data: (d) {
+        final unreadWarranty = d.upcomingWarrantyExpirations
+            .where((e) => !_readNotifIds.contains('w_${e.deviceId}'))
+            .length;
+        final unreadAssign = recentAsync.valueOrNull
+                ?.where((a) => !_readNotifIds.contains('a_${a.id}'))
+                .length ?? 0;
+        return unreadWarranty + unreadAssign;
+      },
       orElse: () => 0,
     );
 
@@ -51,7 +64,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         color: AppColors.primary500,
         backgroundColor: AppColors.dark800,
         onRefresh: () async {
-          setState(() => _bannerDismissed = false);
+          setState(() {
+            _bannerDismissed = false;
+            _panelSeen = false;
+            _readNotifIds.clear();
+          });
           ref.invalidate(dashboardProvider);
           await ref.read(dashboardProvider.future);
         },
@@ -61,6 +78,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             _DashboardAppBar(
               authState: authState,
               notifCount: notifCount,
+              panelSeen: _panelSeen,
               onNotifTap: () {
                 final data = dashboardAsync.valueOrNull;
                 final recent = recentAsync.valueOrNull ?? [];
@@ -100,11 +118,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 class _DashboardAppBar extends StatelessWidget {
   final AuthState authState;
   final int notifCount;
+  final bool panelSeen;
   final VoidCallback onNotifTap;
 
   const _DashboardAppBar({
     required this.authState,
     required this.notifCount,
+    required this.panelSeen,
     required this.onNotifTap,
   });
 
@@ -168,10 +188,26 @@ class _DashboardAppBar extends StatelessWidget {
                 children: [
                   IconButton(
                     onPressed: onNotifTap,
-                    icon: const Icon(Icons.notifications_outlined,
-                        color: AppColors.textSecondary, size: 24),
+                    icon: Icon(
+                      // Panel açıldıysa ve okunmayan kalmadıysa: filled+sessiz
+                      // Panel açıldıysa ve okunmayan varsa: filled+renkli
+                      // Hiç açılmadıysa: outlined
+                      panelSeen && notifCount == 0
+                          ? Icons.notifications_rounded
+                          : panelSeen
+                              ? Icons.notifications_rounded
+                              : Icons.notifications_outlined,
+                      color: notifCount > 0
+                          ? AppColors.error
+                          : panelSeen
+                              ? AppColors.textSecondary
+                              : AppColors.textSecondary,
+                      size: 24,
+                    ),
                     style: IconButton.styleFrom(
-                      backgroundColor: AppColors.dark800,
+                      backgroundColor: notifCount > 0
+                          ? AppColors.error.withValues(alpha: 0.1)
+                          : AppColors.dark800,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12)),
                       fixedSize: const Size(42, 42),
@@ -198,6 +234,22 @@ class _DashboardAppBar extends StatelessWidget {
                             ),
                           ),
                         ),
+                      ),
+                    ),
+                  // Tümü okundu işareti
+                  if (panelSeen && notifCount == 0)
+                    Positioned(
+                      top: 4,
+                      right: 4,
+                      child: Container(
+                        width: 14,
+                        height: 14,
+                        decoration: const BoxDecoration(
+                          color: AppColors.success,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.check,
+                            color: Colors.white, size: 9),
                       ),
                     ),
                 ],
@@ -534,18 +586,48 @@ class _DismissibleBanner extends StatelessWidget {
 
 // ─── Notification Panel ───────────────────────────────────────────────────────
 
-class _NotificationPanel extends StatelessWidget {
+class _NotificationPanel extends StatefulWidget {
   final DashboardData data;
   final List<Assignment> recentAssignments;
+  final Set<String> readNotifIds;
+  final void Function(String id) onMarkRead;
 
   const _NotificationPanel({
     required this.data,
     required this.recentAssignments,
+    required this.readNotifIds,
+    required this.onMarkRead,
   });
 
   @override
+  State<_NotificationPanel> createState() => _NotificationPanelState();
+}
+
+class _NotificationPanelState extends State<_NotificationPanel> {
+  late final Set<String> _localRead;
+
+  @override
+  void initState() {
+    super.initState();
+    _localRead = Set.from(widget.readNotifIds);
+  }
+
+  void _markRead(String id, VoidCallback navigate) {
+    if (!_localRead.contains(id)) {
+      setState(() => _localRead.add(id));
+      widget.onMarkRead(id); // AppBar badge'ini güncelle
+    }
+    navigate();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final warrantyItems = data.upcomingWarrantyExpirations;
+    final warrantyItems = widget.data.upcomingWarrantyExpirations;
+    final recentAssignments = widget.recentAssignments;
+
+    final unreadWarranty = warrantyItems.where((e) => !_localRead.contains('w_${e.deviceId}')).length;
+    final unreadAssign = recentAssignments.where((a) => !_localRead.contains('a_${a.id}')).length;
+    final unreadCount = unreadWarranty + unreadAssign;
     final totalCount = warrantyItems.length + recentAssignments.length;
 
     return Container(
@@ -574,8 +656,15 @@ class _NotificationPanel extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(20, 16, 8, 12),
             child: Row(
               children: [
-                const Icon(Icons.notifications_rounded,
-                    color: AppColors.primary400, size: 20),
+                Icon(
+                  unreadCount > 0
+                      ? Icons.notifications_rounded
+                      : Icons.notifications_none_rounded,
+                  color: unreadCount > 0
+                      ? AppColors.primary400
+                      : AppColors.textTertiary,
+                  size: 20,
+                ),
                 const SizedBox(width: 8),
                 const Text(
                   'Bildirimler',
@@ -586,7 +675,7 @@ class _NotificationPanel extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-                if (totalCount > 0)
+                if (unreadCount > 0)
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                     decoration: BoxDecoration(
@@ -594,11 +683,27 @@ class _NotificationPanel extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
-                      '$totalCount',
+                      '$unreadCount',
                       style: const TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
                         color: AppColors.error,
+                      ),
+                    ),
+                  )
+                else if (totalCount > 0)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: AppColors.success.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Text(
+                      'Tümü okundu',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.success,
                       ),
                     ),
                   ),
@@ -638,34 +743,46 @@ class _NotificationPanel extends StatelessWidget {
                   if (warrantyItems.isNotEmpty) ...[
                     _PanelSectionHeader(
                       title: 'GARANTİ UYARILARI',
-                      count: warrantyItems.length,
-                      color: data.expiredWarranties > 0
+                      count: unreadWarranty,
+                      totalCount: warrantyItems.length,
+                      color: widget.data.expiredWarranties > 0
                           ? AppColors.error
                           : AppColors.warning,
                     ),
-                    ...warrantyItems.map((item) => _WarrantyNotifTile(
-                          item: item,
-                          onTap: () {
-                            Navigator.pop(context);
-                            context.go('/devices/${item.deviceId}');
-                          },
-                        )),
+                    ...warrantyItems.map((item) {
+                      final id = 'w_${item.deviceId}';
+                      final isRead = _localRead.contains(id);
+                      return _WarrantyNotifTile(
+                        item: item,
+                        isRead: isRead,
+                        onTap: () => _markRead(id, () {
+                          Navigator.pop(context);
+                          context.go('/devices/${item.deviceId}');
+                        }),
+                      );
+                    }),
                   ],
 
                   // Son zimmetler
                   if (recentAssignments.isNotEmpty) ...[
                     _PanelSectionHeader(
                       title: 'SON ZİMMETLER',
-                      count: recentAssignments.length,
+                      count: unreadAssign,
+                      totalCount: recentAssignments.length,
                       color: AppColors.success,
                     ),
-                    ...recentAssignments.map((a) => _AssignmentNotifTile(
-                          assignment: a,
-                          onTap: () {
-                            Navigator.pop(context);
-                            context.go('/assignments');
-                          },
-                        )),
+                    ...recentAssignments.map((a) {
+                      final id = 'a_${a.id}';
+                      final isRead = _localRead.contains(id);
+                      return _AssignmentNotifTile(
+                        assignment: a,
+                        isRead: isRead,
+                        onTap: () => _markRead(id, () {
+                          Navigator.pop(context);
+                          context.go('/assignments');
+                        }),
+                      );
+                    }),
                   ],
                 ],
               ),
@@ -678,17 +795,20 @@ class _NotificationPanel extends StatelessWidget {
 
 class _PanelSectionHeader extends StatelessWidget {
   final String title;
-  final int count;
+  final int count;       // okunmayan sayısı
+  final int totalCount;  // toplam
   final Color color;
 
   const _PanelSectionHeader({
     required this.title,
     required this.count,
+    required this.totalCount,
     required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
+    final allRead = count == 0;
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 8),
       child: Row(
@@ -697,7 +817,7 @@ class _PanelSectionHeader extends StatelessWidget {
             width: 3,
             height: 12,
             decoration: BoxDecoration(
-              color: color,
+              color: allRead ? AppColors.textTertiary : color,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -712,19 +832,44 @@ class _PanelSectionHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 6),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              '$count',
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w700,
-                color: color,
+          if (!allRead)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(8),
               ),
+              child: Text(
+                '$count',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  color: color,
+                ),
+              ),
+            )
+          else
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+              decoration: BoxDecoration(
+                color: AppColors.success.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Text(
+                'Okundu',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.success,
+                ),
+              ),
+            ),
+          const Spacer(),
+          Text(
+            '$totalCount öğe',
+            style: const TextStyle(
+              fontSize: 10,
+              color: AppColors.textTertiary,
             ),
           ),
         ],
@@ -735,70 +880,82 @@ class _PanelSectionHeader extends StatelessWidget {
 
 class _WarrantyNotifTile extends StatelessWidget {
   final WarrantyAlertItem item;
+  final bool isRead;
   final VoidCallback onTap;
 
-  const _WarrantyNotifTile({required this.item, required this.onTap});
+  const _WarrantyNotifTile({
+    required this.item,
+    required this.isRead,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     final isExpired = item.daysRemaining <= 0;
     final isCritical = item.daysRemaining <= 30;
-    final color = isExpired || isCritical ? AppColors.error : AppColors.warning;
-    final label = isExpired
-        ? 'Bitti'
-        : isCritical
-            ? '${item.daysRemaining} gün kaldı'
-            : '${item.daysRemaining} gün kaldı';
-    final dateStr =
-        DateFormat('dd MMM yyyy', 'tr_TR').format(item.warrantyEndDate);
+    final baseColor = isExpired || isCritical ? AppColors.error : AppColors.warning;
+    final color = isRead ? AppColors.textTertiary : baseColor;
+    final label = isExpired ? 'Bitti' : '${item.daysRemaining} gün kaldı';
+    final dateStr = DateFormat('dd MMM yyyy', 'tr_TR').format(item.warrantyEndDate);
 
-    return ListTile(
-      onTap: onTap,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-      leading: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(10),
+    return Container(
+      color: isRead ? AppColors.dark900.withValues(alpha: 0.4) : Colors.transparent,
+      child: ListTile(
+        onTap: onTap,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+        leading: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(
+            isRead ? Icons.check_circle_outline : Icons.verified_user_outlined,
+            color: color,
+            size: 20,
+          ),
         ),
-        child: Icon(Icons.verified_user_outlined, color: color, size: 20),
-      ),
-      title: Text(
-        item.deviceName,
-        style: const TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-          color: AppColors.textPrimary,
+        title: Text(
+          item.deviceName,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: isRead ? AppColors.textTertiary : AppColors.textPrimary,
+          ),
         ),
-      ),
-      subtitle: Text(
-        item.assignedTo != null
-            ? '${item.assignedTo} · $dateStr'
-            : dateStr,
-        style: const TextStyle(fontSize: 11, color: AppColors.textTertiary),
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                color: color,
+        subtitle: Text(
+          item.assignedTo != null
+              ? '${item.assignedTo} · $dateStr'
+              : dateStr,
+          style: const TextStyle(fontSize: 11, color: AppColors.textTertiary),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                isRead ? 'Okundu' : label,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: color,
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 4),
-          const Icon(Icons.chevron_right, color: AppColors.textTertiary, size: 18),
-        ],
+            const SizedBox(width: 4),
+            Icon(
+              isRead ? Icons.check : Icons.chevron_right,
+              color: isRead ? AppColors.success : AppColors.textTertiary,
+              size: 18,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -806,67 +963,84 @@ class _WarrantyNotifTile extends StatelessWidget {
 
 class _AssignmentNotifTile extends StatelessWidget {
   final Assignment assignment;
+  final bool isRead;
   final VoidCallback onTap;
 
-  const _AssignmentNotifTile({required this.assignment, required this.onTap});
+  const _AssignmentNotifTile({
+    required this.assignment,
+    required this.isRead,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     final typeLabel = AssignmentTypeLabels[assignment.type] ?? 'Zimmet';
-    final typeColor = assignment.type == 0
+    final baseColor = assignment.type == 0
         ? AppColors.success
         : assignment.type == 1
             ? AppColors.info
             : AppColors.warning;
-    final dateStr =
-        DateFormat('dd MMM, HH:mm', 'tr_TR').format(assignment.assignedAt);
+    final typeColor = isRead ? AppColors.textTertiary : baseColor;
+    final dateStr = DateFormat('dd MMM, HH:mm', 'tr_TR').format(assignment.assignedAt);
 
-    return ListTile(
-      onTap: onTap,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-      leading: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: typeColor.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(10),
+    return Container(
+      color: isRead ? AppColors.dark900.withValues(alpha: 0.4) : Colors.transparent,
+      child: ListTile(
+        onTap: onTap,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+        leading: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: typeColor.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(
+            isRead
+                ? Icons.assignment_turned_in_rounded
+                : Icons.assignment_turned_in_rounded,
+            color: typeColor,
+            size: 20,
+          ),
         ),
-        child: Icon(Icons.assignment_turned_in_rounded,
-            color: typeColor, size: 20),
-      ),
-      title: Text(
-        assignment.deviceName ?? '-',
-        style: const TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-          color: AppColors.textPrimary,
+        title: Text(
+          assignment.deviceName ?? '-',
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: isRead ? AppColors.textTertiary : AppColors.textPrimary,
+          ),
         ),
-      ),
-      subtitle: Text(
-        '${assignment.employeeName ?? '-'} · $dateStr',
-        style: const TextStyle(fontSize: 11, color: AppColors.textTertiary),
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-            decoration: BoxDecoration(
-              color: typeColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Text(
-              typeLabel,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                color: typeColor,
+        subtitle: Text(
+          '${assignment.employeeName ?? '-'} · $dateStr',
+          style: const TextStyle(fontSize: 11, color: AppColors.textTertiary),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+              decoration: BoxDecoration(
+                color: typeColor.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                isRead ? 'Okundu' : typeLabel,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: typeColor,
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 4),
-          const Icon(Icons.chevron_right, color: AppColors.textTertiary, size: 18),
-        ],
+            const SizedBox(width: 4),
+            Icon(
+              isRead ? Icons.check : Icons.chevron_right,
+              color: isRead ? AppColors.success : AppColors.textTertiary,
+              size: 18,
+            ),
+          ],
+        ),
       ),
     );
   }
