@@ -1,6 +1,6 @@
 # AssetFlow Mobile — İlerleme Takibi
 
-Son güncelleme: 2026-04-12 (Faz 4 tamamlandı)
+Son güncelleme: 2026-04-12 (Dashboard redesign tamamlandı)
 
 ---
 
@@ -79,6 +79,18 @@ Son güncelleme: 2026-04-12 (Faz 4 tamamlandı)
 - [x] SAP bağlantı durumu kartı (yapılandırılmadı/bağlı/bağlantı yok)
 - [x] "Daha Fazla" menüsüne SAP kartı eklendi
 - [x] Backend 404/501 → graceful fallback mesajı
+
+### Dashboard Redesign ✅
+- [x] AppBar yenilendi — kullanıcı baş harfleri avatar (→ More ekranına yönlendirir), tarih göstergesi, logout kaldırıldı
+- [x] SliverAppBar + CustomScrollView — scroll'da küçülen başlık
+- [x] StatCard redesign — üst renk şeridi, büyük rakam, opsiyonel sublabel badge (%, KRİTİK, DİKKAT)
+- [x] Kritik uyarı banner — garanti bitmiş = kırmızı, yaklaşan = sarı, akıllı koşullu gösterim
+- [x] Hızlı İşlemler satırı — yatay scroll: Zimmet Ata, Cihaz Ekle, Personel Ekle, QR Tara
+- [x] Bölüm başlıkları — sol mavi şerit + uppercase küçük metin, tüm bölümlerde tutarlı
+- [x] Son Aktiviteler — tip bazlı renk (yeşil/mavi/turuncu), tip etiketi badge
+- [x] Garanti Uyarıları — BİTTİ/KRİTİK/UYARI/NORMAL etiketleri, renk yoğunluğu urgency'ye göre
+- [x] Hata ekranı — bulut ikon, net mesaj, Tekrar Dene butonu
+- [x] Shimmer — grid + quick actions + activity için ayrı iskeletler
 
 ### Faz 5 — Polishing ✅
 - [x] `print()` debug satırları temizlendi — auth_provider.dart'tan 4 print kaldırıldı, catch bloğu da temizlendi
