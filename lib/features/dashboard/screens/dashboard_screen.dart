@@ -10,6 +10,7 @@ import 'package:assetflow_mobile/features/auth/providers/auth_provider.dart';
 import 'package:assetflow_mobile/features/dashboard/providers/dashboard_provider.dart';
 import 'package:assetflow_mobile/features/dashboard/widgets/stat_card.dart';
 import 'package:assetflow_mobile/features/dashboard/widgets/device_type_chart.dart';
+import 'package:assetflow_mobile/features/dashboard/widgets/dashboard_error.dart';
 import 'package:assetflow_mobile/features/dashboard/widgets/dashboard_shimmer.dart';
 import 'package:assetflow_mobile/features/dashboard/widgets/section_header.dart';
 
@@ -211,7 +212,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               ),
               loading: () => const SliverToBoxAdapter(child: DashboardShimmer()),
               error: (error, _) => SliverToBoxAdapter(
-                child: _DashboardError(
+                child: DashboardError(
                   error: error,
                   onRetry: () {
                     ref.invalidate(dashboardProvider);
@@ -1360,65 +1361,3 @@ class _WarrantySection extends StatelessWidget {
   }
 }
 
-// ─── Error ────────────────────────────────────────────────────────────────────
-
-class _DashboardError extends StatelessWidget {
-  final Object error;
-  final VoidCallback onRetry;
-  const _DashboardError({required this.error, required this.onRetry});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 400,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: AppColors.error.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: const Icon(Icons.cloud_off_rounded,
-                    color: AppColors.error, size: 32),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Veriler yüklenemedi',
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary),
-              ),
-              const SizedBox(height: 6),
-              const Text(
-                'Sunucu bağlantısını kontrol edin',
-                style:
-                    TextStyle(fontSize: 13, color: AppColors.textTertiary),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton.icon(
-                onPressed: onRetry,
-                icon: const Icon(Icons.refresh_rounded, size: 18),
-                label: const Text('Tekrar Dene'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary600,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 24, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
