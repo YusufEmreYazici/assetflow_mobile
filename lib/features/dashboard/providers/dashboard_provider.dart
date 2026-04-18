@@ -5,6 +5,7 @@ import 'package:assetflow_mobile/data/services/dashboard_service.dart';
 import 'package:assetflow_mobile/data/services/assignment_service.dart';
 import 'package:assetflow_mobile/core/utils/cache_manager.dart';
 import 'package:assetflow_mobile/core/utils/notification_service.dart';
+import 'package:assetflow_mobile/core/utils/seen_notification_store.dart';
 
 final dashboardServiceProvider = Provider<DashboardService>((ref) {
   return DashboardService();
@@ -23,9 +24,14 @@ final dashboardProvider = FutureProvider.autoDispose<DashboardData>((
       data.toJson(),
       ttl: const Duration(minutes: 30),
     );
-    await NotificationService.instance.checkWarrantyAlerts(
-      data.upcomingWarrantyExpirations,
-    );
+    final warrantyKey = 'sys_warranty_${SeenNotificationStore.todayKey()}';
+    final alreadySent = await SeenNotificationStore.instance.isSeen(warrantyKey);
+    if (!alreadySent && data.upcomingWarrantyExpirations.isNotEmpty) {
+      await NotificationService.instance.checkWarrantyAlerts(
+        data.upcomingWarrantyExpirations,
+      );
+      await SeenNotificationStore.instance.markSeen(warrantyKey);
+    }
     return data;
   } catch (e) {
     final cached = await cache.getStale('dashboard');
