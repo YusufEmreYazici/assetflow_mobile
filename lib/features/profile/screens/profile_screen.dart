@@ -5,6 +5,7 @@ import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/app_text_field.dart';
 import 'package:assetflow_mobile/core/widgets/app_button.dart';
 import 'package:assetflow_mobile/core/utils/cache_manager.dart';
+import 'package:assetflow_mobile/core/utils/seen_notification_store.dart';
 import 'package:assetflow_mobile/data/services/auth_service.dart';
 import 'package:assetflow_mobile/features/auth/providers/auth_provider.dart';
 import 'package:assetflow_mobile/features/profile/screens/notification_settings_screen.dart';
@@ -301,16 +302,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             title: 'Onbellek Temizle',
             subtitle: 'Yerel verileri temizle',
             onTap: () async {
+              final messenger = ScaffoldMessenger.of(context);
               await CacheManager.instance.clearAll();
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Onbellek temizlendi'),
-                    backgroundColor: AppColors.success,
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-              }
+              await SeenNotificationStore.instance.clearAll();
+              messenger.showSnackBar(
+                const SnackBar(
+                  content: Text('Onbellek temizlendi'),
+                  backgroundColor: AppColors.success,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
             },
           ),
 
