@@ -14,6 +14,7 @@ import 'package:assetflow_mobile/features/dashboard/widgets/quick_actions_row.da
 import 'package:assetflow_mobile/features/dashboard/widgets/recent_activity_section.dart';
 import 'package:assetflow_mobile/features/dashboard/widgets/warranty_alerts_section.dart';
 import 'package:assetflow_mobile/features/dashboard/widgets/dashboard_shimmer.dart';
+import 'package:assetflow_mobile/core/utils/seen_notification_store.dart';
 import 'package:assetflow_mobile/features/dashboard/widgets/notification_panel.dart';
 import 'package:assetflow_mobile/features/dashboard/widgets/section_header.dart';
 
@@ -28,6 +29,18 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   bool _panelSeen = false;
   bool _alertShown = false; // session başına bir kez kritik popup göster
   final Set<String> _readNotifIds = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _loadReadNotifIds();
+  }
+
+  Future<void> _loadReadNotifIds() async {
+    final seen = await SeenNotificationStore.instance.getAll();
+    final panelIds = seen.where((id) => id.startsWith('panel_')).toSet();
+    if (mounted) setState(() => _readNotifIds.addAll(panelIds));
+  }
 
   void _showCriticalAlert(BuildContext context, DashboardData data) {
     final hasExpired = data.expiredWarranties > 0;
@@ -152,7 +165,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         data: data,
         recentAssignments: recent,
         readNotifIds: Set.from(_readNotifIds),
-        onMarkRead: (id) => setState(() => _readNotifIds.add(id)),
+        onMarkRead: (id) async {
+          await SeenNotificationStore.instance.markSeen(id);
+          if (mounted) setState(() => _readNotifIds.add(id));
+        },
       ),
     );
   }
@@ -177,11 +193,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final notifCount = dashboardAsync.maybeWhen(
       data: (d) {
         final unreadWarranty = d.upcomingWarrantyExpirations
-            .where((e) => !_readNotifIds.contains('w_${e.deviceId}'))
+            .where((e) => !_readNotifIds.contains('panel_w_${e.deviceId}'))
             .length;
         final unreadAssign =
             recentAsync.valueOrNull
-                ?.where((a) => !_readNotifIds.contains('a_${a.id}'))
+                ?.where((a) => !_readNotifIds.contains('panel_a_${a.id}'))
                 .length ??
             0;
         return unreadWarranty + unreadAssign;

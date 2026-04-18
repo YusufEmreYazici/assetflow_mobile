@@ -46,10 +46,10 @@ class _NotificationPanelState extends State<NotificationPanel> {
     final recentAssignments = widget.recentAssignments;
 
     final unreadWarranty = warrantyItems
-        .where((e) => !_localRead.contains('w_${e.deviceId}'))
+        .where((e) => !_localRead.contains('panel_w_${e.deviceId}'))
         .length;
     final unreadAssign = recentAssignments
-        .where((a) => !_localRead.contains('a_${a.id}'))
+        .where((a) => !_localRead.contains('panel_a_${a.id}'))
         .length;
     final unreadCount = unreadWarranty + unreadAssign;
     final totalCount = warrantyItems.length + recentAssignments.length;
@@ -142,8 +142,8 @@ class _NotificationPanelState extends State<NotificationPanel> {
                   TextButton(
                     onPressed: () {
                       final allIds = {
-                        ...warrantyItems.map((e) => 'w_${e.deviceId}'),
-                        ...recentAssignments.map((a) => 'a_${a.id}'),
+                        ...warrantyItems.map((e) => 'panel_w_${e.deviceId}'),
+                        ...recentAssignments.map((a) => 'panel_a_${a.id}'),
                       };
                       setState(() => _localRead.addAll(allIds));
                       for (final id in allIds) {
@@ -219,7 +219,7 @@ class _NotificationPanelState extends State<NotificationPanel> {
                           : AppColors.warning,
                     ),
                     ...warrantyItems.map((item) {
-                      final id = 'w_${item.deviceId}';
+                      final id = 'panel_w_${item.deviceId}';
                       final isRead = _localRead.contains(id);
                       return _WarrantyNotifTile(
                         item: item,
@@ -242,7 +242,7 @@ class _NotificationPanelState extends State<NotificationPanel> {
                       color: AppColors.success,
                     ),
                     ...recentAssignments.map((a) {
-                      final id = 'a_${a.id}';
+                      final id = 'panel_a_${a.id}';
                       final isRead = _localRead.contains(id);
                       return _AssignmentNotifTile(
                         assignment: a,
