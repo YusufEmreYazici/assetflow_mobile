@@ -10,6 +10,7 @@ import 'package:assetflow_mobile/features/auth/providers/auth_provider.dart';
 import 'package:assetflow_mobile/features/dashboard/providers/dashboard_provider.dart';
 import 'package:assetflow_mobile/features/dashboard/widgets/stat_card.dart';
 import 'package:assetflow_mobile/features/dashboard/widgets/device_type_chart.dart';
+import 'package:assetflow_mobile/features/dashboard/widgets/section_header.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -431,7 +432,7 @@ class _DashboardContent extends StatelessWidget {
         // ── KPI Grid ──────────────────────────────────
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: _SectionHeader(title: 'GENEL BAKIŞ'),
+          child: DashboardSectionHeader(title: 'GENEL BAKIŞ'),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -492,7 +493,7 @@ class _DashboardContent extends StatelessWidget {
         // ── Hızlı İşlemler ──
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: _SectionHeader(title: 'HIZLI İŞLEMLER'),
+          child: DashboardSectionHeader(title: 'HIZLI İŞLEMLER'),
         ),
         const SizedBox(height: 2),
         SizedBox(
@@ -537,7 +538,7 @@ class _DashboardContent extends StatelessWidget {
         if (data.devicesByType.isNotEmpty) ...[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: _SectionHeader(title: 'CİHAZ DAĞILIMI'),
+            child: DashboardSectionHeader(title: 'CİHAZ DAĞILIMI'),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -565,7 +566,7 @@ class _DashboardContent extends StatelessWidget {
         if (data.upcomingWarrantyExpirations.isNotEmpty) ...[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: _SectionHeader(title: 'GARANTİ UYARILARI'),
+            child: DashboardSectionHeader(title: 'GARANTİ UYARILARI'),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -1088,42 +1089,6 @@ class _AssignmentNotifTile extends StatelessWidget {
   }
 }
 
-// ─── Section Header ───────────────────────────────────────────────────────────
-
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  const _SectionHeader({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        children: [
-          Container(
-            width: 3,
-            height: 13,
-            decoration: BoxDecoration(
-              color: AppColors.primary500,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textTertiary,
-              letterSpacing: 1.0,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 // ─── Quick Action ─────────────────────────────────────────────────────────────
 
 class _QuickAction extends StatelessWidget {
@@ -1191,7 +1156,7 @@ class _RecentActivitySection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _SectionHeader(title: 'SON AKTİVİTELER'),
+        DashboardSectionHeader(title: 'SON AKTİVİTELER'),
         Container(
           decoration: BoxDecoration(
             color: AppColors.dark800,
