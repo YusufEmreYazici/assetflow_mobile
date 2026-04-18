@@ -27,13 +27,23 @@ class DashboardScreen extends ConsumerStatefulWidget {
 
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   bool _panelSeen = false;
-  bool _alertShown = false; // session başına bir kez kritik popup göster
   final Set<String> _readNotifIds = {};
 
   @override
   void initState() {
     super.initState();
     _loadReadNotifIds();
+  }
+
+  Future<void> _maybeShowCriticalAlert(DashboardData data) async {
+    final key = 'critical_alert_${SeenNotificationStore.todayKey()}';
+    final seen = await SeenNotificationStore.instance.isSeen(key);
+    if (seen) return;
+    await SeenNotificationStore.instance.markSeen(key);
+    if (!mounted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _showCriticalAlert(context, data);
+    });
   }
 
   Future<void> _loadReadNotifIds() async {
@@ -179,13 +189,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final recentAsync = ref.watch(recentAssignmentsProvider);
     final authState = ref.watch(authProvider);
 
-    // İlk başarılı yüklemede kritik uyarı popup'ı — session başına bir kez
+    // İlk başarılı yüklemede kritik uyarı popup'ı — günlük bir kez
     ref.listen<AsyncValue<DashboardData>>(dashboardProvider, (prev, next) {
-      if (!_alertShown && next is AsyncData<DashboardData>) {
-        _alertShown = true;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) _showCriticalAlert(context, next.value);
-        });
+      if (next is AsyncData<DashboardData>) {
+        _maybeShowCriticalAlert(next.value);
       }
     });
 
@@ -213,7 +220,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         onRefresh: () async {
           setState(() {
             _panelSeen = false;
-            _alertShown = false;
             _readNotifIds.clear();
           });
           ref.invalidate(dashboardProvider);
