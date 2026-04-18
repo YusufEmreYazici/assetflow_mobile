@@ -10,6 +10,7 @@ import 'package:assetflow_mobile/features/auth/providers/auth_provider.dart';
 import 'package:assetflow_mobile/features/dashboard/providers/dashboard_provider.dart';
 import 'package:assetflow_mobile/features/dashboard/widgets/stat_card.dart';
 import 'package:assetflow_mobile/features/dashboard/widgets/device_type_chart.dart';
+import 'package:assetflow_mobile/features/dashboard/widgets/dashboard_shimmer.dart';
 import 'package:assetflow_mobile/features/dashboard/widgets/section_header.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
@@ -208,7 +209,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   recentAsync: recentAsync,
                 ),
               ),
-              loading: () => const SliverToBoxAdapter(child: _DashboardShimmer()),
+              loading: () => const SliverToBoxAdapter(child: DashboardShimmer()),
               error: (error, _) => SliverToBoxAdapter(
                 child: _DashboardError(
                   error: error,
@@ -1355,69 +1356,6 @@ class _WarrantySection extends StatelessWidget {
         }),
         const SizedBox(height: 8),
       ],
-    );
-  }
-}
-
-// ─── Shimmer ──────────────────────────────────────────────────────────────────
-
-class _DashboardShimmer extends StatelessWidget {
-  const _DashboardShimmer();
-
-  @override
-  Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      baseColor: AppColors.dark800,
-      highlightColor: AppColors.dark700,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GridView.count(
-              crossAxisCount: 2,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-              childAspectRatio: 1.25,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              children: List.generate(
-                  6,
-                  (_) => Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.dark800,
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      )),
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              height: 82,
-              child: Row(
-                children: List.generate(
-                    4,
-                    (_) => Expanded(
-                          child: Container(
-                            margin: const EdgeInsets.only(right: 10),
-                            decoration: BoxDecoration(
-                              color: AppColors.dark800,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                        )),
-              ),
-            ),
-            const SizedBox(height: 24),
-            Container(
-              height: 200,
-              decoration: BoxDecoration(
-                color: AppColors.dark800,
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
