@@ -23,29 +23,31 @@ class DashboardShimmer extends StatelessWidget {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               children: List.generate(
-                  6,
-                  (_) => Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.dark800,
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      )),
+                6,
+                (_) => Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.dark800,
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+              ),
             ),
             const SizedBox(height: 24),
             SizedBox(
               height: 82,
               child: Row(
                 children: List.generate(
-                    4,
-                    (_) => Expanded(
-                          child: Container(
-                            margin: const EdgeInsets.only(right: 10),
-                            decoration: BoxDecoration(
-                              color: AppColors.dark800,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                        )),
+                  4,
+                  (_) => Expanded(
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 10),
+                      decoration: BoxDecoration(
+                        color: AppColors.dark800,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 24),

@@ -28,10 +28,9 @@ class _DeviceTypeChartState extends State<DeviceTypeChart> {
   ];
 
   List<MapEntry<String, int>> get _sortedEntries {
-    final entries = widget.devicesByType.entries
-        .where((e) => e.value > 0)
-        .toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
+    final entries =
+        widget.devicesByType.entries.where((e) => e.value > 0).toList()
+          ..sort((a, b) => b.value.compareTo(a.value));
     return entries;
   }
 
@@ -89,8 +88,7 @@ class _DeviceTypeChartState extends State<DeviceTypeChart> {
                       final isTouched = i == _touchedIndex;
                       final entry = entries[i];
                       final color = _colors[i % _colors.length];
-                      final pct =
-                          total > 0 ? (entry.value / total * 100) : 0.0;
+                      final pct = total > 0 ? (entry.value / total * 100) : 0.0;
                       return PieChartSectionData(
                         color: color,
                         value: entry.value.toDouble(),
@@ -113,8 +111,8 @@ class _DeviceTypeChartState extends State<DeviceTypeChart> {
                   children: List.generate(entries.length, (i) {
                     final entry = entries[i];
                     final color = _colors[i % _colors.length];
-                    final label = DeviceTypeLabels[int.tryParse(entry.key)] ??
-                        entry.key;
+                    final label =
+                        DeviceTypeLabels[int.tryParse(entry.key)] ?? entry.key;
                     final pct = total > 0
                         ? (entry.value / total * 100).toStringAsFixed(0)
                         : '0';

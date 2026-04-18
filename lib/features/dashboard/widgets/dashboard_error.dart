@@ -23,22 +23,25 @@ class DashboardError extends StatelessWidget {
                   color: AppColors.error.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Icon(Icons.cloud_off_rounded,
-                    color: AppColors.error, size: 32),
+                child: const Icon(
+                  Icons.cloud_off_rounded,
+                  color: AppColors.error,
+                  size: 32,
+                ),
               ),
               const SizedBox(height: 16),
               const Text(
                 'Veriler yüklenemedi',
                 style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
               ),
               const SizedBox(height: 6),
               const Text(
                 'Sunucu bağlantısını kontrol edin',
-                style:
-                    TextStyle(fontSize: 13, color: AppColors.textTertiary),
+                style: TextStyle(fontSize: 13, color: AppColors.textTertiary),
               ),
               const SizedBox(height: 24),
               ElevatedButton.icon(
@@ -49,9 +52,12 @@ class DashboardError extends StatelessWidget {
                   backgroundColor: AppColors.primary600,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 24, vertical: 12),
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
               ),
             ],

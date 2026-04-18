@@ -41,10 +41,16 @@ class DashboardAppBar extends StatelessWidget {
         background: Container(
           decoration: const BoxDecoration(
             color: AppColors.dark900,
-            border: Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
+            border: Border(
+              bottom: BorderSide(color: AppColors.border, width: 0.5),
+            ),
           ),
           padding: EdgeInsets.fromLTRB(
-            20, MediaQuery.of(context).padding.top + 14, 20, 14),
+            20,
+            MediaQuery.of(context).padding.top + 14,
+            20,
+            14,
+          ),
           child: Row(
             children: [
               Expanded(
@@ -82,13 +88,13 @@ class DashboardAppBar extends StatelessWidget {
                       panelSeen && notifCount == 0
                           ? Icons.notifications_rounded
                           : panelSeen
-                              ? Icons.notifications_rounded
-                              : Icons.notifications_outlined,
+                          ? Icons.notifications_rounded
+                          : Icons.notifications_outlined,
                       color: notifCount > 0
                           ? AppColors.error
                           : panelSeen
-                              ? AppColors.textSecondary
-                              : AppColors.textSecondary,
+                          ? AppColors.textSecondary
+                          : AppColors.textSecondary,
                       size: 24,
                     ),
                     style: IconButton.styleFrom(
@@ -96,7 +102,8 @@ class DashboardAppBar extends StatelessWidget {
                           ? AppColors.error.withValues(alpha: 0.1)
                           : AppColors.dark800,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       fixedSize: const Size(42, 42),
                     ),
                   ),
@@ -135,8 +142,11 @@ class DashboardAppBar extends StatelessWidget {
                           color: AppColors.success,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.check,
-                            color: Colors.white, size: 9),
+                        child: const Icon(
+                          Icons.check,
+                          color: Colors.white,
+                          size: 9,
+                        ),
                       ),
                     ),
                 ],

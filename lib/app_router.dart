@@ -174,11 +174,17 @@ class _MoreTile extends StatelessWidget {
 }
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authProvider);
+  final refreshNotifier = ValueNotifier(0);
+  ref.listen(authProvider, (prev, next) {
+    refreshNotifier.value++;
+  });
+  ref.onDispose(refreshNotifier.dispose);
 
   return GoRouter(
     initialLocation: '/',
+    refreshListenable: refreshNotifier,
     redirect: (context, state) {
+      final authState = ref.read(authProvider);
       final isAuth = authState.isAuthenticated;
       final isLoading = authState.isLoading;
       final isLoginRoute = state.matchedLocation == '/login';
