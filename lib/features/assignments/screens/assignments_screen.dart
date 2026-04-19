@@ -10,6 +10,7 @@ import 'package:assetflow_mobile/data/models/assignment_model.dart';
 import 'package:assetflow_mobile/data/services/assignment_service.dart';
 import 'package:assetflow_mobile/features/assignments/providers/assignment_provider.dart';
 import 'package:assetflow_mobile/features/assignments/screens/assign_device_screen.dart';
+import 'package:assetflow_mobile/features/assignments/screens/return_device_screen.dart';
 
 class _FilterChip extends StatelessWidget {
   final String label;
@@ -93,29 +94,11 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
     ref.read(assignmentProvider.notifier).search('');
   }
 
-  void _confirmReturn(String id) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Cihaz Iade'),
-        content: const Text('Bu zimmeti iade etmek istediginize emin misiniz?'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Iptal')),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(ctx);
-              final success = await ref.read(assignmentProvider.notifier).returnDevice(id, returnCondition: 0);
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text(success ? 'Cihaz iade edildi' : 'Hata olustu'),
-                  backgroundColor: success ? AppColors.success : AppColors.error,
-                  behavior: SnackBarBehavior.floating,
-                ));
-              }
-            },
-            child: const Text('Iade Et', style: TextStyle(color: AppColors.warning)),
-          ),
-        ],
+  Future<void> _navigateToReturn(Assignment assignment) async {
+    await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ReturnDeviceScreen(assignment: assignment),
       ),
     );
   }
@@ -399,7 +382,7 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
                   ),
                   const SizedBox(width: 8),
                   InkWell(
-                    onTap: () => _confirmReturn(a.id),
+                    onTap: () => _navigateToReturn(a),
                     borderRadius: BorderRadius.circular(6),
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
