@@ -218,12 +218,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         color: AppColors.primary500,
         backgroundColor: AppColors.dark800,
         onRefresh: () async {
-          setState(() {
-            _panelSeen = false;
-            _readNotifIds.clear();
-          });
           ref.invalidate(dashboardProvider);
           await ref.read(dashboardProvider.future);
+          // Okundu durumunu persistent store'dan yeniden yukle
+          await _loadReadNotifIds();
         },
         child: CustomScrollView(
           slivers: [
