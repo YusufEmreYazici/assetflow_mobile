@@ -59,10 +59,9 @@ class _FormActionSheetState extends ConsumerState<FormActionSheet> {
 
   Future<void> _share() async {
     if (_localFile == null) return;
-    await Share.shareXFiles(
-      [XFile(_localFile!.path)],
-      subject: widget.form.fileName,
-    );
+    await Share.shareXFiles([
+      XFile(_localFile!.path),
+    ], subject: widget.form.fileName);
   }
 
   Future<void> _uploadSigned() async {
@@ -146,8 +145,10 @@ class _FormActionSheetState extends ConsumerState<FormActionSheet> {
                 ),
                 if (widget.form.isSigned)
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.success.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(4),
@@ -174,7 +175,10 @@ class _FormActionSheetState extends ConsumerState<FormActionSheet> {
             const SizedBox(height: 8),
             const Divider(color: AppColors.border),
             ListTile(
-              leading: const Icon(Icons.open_in_new, color: AppColors.primary400),
+              leading: const Icon(
+                Icons.open_in_new,
+                color: AppColors.primary400,
+              ),
               title: const Text('Aç'),
               subtitle: const Text('Excel görüntüleyicide aç'),
               enabled: _localFile != null,
@@ -188,8 +192,7 @@ class _FormActionSheetState extends ConsumerState<FormActionSheet> {
               onTap: _share,
             ),
             ListTile(
-              leading:
-                  const Icon(Icons.upload_file, color: AppColors.success),
+              leading: const Icon(Icons.upload_file, color: AppColors.success),
               title: const Text('İmzalı Form Yükle'),
               subtitle: const Text('xlsx, pdf, png veya jpg'),
               onTap: _loading ? null : _uploadSigned,

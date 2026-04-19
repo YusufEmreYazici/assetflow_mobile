@@ -35,15 +35,15 @@ class AssignmentForm {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'assignmentId': assignmentId,
-        'type': type,
-        'formNumber': formNumber,
-        'generatedAt': generatedAt.toIso8601String(),
-        'generatedByUserName': generatedByUserName,
-        'isSigned': isSigned,
-        'signedUploadedAt': signedUploadedAt?.toIso8601String(),
-      };
+    'id': id,
+    'assignmentId': assignmentId,
+    'type': type,
+    'formNumber': formNumber,
+    'generatedAt': generatedAt.toIso8601String(),
+    'generatedByUserName': generatedByUserName,
+    'isSigned': isSigned,
+    'signedUploadedAt': signedUploadedAt?.toIso8601String(),
+  };
 
   String get typeLabel => type == 0 ? 'Zimmet Formu' : 'İade Formu';
   String get fileName => '$formNumber.xlsx';

@@ -8,7 +8,7 @@ class AssignmentFormNotifier
   final AssignmentFormService _service;
 
   AssignmentFormNotifier(this.assignmentId, this._service)
-      : super(const AsyncValue.loading()) {
+    : super(const AsyncValue.loading()) {
     _load();
   }
 
@@ -46,15 +46,18 @@ class AssignmentFormNotifier
   }
 }
 
-final _assignmentFormServiceProvider =
-    Provider<AssignmentFormService>((_) => AssignmentFormService());
-
-final assignmentFormProvider = StateNotifierProvider.family<
-    AssignmentFormNotifier,
-    AsyncValue<List<AssignmentForm>>,
-    String>(
-  (ref, assignmentId) => AssignmentFormNotifier(
-    assignmentId,
-    ref.watch(_assignmentFormServiceProvider),
-  ),
+final _assignmentFormServiceProvider = Provider<AssignmentFormService>(
+  (_) => AssignmentFormService(),
 );
+
+final assignmentFormProvider =
+    StateNotifierProvider.family<
+      AssignmentFormNotifier,
+      AsyncValue<List<AssignmentForm>>,
+      String
+    >(
+      (ref, assignmentId) => AssignmentFormNotifier(
+        assignmentId,
+        ref.watch(_assignmentFormServiceProvider),
+      ),
+    );

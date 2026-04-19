@@ -49,8 +49,7 @@ class _FormCard extends StatelessWidget {
         border: Border.all(color: AppColors.border),
       ),
       child: ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
         leading: Icon(
           form.type == 0 ? Icons.assignment : Icons.assignment_return,
           color: AppColors.primary400,
@@ -76,7 +75,10 @@ class _FormCard extends StatelessWidget {
             ),
             Text(
               dateStr,
-              style: const TextStyle(fontSize: 11, color: AppColors.textTertiary),
+              style: const TextStyle(
+                fontSize: 11,
+                color: AppColors.textTertiary,
+              ),
             ),
             if (form.isSigned)
               const Text(
@@ -119,8 +121,11 @@ class _EmptyState extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.description_outlined,
-              color: AppColors.textTertiary, size: 20),
+          const Icon(
+            Icons.description_outlined,
+            color: AppColors.textTertiary,
+            size: 20,
+          ),
           const SizedBox(width: 10),
           const Expanded(
             child: Text(
@@ -128,10 +133,7 @@ class _EmptyState extends StatelessWidget {
               style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
             ),
           ),
-          TextButton(
-            onPressed: onGenerate,
-            child: const Text('Üret'),
-          ),
+          TextButton(onPressed: onGenerate, child: const Text('Üret')),
         ],
       ),
     );
@@ -178,8 +180,10 @@ class _ErrorState extends StatelessWidget {
           Expanded(
             child: Text(
               'Form yüklenemedi: $message',
-              style:
-                  const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+              style: const TextStyle(
+                fontSize: 12,
+                color: AppColors.textSecondary,
+              ),
             ),
           ),
         ],

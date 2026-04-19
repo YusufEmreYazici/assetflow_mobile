@@ -61,27 +61,34 @@ class _AssignDeviceScreenState extends ConsumerState<AssignDeviceScreen> {
     if (scanned == null || scanned.isEmpty) return;
 
     // Match against serialNumber or assetCode
-    final match = _devices.where((d) =>
-      (d.serialNumber?.toLowerCase() == scanned.toLowerCase()) ||
-      (d.assetCode?.toLowerCase() == scanned.toLowerCase()),
-    ).firstOrNull;
+    final match = _devices
+        .where(
+          (d) =>
+              (d.serialNumber?.toLowerCase() == scanned.toLowerCase()) ||
+              (d.assetCode?.toLowerCase() == scanned.toLowerCase()),
+        )
+        .firstOrNull;
 
     if (match != null) {
       setState(() => _selectedDeviceId = match.id);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Cihaz bulundu: ${match.name}'),
-          backgroundColor: AppColors.success,
-          behavior: SnackBarBehavior.floating,
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Cihaz bulundu: ${match.name}'),
+            backgroundColor: AppColors.success,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       }
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Eşleşen cihaz bulunamadı: $scanned'),
-          backgroundColor: AppColors.warning,
-          behavior: SnackBarBehavior.floating,
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Eşleşen cihaz bulunamadı: $scanned'),
+            backgroundColor: AppColors.warning,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       }
     }
   }
@@ -99,7 +106,10 @@ class _AssignDeviceScreenState extends ConsumerState<AssignDeviceScreen> {
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Veriler yuklenemedi'), backgroundColor: AppColors.error),
+          const SnackBar(
+            content: Text('Veriler yuklenemedi'),
+            backgroundColor: AppColors.error,
+          ),
         );
         setState(() => _loadingData = false);
       }
@@ -115,7 +125,10 @@ class _AssignDeviceScreenState extends ConsumerState<AssignDeviceScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.dark(primary: AppColors.primary600, surface: AppColors.dark800),
+            colorScheme: const ColorScheme.dark(
+              primary: AppColors.primary600,
+              surface: AppColors.dark800,
+            ),
           ),
           child: child!,
         );
@@ -127,7 +140,10 @@ class _AssignDeviceScreenState extends ConsumerState<AssignDeviceScreen> {
   Future<void> _assign() async {
     if (_selectedDeviceId == null || _selectedEmployeeId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Cihaz ve personel secimi zorunludur'), backgroundColor: AppColors.warning),
+        const SnackBar(
+          content: Text('Cihaz ve personel secimi zorunludur'),
+          backgroundColor: AppColors.warning,
+        ),
       );
       return;
     }
@@ -139,12 +155,18 @@ class _AssignDeviceScreenState extends ConsumerState<AssignDeviceScreen> {
         'employeeId': _selectedEmployeeId,
         'type': _type,
         'expectedReturnDate': _expectedReturnDate?.toIso8601String(),
-        'notes': _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
+        'notes': _notesController.text.trim().isEmpty
+            ? null
+            : _notesController.text.trim(),
       });
 
       // Send notification
-      final selectedDevice = _devices.firstWhere((d) => d.id == _selectedDeviceId);
-      final selectedEmployee = _employees.firstWhere((e) => e.id == _selectedEmployeeId);
+      final selectedDevice = _devices.firstWhere(
+        (d) => d.id == _selectedDeviceId,
+      );
+      final selectedEmployee = _employees.firstWhere(
+        (e) => e.id == _selectedEmployeeId,
+      );
       await NotificationService.instance.notifyAssignmentCreated(
         employeeName: selectedEmployee.fullName,
         deviceName: selectedDevice.name,
@@ -174,7 +196,10 @@ class _AssignDeviceScreenState extends ConsumerState<AssignDeviceScreen> {
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Cihaz zimmetlendi'), backgroundColor: AppColors.success),
+        const SnackBar(
+          content: Text('Cihaz zimmetlendi'),
+          backgroundColor: AppColors.success,
+        ),
       );
       Navigator.pop(context, true);
 
@@ -192,7 +217,10 @@ class _AssignDeviceScreenState extends ConsumerState<AssignDeviceScreen> {
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Zimmet islemi basarisiz'), backgroundColor: AppColors.error),
+          const SnackBar(
+            content: Text('Zimmet islemi basarisiz'),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
     }
@@ -204,7 +232,9 @@ class _AssignDeviceScreenState extends ConsumerState<AssignDeviceScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Yeni Zimmet')),
       body: _loadingData
-          ? const Center(child: CircularProgressIndicator(color: AppColors.primary500))
+          ? const Center(
+              child: CircularProgressIndicator(color: AppColors.primary500),
+            )
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -213,23 +243,46 @@ class _AssignDeviceScreenState extends ConsumerState<AssignDeviceScreen> {
                   // Device dropdown + QR scan
                   Row(
                     children: [
-                      const Text('Cihaz *', style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+                      const Text(
+                        'Cihaz *',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
                       const Spacer(),
                       GestureDetector(
                         onTap: _scanQr,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: AppColors.primary600.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: AppColors.primary600.withValues(alpha: 0.4)),
+                            border: Border.all(
+                              color: AppColors.primary600.withValues(
+                                alpha: 0.4,
+                              ),
+                            ),
                           ),
                           child: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.qr_code_scanner, size: 14, color: AppColors.primary400),
+                              Icon(
+                                Icons.qr_code_scanner,
+                                size: 14,
+                                color: AppColors.primary400,
+                              ),
                               SizedBox(width: 4),
-                              Text('QR Tara', style: TextStyle(fontSize: 11, color: AppColors.primary400)),
+                              Text(
+                                'QR Tara',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: AppColors.primary400,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -255,18 +308,33 @@ class _AssignDeviceScreenState extends ConsumerState<AssignDeviceScreen> {
                     onChanged: (v) => setState(() => _selectedDeviceId = v),
                     decoration: const InputDecoration(
                       prefixIcon: Icon(Icons.computer, size: 18),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 10,
+                      ),
                     ),
                   ),
                   if (_devices.isEmpty)
                     const Padding(
                       padding: EdgeInsets.only(top: 4),
-                      child: Text('Depoda cihaz yok', style: TextStyle(fontSize: 11, color: AppColors.warning)),
+                      child: Text(
+                        'Depoda cihaz yok',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: AppColors.warning,
+                        ),
+                      ),
                     ),
                   const SizedBox(height: 16),
 
                   // Employee dropdown
-                  const Text('Personel *', style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+                  const Text(
+                    'Personel *',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
                   const SizedBox(height: 6),
                   DropdownButtonFormField<String>(
                     initialValue: _selectedEmployeeId,
@@ -286,7 +354,10 @@ class _AssignDeviceScreenState extends ConsumerState<AssignDeviceScreen> {
                     onChanged: (v) => setState(() => _selectedEmployeeId = v),
                     decoration: const InputDecoration(
                       prefixIcon: Icon(Icons.person, size: 18),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 10,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -298,21 +369,36 @@ class _AssignDeviceScreenState extends ConsumerState<AssignDeviceScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('Zimmet Tipi', style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+                            const Text(
+                              'Zimmet Tipi',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
                             const SizedBox(height: 6),
                             DropdownButtonFormField<int>(
                               initialValue: _type,
                               dropdownColor: AppColors.dark800,
                               items: const [
-                                DropdownMenuItem(value: 0, child: Text('Kalici')),
-                                DropdownMenuItem(value: 1, child: Text('Gecici')),
+                                DropdownMenuItem(
+                                  value: 0,
+                                  child: Text('Kalici'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 1,
+                                  child: Text('Gecici'),
+                                ),
                               ],
                               onChanged: (v) => setState(() {
                                 _type = v ?? 0;
                                 if (_type == 0) _expectedReturnDate = null;
                               }),
                               decoration: const InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 10,
+                                ),
                               ),
                             ),
                           ],
@@ -324,22 +410,38 @@ class _AssignDeviceScreenState extends ConsumerState<AssignDeviceScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text('Iade Tarihi', style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+                              const Text(
+                                'Iade Tarihi',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
                               const SizedBox(height: 6),
                               InkWell(
                                 onTap: _pickDate,
                                 child: InputDecorator(
                                   decoration: const InputDecoration(
-                                    prefixIcon: Icon(Icons.calendar_today, size: 16),
-                                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                                    prefixIcon: Icon(
+                                      Icons.calendar_today,
+                                      size: 16,
+                                    ),
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 12,
+                                    ),
                                   ),
                                   child: Text(
                                     _expectedReturnDate != null
-                                        ? DateFormat('dd/MM/yyyy').format(_expectedReturnDate!)
+                                        ? DateFormat(
+                                            'dd/MM/yyyy',
+                                          ).format(_expectedReturnDate!)
                                         : 'Tarih sec',
                                     style: TextStyle(
                                       fontSize: 13,
-                                      color: _expectedReturnDate != null ? AppColors.textPrimary : AppColors.textTertiary,
+                                      color: _expectedReturnDate != null
+                                          ? AppColors.textPrimary
+                                          : AppColors.textTertiary,
                                     ),
                                   ),
                                 ),
@@ -353,7 +455,13 @@ class _AssignDeviceScreenState extends ConsumerState<AssignDeviceScreen> {
                   const SizedBox(height: 16),
 
                   // Notes
-                  const Text('Notlar', style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+                  const Text(
+                    'Notlar',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
                   const SizedBox(height: 6),
                   TextField(
                     controller: _notesController,

@@ -5,7 +5,9 @@ import 'package:assetflow_mobile/data/services/assignment_service.dart';
 import 'package:assetflow_mobile/core/utils/notification_service.dart';
 import 'package:assetflow_mobile/core/utils/cache_manager.dart';
 
-final assignmentServiceProvider = Provider<AssignmentService>((ref) => AssignmentService());
+final assignmentServiceProvider = Provider<AssignmentService>(
+  (ref) => AssignmentService(),
+);
 
 enum AssignmentFilter { all, active, returned }
 
@@ -102,8 +104,15 @@ class AssignmentNotifier extends StateNotifier<AssignmentListState> {
         final cacheKey = 'assignments_${state.filter.name}_page1';
         final cached = await CacheManager.instance.getStale(cacheKey);
         if (cached != null) {
-          final items = (cached as List).map((j) => Assignment.fromJson(j as Map<String, dynamic>)).toList();
-          state = state.copyWith(assignments: items, isLoading: false, page: 1, hasMore: false);
+          final items = (cached as List)
+              .map((j) => Assignment.fromJson(j as Map<String, dynamic>))
+              .toList();
+          state = state.copyWith(
+            assignments: items,
+            isLoading: false,
+            page: 1,
+            hasMore: false,
+          );
           return;
         }
       }
@@ -113,12 +122,22 @@ class AssignmentNotifier extends StateNotifier<AssignmentListState> {
         final cacheKey = 'assignments_${state.filter.name}_page1';
         final cached = await CacheManager.instance.getStale(cacheKey);
         if (cached != null) {
-          final items = (cached as List).map((j) => Assignment.fromJson(j as Map<String, dynamic>)).toList();
-          state = state.copyWith(assignments: items, isLoading: false, page: 1, hasMore: false);
+          final items = (cached as List)
+              .map((j) => Assignment.fromJson(j as Map<String, dynamic>))
+              .toList();
+          state = state.copyWith(
+            assignments: items,
+            isLoading: false,
+            page: 1,
+            hasMore: false,
+          );
           return;
         }
       }
-      state = state.copyWith(isLoading: false, error: 'Beklenmeyen bir hata olustu.');
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Beklenmeyen bir hata olustu.',
+      );
     }
   }
 
@@ -172,7 +191,8 @@ class AssignmentNotifier extends StateNotifier<AssignmentListState> {
         retireDevice: retireDevice,
       );
 
-      final conditionLabel = ReturnConditionLabels[returnCondition] ?? 'Bilinmiyor';
+      final conditionLabel =
+          ReturnConditionLabels[returnCondition] ?? 'Bilinmiyor';
       await NotificationService.instance.notifyAssignmentReturned(
         employeeName: assignment?.employeeName ?? 'Bilinmiyor',
         deviceName: assignment?.deviceName ?? 'Bilinmiyor',
@@ -204,6 +224,8 @@ class AssignmentNotifier extends StateNotifier<AssignmentListState> {
 }
 
 final assignmentProvider =
-    StateNotifierProvider.autoDispose<AssignmentNotifier, AssignmentListState>((ref) {
-  return AssignmentNotifier(ref.watch(assignmentServiceProvider));
-});
+    StateNotifierProvider.autoDispose<AssignmentNotifier, AssignmentListState>((
+      ref,
+    ) {
+      return AssignmentNotifier(ref.watch(assignmentServiceProvider));
+    });

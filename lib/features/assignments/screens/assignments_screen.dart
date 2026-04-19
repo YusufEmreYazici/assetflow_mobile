@@ -114,7 +114,10 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Excel indirilemedi'), backgroundColor: AppColors.error),
+          const SnackBar(
+            content: Text('Excel indirilemedi'),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
     }
@@ -151,9 +154,15 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
                       hintText: 'Zimmet no, cihaz, personel ara...',
                       prefixIcon: const Icon(Icons.search, size: 20),
                       suffixIcon: state.searchQuery.isNotEmpty
-                          ? IconButton(icon: const Icon(Icons.clear, size: 18), onPressed: _clearSearch)
+                          ? IconButton(
+                              icon: const Icon(Icons.clear, size: 18),
+                              onPressed: _clearSearch,
+                            )
                           : null,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 12,
+                      ),
                       isDense: true,
                     ),
                     style: const TextStyle(fontSize: 14),
@@ -178,21 +187,27 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
                 _FilterChip(
                   label: 'Tümü',
                   selected: state.filter == AssignmentFilter.all,
-                  onTap: () => ref.read(assignmentProvider.notifier).setFilter(AssignmentFilter.all),
+                  onTap: () => ref
+                      .read(assignmentProvider.notifier)
+                      .setFilter(AssignmentFilter.all),
                 ),
                 const SizedBox(width: 8),
                 _FilterChip(
                   label: 'Aktif',
                   selected: state.filter == AssignmentFilter.active,
                   color: AppColors.success,
-                  onTap: () => ref.read(assignmentProvider.notifier).setFilter(AssignmentFilter.active),
+                  onTap: () => ref
+                      .read(assignmentProvider.notifier)
+                      .setFilter(AssignmentFilter.active),
                 ),
                 const SizedBox(width: 8),
                 _FilterChip(
                   label: 'Tamamlanan',
                   selected: state.filter == AssignmentFilter.returned,
                   color: AppColors.textTertiary,
-                  onTap: () => ref.read(assignmentProvider.notifier).setFilter(AssignmentFilter.returned),
+                  onTap: () => ref
+                      .read(assignmentProvider.notifier)
+                      .setFilter(AssignmentFilter.returned),
                 ),
               ],
             ),
@@ -202,28 +217,35 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
             child: state.isLoading
                 ? _buildShimmer()
                 : state.error != null
-                    ? _buildError(state.error!)
-                    : state.assignments.isEmpty
-                        ? _buildEmpty()
-                        : RefreshIndicator(
-                            color: AppColors.primary500,
-                            backgroundColor: AppColors.dark800,
-                            onRefresh: () => ref.read(assignmentProvider.notifier).refresh(),
-                            child: ListView.builder(
-                              controller: _scrollController,
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
-                              itemCount: state.assignments.length + (state.isLoadingMore ? 1 : 0),
-                              itemBuilder: (context, index) {
-                                if (index == state.assignments.length) {
-                                  return const Padding(
-                                    padding: EdgeInsets.all(16),
-                                    child: Center(child: CircularProgressIndicator(color: AppColors.primary500)),
-                                  );
-                                }
-                                return _buildAssignmentItem(state.assignments[index]);
-                              },
+                ? _buildError(state.error!)
+                : state.assignments.isEmpty
+                ? _buildEmpty()
+                : RefreshIndicator(
+                    color: AppColors.primary500,
+                    backgroundColor: AppColors.dark800,
+                    onRefresh: () =>
+                        ref.read(assignmentProvider.notifier).refresh(),
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount:
+                          state.assignments.length +
+                          (state.isLoadingMore ? 1 : 0),
+                      itemBuilder: (context, index) {
+                        if (index == state.assignments.length) {
+                          return const Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.primary500,
+                              ),
                             ),
-                          ),
+                          );
+                        }
+                        return _buildAssignmentItem(state.assignments[index]);
+                      },
+                    ),
+                  ),
           ),
         ],
       ),
@@ -250,7 +272,10 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.primary600.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(4),
@@ -267,7 +292,10 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
                 ),
                 const SizedBox(width: 6),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: a.type == 0
                         ? AppColors.info.withValues(alpha: 0.15)
@@ -284,7 +312,10 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
                 ),
                 const Spacer(),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   decoration: BoxDecoration(
                     color: isActive
                         ? AppColors.success.withValues(alpha: 0.15)
@@ -296,7 +327,9 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: isActive ? AppColors.success : AppColors.textTertiary,
+                      color: isActive
+                          ? AppColors.success
+                          : AppColors.textTertiary,
                     ),
                   ),
                 ),
@@ -306,12 +339,20 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
             // Device
             Row(
               children: [
-                const Icon(Icons.computer, size: 14, color: AppColors.textTertiary),
+                const Icon(
+                  Icons.computer,
+                  size: 14,
+                  color: AppColors.textTertiary,
+                ),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
                     '${a.deviceName ?? ''} ${[a.deviceBrand, a.deviceModel].where((s) => s != null).join(' ')}',
-                    style: const TextStyle(fontSize: 13, color: AppColors.textPrimary, fontWeight: FontWeight.w500),
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w500,
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -321,17 +362,28 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
             // Employee
             Row(
               children: [
-                const Icon(Icons.person, size: 14, color: AppColors.textTertiary),
+                const Icon(
+                  Icons.person,
+                  size: 14,
+                  color: AppColors.textTertiary,
+                ),
                 const SizedBox(width: 6),
                 Text(
                   a.employeeName ?? '',
-                  style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
                 if (a.employeeRegistrationNumber != null) ...[
                   const SizedBox(width: 6),
                   Text(
                     '(${a.employeeRegistrationNumber})',
-                    style: const TextStyle(fontSize: 11, color: AppColors.textTertiary, fontFamily: 'monospace'),
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: AppColors.textTertiary,
+                      fontFamily: 'monospace',
+                    ),
                   ),
                 ],
               ],
@@ -340,17 +392,33 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
             // Date
             Row(
               children: [
-                const Icon(Icons.calendar_today, size: 12, color: AppColors.textTertiary),
+                const Icon(
+                  Icons.calendar_today,
+                  size: 12,
+                  color: AppColors.textTertiary,
+                ),
                 const SizedBox(width: 6),
                 Text(
                   dateFormat.format(a.assignedAt),
-                  style: const TextStyle(fontSize: 11, color: AppColors.textTertiary),
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: AppColors.textTertiary,
+                  ),
                 ),
                 if (a.returnedAt != null) ...[
-                  const Text(' → ', style: TextStyle(fontSize: 11, color: AppColors.textTertiary)),
+                  const Text(
+                    ' → ',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: AppColors.textTertiary,
+                    ),
+                  ),
                   Text(
                     dateFormat.format(a.returnedAt!),
-                    style: const TextStyle(fontSize: 11, color: AppColors.textTertiary),
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: AppColors.textTertiary,
+                    ),
                   ),
                 ],
               ],
@@ -365,7 +433,10 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
                     onTap: () => _exportForm(a.id, a.assetTag ?? a.id),
                     borderRadius: BorderRadius.circular(6),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         border: Border.all(color: AppColors.border),
                         borderRadius: BorderRadius.circular(6),
@@ -373,9 +444,19 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
                       child: const Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.description, size: 14, color: AppColors.success),
+                          Icon(
+                            Icons.description,
+                            size: 14,
+                            color: AppColors.success,
+                          ),
                           SizedBox(width: 4),
-                          Text('Excel', style: TextStyle(fontSize: 11, color: AppColors.success)),
+                          Text(
+                            'Excel',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: AppColors.success,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -385,7 +466,10 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
                     onTap: () => _navigateToReturn(a),
                     borderRadius: BorderRadius.circular(6),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         border: Border.all(color: AppColors.border),
                         borderRadius: BorderRadius.circular(6),
@@ -395,7 +479,13 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
                         children: [
                           Icon(Icons.undo, size: 14, color: AppColors.warning),
                           SizedBox(width: 4),
-                          Text('Iade Et', style: TextStyle(fontSize: 11, color: AppColors.warning)),
+                          Text(
+                            'Iade Et',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: AppColors.warning,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -419,7 +509,10 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
         itemBuilder: (_, __) => Container(
           margin: const EdgeInsets.only(bottom: 8),
           height: 100,
-          decoration: BoxDecoration(color: AppColors.dark800, borderRadius: BorderRadius.circular(12)),
+          decoration: BoxDecoration(
+            color: AppColors.dark800,
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       ),
     );
@@ -452,8 +545,13 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
           Icon(Icons.swap_horiz, size: 64, color: AppColors.textTertiary),
           const SizedBox(height: 16),
           Text(
-            ref.read(assignmentProvider).searchQuery.isNotEmpty ? 'Sonuc bulunamadi' : 'Henuz zimmet kaydı yok',
-            style: const TextStyle(fontSize: 16, color: AppColors.textSecondary),
+            ref.read(assignmentProvider).searchQuery.isNotEmpty
+                ? 'Sonuc bulunamadi'
+                : 'Henuz zimmet kaydı yok',
+            style: const TextStyle(
+              fontSize: 16,
+              color: AppColors.textSecondary,
+            ),
           ),
         ],
       ),

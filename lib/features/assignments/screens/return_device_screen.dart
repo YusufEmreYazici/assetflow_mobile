@@ -55,16 +55,17 @@ class _ReturnDeviceScreenState extends ConsumerState<ReturnDeviceScreen> {
               initialValue: _condition,
               dropdownColor: AppColors.dark800,
               items: ReturnConditionLabels.entries
-                  .map((e) => DropdownMenuItem(
-                        value: e.key,
-                        child: Text(e.value),
-                      ))
+                  .map(
+                    (e) => DropdownMenuItem(value: e.key, child: Text(e.value)),
+                  )
                   .toList(),
               onChanged: (v) => setState(() => _condition = v ?? 0),
               decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.check_circle_outline, size: 18),
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -132,7 +133,9 @@ class _ReturnDeviceScreenState extends ConsumerState<ReturnDeviceScreen> {
                 onChanged: (v) => setState(() => _retireDevice = v),
                 secondary: Icon(
                   Icons.delete_outline,
-                  color: _retireDevice ? AppColors.error : AppColors.textTertiary,
+                  color: _retireDevice
+                      ? AppColors.error
+                      : AppColors.textTertiary,
                 ),
                 activeThumbColor: AppColors.error,
               ),
@@ -182,7 +185,9 @@ class _ReturnDeviceScreenState extends ConsumerState<ReturnDeviceScreen> {
 
     setState(() => _saving = true);
     try {
-      await ref.read(assignmentProvider.notifier).returnDevice(
+      await ref
+          .read(assignmentProvider.notifier)
+          .returnDevice(
             widget.assignment.id,
             returnCondition: _condition,
             returnNotes: _returnNotesCtrl.text.trim().isEmpty
@@ -263,8 +268,7 @@ class _SummaryCard extends StatelessWidget {
           if (assignment.assetTag != null)
             Container(
               margin: const EdgeInsets.only(bottom: 10),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
                 color: AppColors.primary600.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(4),
@@ -281,7 +285,11 @@ class _SummaryCard extends StatelessWidget {
             ),
           Row(
             children: [
-              const Icon(Icons.computer, size: 16, color: AppColors.textTertiary),
+              const Icon(
+                Icons.computer,
+                size: 16,
+                color: AppColors.textTertiary,
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
