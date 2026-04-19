@@ -15,6 +15,7 @@ class Device {
   final int? warrantyStatus;
   final String? notes;
   final String? assignedTo;
+  final String? activeAssignmentId;
   final String? locationId;
   final String? locationName;
   final String? hostName;
@@ -43,6 +44,7 @@ class Device {
     this.warrantyStatus,
     this.notes,
     this.assignedTo,
+    this.activeAssignmentId,
     this.locationId,
     this.locationName,
     this.hostName,
@@ -79,6 +81,7 @@ class Device {
       warrantyStatus: json['warrantyStatus'] as int?,
       notes: json['notes'] as String?,
       assignedTo: json['assignedTo'] as String?,
+      activeAssignmentId: json['activeAssignmentId'] as String?,
       locationId: json['locationId']?.toString(),
       locationName: json['locationName'] as String?,
       hostName: json['hostName'] as String?,
@@ -109,6 +112,7 @@ class Device {
         'warrantyStatus': warrantyStatus,
         'notes': notes,
         'assignedTo': assignedTo,
+        'activeAssignmentId': activeAssignmentId,
         'locationId': locationId,
         'locationName': locationName,
         'hostName': hostName,

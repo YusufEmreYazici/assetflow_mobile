@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/data/models/device_model.dart';
 import 'package:assetflow_mobile/data/services/device_service.dart';
+import 'package:assetflow_mobile/features/assignments/widgets/assignment_form_section.dart';
 import 'package:assetflow_mobile/features/devices/screens/device_form_screen.dart';
 
 final _deviceDetailProvider =
@@ -163,6 +164,12 @@ class DeviceDetailScreen extends ConsumerWidget {
             ),
           if (device.locationName != null) const SizedBox(height: 12),
 
+          // Zimmet / İade Formu
+          if (device.activeAssignmentId != null) ...[
+            _FormSectionCard(assignmentId: device.activeAssignmentId!),
+            const SizedBox(height: 12),
+          ],
+
           // Donanim
           if (_hasHardwareInfo(device))
             _SectionCard(
@@ -319,6 +326,50 @@ class DeviceDetailScreen extends ConsumerWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _FormSectionCard extends StatelessWidget {
+  final String assignmentId;
+
+  const _FormSectionCard({required this.assignmentId});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.dark800,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+            child: Row(
+              children: [
+                const Icon(Icons.description, size: 18, color: AppColors.primary400),
+                const SizedBox(width: 8),
+                const Text(
+                  'Zimmet / İade Formu',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.primary400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Divider(height: 1, color: AppColors.border),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: AssignmentFormSection(assignmentId: assignmentId),
+          ),
+        ],
       ),
     );
   }
