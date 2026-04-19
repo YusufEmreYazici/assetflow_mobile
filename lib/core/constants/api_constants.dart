@@ -44,10 +44,10 @@ class ApiConstants {
   static String locationById(String id) => '/api/locations/$id';
 
   // Assignment Forms
-  static String assignmentForms(String assignmentId) => '/api/assignments/$assignmentId/forms';
-  static String assignmentFormsLatest(String assignmentId) => '/api/assignments/$assignmentId/forms/latest';
-  static String assignmentFormsGenerateAssignment(String assignmentId) => '/api/assignments/$assignmentId/forms/generate-assignment';
-  static String assignmentFormsGenerateReturn(String assignmentId) => '/api/assignments/$assignmentId/forms/generate-return';
+  static String assignmentForms(String assignmentId) => '/api/assignment-forms/assignment/$assignmentId';
+  static String assignmentFormsLatest(String assignmentId) => '/api/assignment-forms/assignment/$assignmentId/latest';
+  static String assignmentFormsGenerateAssignment(String assignmentId) => '/api/assignment-forms/assignment/$assignmentId/generate-assignment-form';
+  static String assignmentFormsGenerateReturn(String assignmentId) => '/api/assignment-forms/assignment/$assignmentId/generate-return-form';
   static String formDownload(String formId) => '/api/assignment-forms/$formId/download';
   static String formDownloadSigned(String formId) => '/api/assignment-forms/$formId/download-signed';
   static String formUploadSigned(String formId) => '/api/assignment-forms/$formId/upload-signed';
