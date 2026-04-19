@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/app_button.dart';
@@ -9,15 +10,17 @@ import 'package:assetflow_mobile/data/services/device_service.dart';
 import 'package:assetflow_mobile/data/services/employee_service.dart';
 import 'package:assetflow_mobile/data/services/assignment_service.dart';
 import 'package:assetflow_mobile/core/utils/notification_service.dart';
+import 'package:assetflow_mobile/features/assignments/providers/assignment_form_provider.dart';
+import 'package:assetflow_mobile/features/assignments/widgets/form_action_sheet.dart';
 
-class AssignDeviceScreen extends StatefulWidget {
+class AssignDeviceScreen extends ConsumerStatefulWidget {
   const AssignDeviceScreen({super.key});
 
   @override
-  State<AssignDeviceScreen> createState() => _AssignDeviceScreenState();
+  ConsumerState<AssignDeviceScreen> createState() => _AssignDeviceScreenState();
 }
 
-class _AssignDeviceScreenState extends State<AssignDeviceScreen> {
+class _AssignDeviceScreenState extends ConsumerState<AssignDeviceScreen> {
   final _deviceService = DeviceService();
   final _employeeService = EmployeeService();
   final _assignmentService = AssignmentService();
@@ -131,7 +134,7 @@ class _AssignDeviceScreenState extends State<AssignDeviceScreen> {
 
     setState(() => _saving = true);
     try {
-      await _assignmentService.assign({
+      final newAssignment = await _assignmentService.assign({
         'deviceId': _selectedDeviceId,
         'employeeId': _selectedEmployeeId,
         'type': _type,
@@ -148,11 +151,43 @@ class _AssignDeviceScreenState extends State<AssignDeviceScreen> {
         department: selectedEmployee.department,
       );
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Cihaz zimmetlendi'), backgroundColor: AppColors.success),
+      if (!mounted) return;
+
+      // Zimmet formu üret dialog
+      final generateForm = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Zimmet Formu'),
+          content: const Text('Zimmet formu oluşturulup indirilsin mi?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Sonra'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Evet, Üret'),
+            ),
+          ],
+        ),
+      );
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Cihaz zimmetlendi'), backgroundColor: AppColors.success),
+      );
+      Navigator.pop(context, true);
+
+      if (generateForm == true && mounted) {
+        final form = await ref
+            .read(assignmentFormProvider(newAssignment.id).notifier)
+            .generateAssignmentForm();
+        if (!mounted) return;
+        await showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          builder: (_) => FormActionSheet(form: form),
         );
-        Navigator.pop(context, true);
       }
     } catch (_) {
       if (mounted) {
@@ -203,7 +238,7 @@ class _AssignDeviceScreenState extends State<AssignDeviceScreen> {
                   ),
                   const SizedBox(height: 6),
                   DropdownButtonFormField<String>(
-                    value: _selectedDeviceId,
+                    initialValue: _selectedDeviceId,
                     hint: const Text('Cihaz secin...'),
                     dropdownColor: AppColors.dark800,
                     isExpanded: true,
