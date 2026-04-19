@@ -155,17 +155,33 @@ class AssignmentNotifier extends StateNotifier<AssignmentListState> {
     await loadAssignments(reset: true);
   }
 
-  Future<bool> returnDevice(String id) async {
+  Future<bool> returnDevice(
+    String id, {
+    required int returnCondition,
+    String? returnNotes,
+    String? deviceNotes,
+    bool retireDevice = false,
+  }) async {
     try {
-      // Find assignment info before returning for notification
       final assignment = state.assignments.where((a) => a.id == id).firstOrNull;
-      await _service.returnDevice(id);
+      await _service.returnDevice(
+        id,
+        returnCondition: returnCondition,
+        returnNotes: returnNotes,
+        deviceNotes: deviceNotes,
+        retireDevice: retireDevice,
+      );
 
-      // Send return notification
-      if (assignment != null) {
-        await NotificationService.instance.notifyAssignmentReturned(
-          employeeName: assignment.employeeName ?? 'Bilinmiyor',
-          deviceName: assignment.deviceName ?? 'Bilinmiyor',
+      final conditionLabel = ReturnConditionLabels[returnCondition] ?? 'Bilinmiyor';
+      await NotificationService.instance.notifyAssignmentReturned(
+        employeeName: assignment?.employeeName ?? 'Bilinmiyor',
+        deviceName: assignment?.deviceName ?? 'Bilinmiyor',
+        condition: conditionLabel,
+      );
+
+      if (retireDevice) {
+        await NotificationService.instance.notifyDeviceRetired(
+          deviceName: assignment?.deviceName ?? 'Bilinmiyor',
         );
       }
 

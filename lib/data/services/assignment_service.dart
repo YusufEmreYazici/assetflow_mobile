@@ -31,8 +31,22 @@ class AssignmentService {
     return Assignment.fromJson(response.data as Map<String, dynamic>);
   }
 
-  Future<void> returnDevice(String id) async {
-    await _dio.post(ApiConstants.assignmentReturn(id));
+  Future<void> returnDevice(
+    String id, {
+    required int returnCondition,
+    String? returnNotes,
+    String? deviceNotes,
+    bool retireDevice = false,
+  }) async {
+    await _dio.post(
+      ApiConstants.assignmentReturn(id),
+      data: {
+        'returnCondition': returnCondition,
+        'returnNotes': returnNotes,
+        'deviceNotes': deviceNotes,
+        'retireDevice': retireDevice,
+      },
+    );
   }
 
   Future<Uint8List> exportForm(String id) async {

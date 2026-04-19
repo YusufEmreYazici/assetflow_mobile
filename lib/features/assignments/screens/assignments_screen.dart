@@ -104,7 +104,7 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
           TextButton(
             onPressed: () async {
               Navigator.pop(ctx);
-              final success = await ref.read(assignmentProvider.notifier).returnDevice(id);
+              final success = await ref.read(assignmentProvider.notifier).returnDevice(id, returnCondition: 0);
               if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text(success ? 'Cihaz iade edildi' : 'Hata olustu'),
