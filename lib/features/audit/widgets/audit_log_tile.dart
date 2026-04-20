@@ -69,11 +69,11 @@ class AuditLogTile extends StatelessWidget {
   }
 
   static (IconData, Color) _iconColorFor(String action) => switch (action) {
-        'Create' => (Icons.add_circle_outline, AppColors.success),
-        'Update' => (Icons.edit_outlined, AppColors.info),
-        'Delete' => (Icons.delete_outline, AppColors.error),
-        _ => (Icons.history, AppColors.textTertiary),
-      };
+    'Create' => (Icons.add_circle_outline, AppColors.success),
+    'Update' => (Icons.edit_outlined, AppColors.info),
+    'Delete' => (Icons.delete_outline, AppColors.error),
+    _ => (Icons.history, AppColors.textTertiary),
+  };
 
   static String _actionLabel(String action, String entityName) {
     final entity = _entityLabel(entityName);
@@ -86,11 +86,11 @@ class AuditLogTile extends StatelessWidget {
   }
 
   static String _entityLabel(String entityName) => switch (entityName) {
-        'Device' => 'Cihaz',
-        'Assignment' => 'Zimmet',
-        'AssignmentForm' => 'Form',
-        _ => entityName,
-      };
+    'Device' => 'Cihaz',
+    'Assignment' => 'Zimmet',
+    'AssignmentForm' => 'Form',
+    _ => entityName,
+  };
 
   static String _formatDate(DateTime dt) {
     final now = DateTime.now();

@@ -36,11 +36,8 @@ class AuditLogSection extends ConsumerWidget {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: result.items.length,
-              separatorBuilder: (context, _) => const Divider(
-                height: 1,
-                indent: 62,
-                color: AppColors.border,
-              ),
+              separatorBuilder: (context, _) =>
+                  const Divider(height: 1, indent: 62, color: AppColors.border),
               itemBuilder: (_, i) => AuditLogTile(log: result.items[i]),
             ),
             if (result.totalPages > 1) ...[

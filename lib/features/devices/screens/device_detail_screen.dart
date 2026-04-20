@@ -412,7 +412,11 @@ class _AuditLogSectionCard extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
             child: Row(
               children: [
-                const Icon(Icons.history, size: 18, color: AppColors.primary400),
+                const Icon(
+                  Icons.history,
+                  size: 18,
+                  color: AppColors.primary400,
+                ),
                 const SizedBox(width: 8),
                 const Text(
                   'Değişiklik Geçmişi',

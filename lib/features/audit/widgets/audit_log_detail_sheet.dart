@@ -69,8 +69,10 @@ class AuditLogDetailSheet extends StatelessWidget {
                         _DetailRow('IP Adresi', log.ipAddress!),
                       _DetailRow(
                         'Tarih',
-                        DateFormat('dd MMM yyyy HH:mm', 'tr_TR')
-                            .format(log.timestamp),
+                        DateFormat(
+                          'dd MMM yyyy HH:mm',
+                          'tr_TR',
+                        ).format(log.timestamp),
                       ),
                       _DetailRow('Varlık Tipi', _entityLabel(log.entityName)),
                     ],
@@ -144,11 +146,11 @@ class AuditLogDetailSheet extends StatelessWidget {
   }
 
   static String _entityLabel(String entityName) => switch (entityName) {
-        'Device' => 'Cihaz',
-        'Assignment' => 'Zimmet',
-        'AssignmentForm' => 'Form',
-        _ => entityName,
-      };
+    'Device' => 'Cihaz',
+    'Assignment' => 'Zimmet',
+    'AssignmentForm' => 'Form',
+    _ => entityName,
+  };
 }
 
 class _DetailRow {
@@ -318,8 +320,7 @@ class _ChangesTable extends StatelessWidget {
                   ),
                 ],
               ),
-              if (!isLast)
-                const Divider(height: 14, color: AppColors.border),
+              if (!isLast) const Divider(height: 14, color: AppColors.border),
             ],
           ),
         );
