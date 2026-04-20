@@ -52,15 +52,59 @@ class _SectionHeader extends StatelessWidget {
 
 class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
   static const Map<int, Set<String>> _hardwareFieldsByType = {
-    0: {'cpu', 'ram', 'storage', 'gpu', 'hostname', 'os', 'mac', 'ip', 'bios', 'motherboard'},
-    1: {'cpu', 'ram', 'storage', 'gpu', 'hostname', 'os', 'mac', 'ip', 'bios', 'motherboard'},
+    0: {
+      'cpu',
+      'ram',
+      'storage',
+      'gpu',
+      'hostname',
+      'os',
+      'mac',
+      'ip',
+      'bios',
+      'motherboard',
+    },
+    1: {
+      'cpu',
+      'ram',
+      'storage',
+      'gpu',
+      'hostname',
+      'os',
+      'mac',
+      'ip',
+      'bios',
+      'motherboard',
+    },
     2: {},
     3: {'hostname', 'mac', 'ip'},
     4: {'cpu', 'ram', 'storage', 'os', 'mac', 'ip'},
     5: {'cpu', 'ram', 'storage', 'os', 'mac', 'ip'},
-    6: {'cpu', 'ram', 'storage', 'gpu', 'hostname', 'os', 'mac', 'ip', 'bios', 'motherboard'},
+    6: {
+      'cpu',
+      'ram',
+      'storage',
+      'gpu',
+      'hostname',
+      'os',
+      'mac',
+      'ip',
+      'bios',
+      'motherboard',
+    },
     7: {'hostname', 'os', 'mac', 'ip'},
-    8: {'cpu', 'ram', 'storage', 'gpu', 'hostname', 'os', 'mac', 'ip', 'bios', 'motherboard'},
+    8: {
+      'cpu',
+      'ram',
+      'storage',
+      'gpu',
+      'hostname',
+      'os',
+      'mac',
+      'ip',
+      'bios',
+      'motherboard',
+    },
   };
 
   static const _temelDonanimFields = {'cpu', 'ram', 'storage', 'gpu'};
@@ -238,43 +282,45 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
         'notes': _notesController.text.trim().isEmpty
             ? null
             : _notesController.text.trim(),
-        'cpuInfo': _shouldShowField('cpu') &&
-                _cpuController.text.trim().isNotEmpty
+        'cpuInfo':
+            _shouldShowField('cpu') && _cpuController.text.trim().isNotEmpty
             ? _cpuController.text.trim()
             : null,
-        'ramInfo': _shouldShowField('ram') &&
-                _ramController.text.trim().isNotEmpty
+        'ramInfo':
+            _shouldShowField('ram') && _ramController.text.trim().isNotEmpty
             ? _ramController.text.trim()
             : null,
-        'storageInfo': _shouldShowField('storage') &&
+        'storageInfo':
+            _shouldShowField('storage') &&
                 _storageController.text.trim().isNotEmpty
             ? _storageController.text.trim()
             : null,
-        'gpuInfo': _shouldShowField('gpu') &&
-                _gpuController.text.trim().isNotEmpty
+        'gpuInfo':
+            _shouldShowField('gpu') && _gpuController.text.trim().isNotEmpty
             ? _gpuController.text.trim()
             : null,
-        'hostName': _shouldShowField('hostname') &&
+        'hostName':
+            _shouldShowField('hostname') &&
                 _hostNameController.text.trim().isNotEmpty
             ? _hostNameController.text.trim()
             : null,
-        'osInfo': _shouldShowField('os') &&
-                _osController.text.trim().isNotEmpty
+        'osInfo': _shouldShowField('os') && _osController.text.trim().isNotEmpty
             ? _osController.text.trim()
             : null,
-        'macAddress': _shouldShowField('mac') &&
-                _macController.text.trim().isNotEmpty
+        'macAddress':
+            _shouldShowField('mac') && _macController.text.trim().isNotEmpty
             ? _macController.text.trim()
             : null,
-        'ipAddress': _shouldShowField('ip') &&
-                _ipController.text.trim().isNotEmpty
+        'ipAddress':
+            _shouldShowField('ip') && _ipController.text.trim().isNotEmpty
             ? _ipController.text.trim()
             : null,
-        'biosVersion': _shouldShowField('bios') &&
-                _biosController.text.trim().isNotEmpty
+        'biosVersion':
+            _shouldShowField('bios') && _biosController.text.trim().isNotEmpty
             ? _biosController.text.trim()
             : null,
-        'motherboardInfo': _shouldShowField('motherboard') &&
+        'motherboardInfo':
+            _shouldShowField('motherboard') &&
                 _motherboardController.text.trim().isNotEmpty
             ? _motherboardController.text.trim()
             : null,
@@ -542,10 +588,7 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
                   ],
                 ],
                 if (_shouldShowSection(_agFields)) ...[
-                  const _SectionHeader(
-                    title: 'AĞ BİLGİLERİ',
-                    icon: Icons.lan,
-                  ),
+                  const _SectionHeader(title: 'AĞ BİLGİLERİ', icon: Icons.lan),
                   const SizedBox(height: 8),
                   if (_shouldShowField('mac')) ...[
                     AppTextField(
