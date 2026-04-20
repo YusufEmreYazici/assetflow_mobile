@@ -463,92 +463,127 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
                   maxLines: 3,
                   textInputAction: TextInputAction.next,
                 ),
-                const _SectionHeader(
-                  title: 'TEMEL DONANIM',
-                  icon: Icons.memory,
-                ),
-                const SizedBox(height: 8),
-                AppTextField(
-                  label: 'CPU Bilgisi',
-                  hint: 'Örn: Intel Core i7-1355U',
-                  controller: _cpuController,
-                  textInputAction: TextInputAction.next,
-                ),
-                const SizedBox(height: 16),
-                AppTextField(
-                  label: 'RAM Bilgisi',
-                  hint: 'Örn: 16 GB DDR4',
-                  controller: _ramController,
-                  textInputAction: TextInputAction.next,
-                ),
-                const SizedBox(height: 16),
-                AppTextField(
-                  label: 'Depolama Bilgisi',
-                  hint: 'Örn: 512 GB NVMe SSD',
-                  controller: _storageController,
-                  textInputAction: TextInputAction.next,
-                ),
-                const SizedBox(height: 16),
-                AppTextField(
-                  label: 'GPU Bilgisi',
-                  hint: 'Örn: NVIDIA RTX 3060',
-                  controller: _gpuController,
-                  textInputAction: TextInputAction.next,
-                ),
-                const _SectionHeader(
-                  title: 'SİSTEM BİLGİLERİ',
-                  icon: Icons.computer,
-                ),
-                const SizedBox(height: 8),
-                AppTextField(
-                  label: 'Hostname',
-                  hint: 'Örn: LAPTOP-ABC123',
-                  controller: _hostNameController,
-                  textInputAction: TextInputAction.next,
-                ),
-                const SizedBox(height: 16),
-                AppTextField(
-                  label: 'İşletim Sistemi',
-                  hint: 'Örn: Windows 11 Pro 23H2',
-                  controller: _osController,
-                  textInputAction: TextInputAction.next,
-                ),
-                const _SectionHeader(title: 'AĞ BİLGİLERİ', icon: Icons.lan),
-                const SizedBox(height: 8),
-                AppTextField(
-                  label: 'MAC Adresi',
-                  hint: 'AA:BB:CC:DD:EE:FF',
-                  controller: _macController,
-                  textInputAction: TextInputAction.next,
-                  validator: _validateMac,
-                ),
-                const SizedBox(height: 16),
-                AppTextField(
-                  label: 'IP Adresi',
-                  hint: '192.168.1.100',
-                  controller: _ipController,
-                  textInputAction: TextInputAction.next,
-                  keyboardType: TextInputType.number,
-                  validator: _validateIp,
-                ),
-                const _SectionHeader(
-                  title: 'TEKNİK DETAYLAR',
-                  icon: Icons.settings_input_component,
-                ),
-                const SizedBox(height: 8),
-                AppTextField(
-                  label: 'BIOS Versiyonu',
-                  hint: 'Örn: 1.15.0',
-                  controller: _biosController,
-                  textInputAction: TextInputAction.next,
-                ),
-                const SizedBox(height: 16),
-                AppTextField(
-                  label: 'Anakart Bilgisi',
-                  hint: 'Örn: ASUS ROG Strix B650-A',
-                  controller: _motherboardController,
-                  textInputAction: TextInputAction.done,
-                ),
+                if (_shouldShowSection(_temelDonanimFields)) ...[
+                  const _SectionHeader(
+                    title: 'TEMEL DONANIM',
+                    icon: Icons.memory,
+                  ),
+                  const SizedBox(height: 8),
+                  if (_shouldShowField('cpu')) ...[
+                    AppTextField(
+                      label: 'CPU Bilgisi',
+                      hint: 'Örn: Intel Core i7-1355U',
+                      controller: _cpuController,
+                      textInputAction: TextInputAction.next,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  if (_shouldShowField('ram')) ...[
+                    AppTextField(
+                      label: 'RAM Bilgisi',
+                      hint: 'Örn: 16 GB DDR4',
+                      controller: _ramController,
+                      textInputAction: TextInputAction.next,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  if (_shouldShowField('storage')) ...[
+                    AppTextField(
+                      label: 'Depolama Bilgisi',
+                      hint: 'Örn: 512 GB NVMe SSD',
+                      controller: _storageController,
+                      textInputAction: TextInputAction.next,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  if (_shouldShowField('gpu')) ...[
+                    AppTextField(
+                      label: 'GPU Bilgisi',
+                      hint: 'Örn: NVIDIA RTX 3060',
+                      controller: _gpuController,
+                      textInputAction: TextInputAction.next,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ],
+                if (_shouldShowSection(_sistemFields)) ...[
+                  const _SectionHeader(
+                    title: 'SİSTEM BİLGİLERİ',
+                    icon: Icons.computer,
+                  ),
+                  const SizedBox(height: 8),
+                  if (_shouldShowField('hostname')) ...[
+                    AppTextField(
+                      label: 'Hostname',
+                      hint: 'Örn: LAPTOP-ABC123',
+                      controller: _hostNameController,
+                      textInputAction: TextInputAction.next,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  if (_shouldShowField('os')) ...[
+                    AppTextField(
+                      label: 'İşletim Sistemi',
+                      hint: 'Örn: Windows 11 Pro 23H2',
+                      controller: _osController,
+                      textInputAction: TextInputAction.next,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ],
+                if (_shouldShowSection(_agFields)) ...[
+                  const _SectionHeader(
+                    title: 'AĞ BİLGİLERİ',
+                    icon: Icons.lan,
+                  ),
+                  const SizedBox(height: 8),
+                  if (_shouldShowField('mac')) ...[
+                    AppTextField(
+                      label: 'MAC Adresi',
+                      hint: 'AA:BB:CC:DD:EE:FF',
+                      controller: _macController,
+                      textInputAction: TextInputAction.next,
+                      validator: _validateMac,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  if (_shouldShowField('ip')) ...[
+                    AppTextField(
+                      label: 'IP Adresi',
+                      hint: '192.168.1.100',
+                      controller: _ipController,
+                      textInputAction: TextInputAction.next,
+                      keyboardType: TextInputType.number,
+                      validator: _validateIp,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ],
+                if (_shouldShowSection(_teknikFields)) ...[
+                  const _SectionHeader(
+                    title: 'TEKNİK DETAYLAR',
+                    icon: Icons.settings_input_component,
+                  ),
+                  const SizedBox(height: 8),
+                  if (_shouldShowField('bios')) ...[
+                    AppTextField(
+                      label: 'BIOS Versiyonu',
+                      hint: 'Örn: 1.15.0',
+                      controller: _biosController,
+                      textInputAction: TextInputAction.next,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  if (_shouldShowField('motherboard')) ...[
+                    AppTextField(
+                      label: 'Anakart Bilgisi',
+                      hint: 'Örn: ASUS ROG Strix B650-A',
+                      controller: _motherboardController,
+                      textInputAction: TextInputAction.done,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ],
                 const SizedBox(height: 24),
                 AppButton(
                   text: widget.isEditing ? 'Guncelle' : 'Kaydet',
