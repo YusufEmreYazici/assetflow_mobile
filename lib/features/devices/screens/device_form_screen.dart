@@ -51,6 +51,23 @@ class _SectionHeader extends StatelessWidget {
 }
 
 class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
+  static const Map<int, Set<String>> _hardwareFieldsByType = {
+    0: {'cpu', 'ram', 'storage', 'gpu', 'hostname', 'os', 'mac', 'ip', 'bios', 'motherboard'},
+    1: {'cpu', 'ram', 'storage', 'gpu', 'hostname', 'os', 'mac', 'ip', 'bios', 'motherboard'},
+    2: {},
+    3: {'hostname', 'mac', 'ip'},
+    4: {'cpu', 'ram', 'storage', 'os', 'mac', 'ip'},
+    5: {'cpu', 'ram', 'storage', 'os', 'mac', 'ip'},
+    6: {'cpu', 'ram', 'storage', 'gpu', 'hostname', 'os', 'mac', 'ip', 'bios', 'motherboard'},
+    7: {'hostname', 'os', 'mac', 'ip'},
+    8: {'cpu', 'ram', 'storage', 'gpu', 'hostname', 'os', 'mac', 'ip', 'bios', 'motherboard'},
+  };
+
+  static const _temelDonanimFields = {'cpu', 'ram', 'storage', 'gpu'};
+  static const _sistemFields = {'hostname', 'os'};
+  static const _agFields = {'mac', 'ip'};
+  static const _teknikFields = {'bios', 'motherboard'};
+
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _brandController = TextEditingController();
@@ -148,6 +165,16 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
     return regex.hasMatch(value.trim())
         ? null
         : 'Geçerli bir IP adresi girin (örn: 192.168.1.1)';
+  }
+
+  bool _shouldShowField(String fieldKey) {
+    final allowed = _hardwareFieldsByType[_selectedType] ?? {};
+    return allowed.contains(fieldKey);
+  }
+
+  bool _shouldShowSection(Set<String> sectionFields) {
+    final allowed = _hardwareFieldsByType[_selectedType] ?? {};
+    return sectionFields.any((f) => allowed.contains(f));
   }
 
   Future<void> _pickDate() async {
