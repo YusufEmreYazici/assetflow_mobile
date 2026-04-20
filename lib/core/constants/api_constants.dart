@@ -52,6 +52,9 @@ class ApiConstants {
   static String formDownloadSigned(String formId) => '/api/assignment-forms/$formId/download-signed';
   static String formUploadSigned(String formId) => '/api/assignment-forms/$formId/upload-signed';
 
+  // Audit Logs
+  static String auditLogsForDevice(String deviceId) => '/api/audit-logs/device/$deviceId';
+
   // Dashboard
   static const String dashboard = '/api/dashboard';
 
