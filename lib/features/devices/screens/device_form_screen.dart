@@ -238,36 +238,46 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
         'notes': _notesController.text.trim().isEmpty
             ? null
             : _notesController.text.trim(),
-        'cpuInfo': _cpuController.text.trim().isEmpty
-            ? null
-            : _cpuController.text.trim(),
-        'ramInfo': _ramController.text.trim().isEmpty
-            ? null
-            : _ramController.text.trim(),
-        'storageInfo': _storageController.text.trim().isEmpty
-            ? null
-            : _storageController.text.trim(),
-        'gpuInfo': _gpuController.text.trim().isEmpty
-            ? null
-            : _gpuController.text.trim(),
-        'hostName': _hostNameController.text.trim().isEmpty
-            ? null
-            : _hostNameController.text.trim(),
-        'osInfo': _osController.text.trim().isEmpty
-            ? null
-            : _osController.text.trim(),
-        'macAddress': _macController.text.trim().isEmpty
-            ? null
-            : _macController.text.trim(),
-        'ipAddress': _ipController.text.trim().isEmpty
-            ? null
-            : _ipController.text.trim(),
-        'biosVersion': _biosController.text.trim().isEmpty
-            ? null
-            : _biosController.text.trim(),
-        'motherboardInfo': _motherboardController.text.trim().isEmpty
-            ? null
-            : _motherboardController.text.trim(),
+        'cpuInfo': _shouldShowField('cpu') &&
+                _cpuController.text.trim().isNotEmpty
+            ? _cpuController.text.trim()
+            : null,
+        'ramInfo': _shouldShowField('ram') &&
+                _ramController.text.trim().isNotEmpty
+            ? _ramController.text.trim()
+            : null,
+        'storageInfo': _shouldShowField('storage') &&
+                _storageController.text.trim().isNotEmpty
+            ? _storageController.text.trim()
+            : null,
+        'gpuInfo': _shouldShowField('gpu') &&
+                _gpuController.text.trim().isNotEmpty
+            ? _gpuController.text.trim()
+            : null,
+        'hostName': _shouldShowField('hostname') &&
+                _hostNameController.text.trim().isNotEmpty
+            ? _hostNameController.text.trim()
+            : null,
+        'osInfo': _shouldShowField('os') &&
+                _osController.text.trim().isNotEmpty
+            ? _osController.text.trim()
+            : null,
+        'macAddress': _shouldShowField('mac') &&
+                _macController.text.trim().isNotEmpty
+            ? _macController.text.trim()
+            : null,
+        'ipAddress': _shouldShowField('ip') &&
+                _ipController.text.trim().isNotEmpty
+            ? _ipController.text.trim()
+            : null,
+        'biosVersion': _shouldShowField('bios') &&
+                _biosController.text.trim().isNotEmpty
+            ? _biosController.text.trim()
+            : null,
+        'motherboardInfo': _shouldShowField('motherboard') &&
+                _motherboardController.text.trim().isNotEmpty
+            ? _motherboardController.text.trim()
+            : null,
       };
 
       if (widget.isEditing) {
