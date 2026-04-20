@@ -60,6 +60,16 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
   final _supplierController = TextEditingController();
   final _warrantyMonthsController = TextEditingController();
   final _notesController = TextEditingController();
+  final _cpuController = TextEditingController();
+  final _ramController = TextEditingController();
+  final _storageController = TextEditingController();
+  final _gpuController = TextEditingController();
+  final _hostNameController = TextEditingController();
+  final _osController = TextEditingController();
+  final _macController = TextEditingController();
+  final _ipController = TextEditingController();
+  final _biosController = TextEditingController();
+  final _motherboardController = TextEditingController();
 
   int _selectedType = 0;
   int _selectedStatus = 0;
@@ -84,6 +94,16 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
       _selectedType = d.type;
       _selectedStatus = d.status;
       _purchaseDate = d.purchaseDate;
+      _cpuController.text = d.cpuInfo ?? '';
+      _ramController.text = d.ramInfo ?? '';
+      _storageController.text = d.storageInfo ?? '';
+      _gpuController.text = d.gpuInfo ?? '';
+      _hostNameController.text = d.hostName ?? '';
+      _osController.text = d.osInfo ?? '';
+      _macController.text = d.macAddress ?? '';
+      _ipController.text = d.ipAddress ?? '';
+      _biosController.text = d.biosVersion ?? '';
+      _motherboardController.text = d.motherboardInfo ?? '';
     }
   }
 
@@ -98,7 +118,34 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
     _supplierController.dispose();
     _warrantyMonthsController.dispose();
     _notesController.dispose();
+    _cpuController.dispose();
+    _ramController.dispose();
+    _storageController.dispose();
+    _gpuController.dispose();
+    _hostNameController.dispose();
+    _osController.dispose();
+    _macController.dispose();
+    _ipController.dispose();
+    _biosController.dispose();
+    _motherboardController.dispose();
     super.dispose();
+  }
+
+  String? _validateMac(String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+    final regex = RegExp(r'^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$');
+    return regex.hasMatch(value.trim())
+        ? null
+        : 'Geçerli bir MAC adresi girin (örn: AA:BB:CC:DD:EE:FF)';
+  }
+
+  String? _validateIp(String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+    final regex = RegExp(
+        r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$');
+    return regex.hasMatch(value.trim())
+        ? null
+        : 'Geçerli bir IP adresi girin (örn: 192.168.1.1)';
   }
 
   Future<void> _pickDate() async {
