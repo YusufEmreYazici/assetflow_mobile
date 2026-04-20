@@ -209,6 +209,36 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
         'notes': _notesController.text.trim().isEmpty
             ? null
             : _notesController.text.trim(),
+        'cpuInfo': _cpuController.text.trim().isEmpty
+            ? null
+            : _cpuController.text.trim(),
+        'ramInfo': _ramController.text.trim().isEmpty
+            ? null
+            : _ramController.text.trim(),
+        'storageInfo': _storageController.text.trim().isEmpty
+            ? null
+            : _storageController.text.trim(),
+        'gpuInfo': _gpuController.text.trim().isEmpty
+            ? null
+            : _gpuController.text.trim(),
+        'hostName': _hostNameController.text.trim().isEmpty
+            ? null
+            : _hostNameController.text.trim(),
+        'osInfo': _osController.text.trim().isEmpty
+            ? null
+            : _osController.text.trim(),
+        'macAddress': _macController.text.trim().isEmpty
+            ? null
+            : _macController.text.trim(),
+        'ipAddress': _ipController.text.trim().isEmpty
+            ? null
+            : _ipController.text.trim(),
+        'biosVersion': _biosController.text.trim().isEmpty
+            ? null
+            : _biosController.text.trim(),
+        'motherboardInfo': _motherboardController.text.trim().isEmpty
+            ? null
+            : _motherboardController.text.trim(),
       };
 
       if (widget.isEditing) {
