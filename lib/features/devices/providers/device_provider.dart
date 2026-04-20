@@ -74,19 +74,30 @@ class DeviceNotifier extends StateNotifier<DeviceListState> {
       // Try offline cache
       final cached = await CacheManager.instance.getStale('devices_page1');
       if (cached != null) {
-        final items = (cached as List).map((j) => Device.fromJson(j as Map<String, dynamic>)).toList();
-        state = state.copyWith(devices: items, isLoading: false, page: 1, hasMore: false);
+        final items = (cached as List)
+            .map((j) => Device.fromJson(j as Map<String, dynamic>))
+            .toList();
+        state = state.copyWith(
+          devices: items,
+          isLoading: false,
+          page: 1,
+          hasMore: false,
+        );
         return;
       }
-      state = state.copyWith(
-        isLoading: false,
-        error: _extractError(e),
-      );
+      state = state.copyWith(isLoading: false, error: _extractError(e));
     } catch (e) {
       final cached = await CacheManager.instance.getStale('devices_page1');
       if (cached != null) {
-        final items = (cached as List).map((j) => Device.fromJson(j as Map<String, dynamic>)).toList();
-        state = state.copyWith(devices: items, isLoading: false, page: 1, hasMore: false);
+        final items = (cached as List)
+            .map((j) => Device.fromJson(j as Map<String, dynamic>))
+            .toList();
+        state = state.copyWith(
+          devices: items,
+          isLoading: false,
+          page: 1,
+          hasMore: false,
+        );
         return;
       }
       state = state.copyWith(
@@ -138,6 +149,6 @@ class DeviceNotifier extends StateNotifier<DeviceListState> {
 
 final deviceProvider =
     StateNotifierProvider.autoDispose<DeviceNotifier, DeviceListState>((ref) {
-  final service = ref.watch(deviceServiceProvider);
-  return DeviceNotifier(service);
-});
+      final service = ref.watch(deviceServiceProvider);
+      return DeviceNotifier(service);
+    });

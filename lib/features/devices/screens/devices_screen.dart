@@ -55,16 +55,20 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
           TextButton(
             onPressed: () async {
               Navigator.pop(ctx);
-              final success =
-                  await ref.read(deviceProvider.notifier).deleteDevice(id);
+              final success = await ref
+                  .read(deviceProvider.notifier)
+                  .deleteDevice(id);
               if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(success
-                        ? 'Cihaz basariyla silindi'
-                        : 'Cihaz silinirken hata olustu'),
-                    backgroundColor:
-                        success ? AppColors.success : AppColors.error,
+                    content: Text(
+                      success
+                          ? 'Cihaz basariyla silindi'
+                          : 'Cihaz silinirken hata olustu',
+                    ),
+                    backgroundColor: success
+                        ? AppColors.success
+                        : AppColors.error,
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
@@ -106,67 +110,62 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
             tooltip: 'CSV İçe Aktar',
             onPressed: _navigateToImport,
           ),
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: _navigateToForm,
-          ),
+          IconButton(icon: const Icon(Icons.add), onPressed: _navigateToForm),
         ],
       ),
       body: state.isLoading
           ? _buildShimmer()
           : state.error != null
-              ? _buildError(state.error!)
-              : state.devices.isEmpty
-                  ? _buildEmpty()
-                  : RefreshIndicator(
-                      color: AppColors.primary500,
-                      backgroundColor: AppColors.dark800,
-                      onRefresh: _onRefresh,
-                      child: ListView.builder(
-                        controller: _scrollController,
-                        padding: const EdgeInsets.all(16),
-                        itemCount: state.devices.length +
-                            (state.isLoadingMore ? 1 : 0),
-                        itemBuilder: (context, index) {
-                          if (index == state.devices.length) {
-                            return const Padding(
-                              padding: EdgeInsets.all(16),
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  color: AppColors.primary500,
-                                ),
-                              ),
-                            );
-                          }
-                          final device = state.devices[index];
-                          return Dismissible(
-                            key: ValueKey(device.id),
-                            direction: DismissDirection.endToStart,
-                            background: Container(
-                              alignment: Alignment.centerRight,
-                              padding: const EdgeInsets.only(right: 20),
-                              margin: const EdgeInsets.only(bottom: 8),
-                              decoration: BoxDecoration(
-                                color: AppColors.error,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child:
-                                  const Icon(Icons.delete, color: Colors.white),
-                            ),
-                            confirmDismiss: (_) async {
-                              _confirmDelete(device.id, device.name);
-                              return false;
-                            },
-                            child: DeviceListItem(
-                              device: device,
-                              onTap: () {
-                                context.go('/devices/${device.id}');
-                              },
-                            ),
-                          );
-                        },
+          ? _buildError(state.error!)
+          : state.devices.isEmpty
+          ? _buildEmpty()
+          : RefreshIndicator(
+              color: AppColors.primary500,
+              backgroundColor: AppColors.dark800,
+              onRefresh: _onRefresh,
+              child: ListView.builder(
+                controller: _scrollController,
+                padding: const EdgeInsets.all(16),
+                itemCount: state.devices.length + (state.isLoadingMore ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (index == state.devices.length) {
+                    return const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.primary500,
+                        ),
                       ),
+                    );
+                  }
+                  final device = state.devices[index];
+                  return Dismissible(
+                    key: ValueKey(device.id),
+                    direction: DismissDirection.endToStart,
+                    background: Container(
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.only(right: 20),
+                      margin: const EdgeInsets.only(bottom: 8),
+                      decoration: BoxDecoration(
+                        color: AppColors.error,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(Icons.delete, color: Colors.white),
                     ),
+                    confirmDismiss: (_) async {
+                      _confirmDelete(device.id, device.name);
+                      return false;
+                    },
+                    child: DeviceListItem(
+                      device: device,
+                      onTap: () {
+                        context.go('/devices/${device.id}');
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: _navigateToForm,
         child: const Icon(Icons.add),
@@ -200,9 +199,11 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
         children: [
           const Icon(Icons.error_outline, color: AppColors.error, size: 48),
           const SizedBox(height: 16),
-          Text(error,
-              style: const TextStyle(color: AppColors.textPrimary),
-              textAlign: TextAlign.center),
+          Text(
+            error,
+            style: const TextStyle(color: AppColors.textPrimary),
+            textAlign: TextAlign.center,
+          ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
             onPressed: () => ref.read(deviceProvider.notifier).refresh(),
@@ -223,10 +224,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
           const SizedBox(height: 16),
           const Text(
             'Henuz cihaz eklenmemis',
-            style: TextStyle(
-              fontSize: 16,
-              color: AppColors.textSecondary,
-            ),
+            style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
           ),
           const SizedBox(height: 8),
           const Text(

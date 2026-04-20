@@ -5,7 +5,8 @@ import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/app_text_field.dart';
 import 'package:assetflow_mobile/core/widgets/app_button.dart';
 import 'package:assetflow_mobile/core/widgets/loading_overlay.dart';
-import 'package:assetflow_mobile/data/models/device_model.dart' show Device, DeviceTypeLabels, DeviceStatusLabels;
+import 'package:assetflow_mobile/data/models/device_model.dart'
+    show Device, DeviceTypeLabels, DeviceStatusLabels;
 import 'package:assetflow_mobile/data/services/device_service.dart';
 import 'package:assetflow_mobile/core/utils/notification_service.dart';
 
@@ -142,7 +143,8 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
   String? _validateIp(String? value) {
     if (value == null || value.trim().isEmpty) return null;
     final regex = RegExp(
-        r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$');
+      r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$',
+    );
     return regex.hasMatch(value.trim())
         ? null
         : 'Geçerli bir IP adresi girin (örn: 192.168.1.1)';
@@ -204,8 +206,8 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
             : _supplierController.text.trim(),
         'warrantyDurationMonths':
             _warrantyMonthsController.text.trim().isNotEmpty
-                ? int.tryParse(_warrantyMonthsController.text.trim())
-                : null,
+            ? int.tryParse(_warrantyMonthsController.text.trim())
+            : null,
         'notes': _notesController.text.trim().isEmpty
             ? null
             : _notesController.text.trim(),
@@ -265,9 +267,11 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(widget.isEditing
-                ? 'Cihaz basariyla guncellendi'
-                : 'Cihaz basariyla eklendi'),
+            content: Text(
+              widget.isEditing
+                  ? 'Cihaz basariyla guncellendi'
+                  : 'Cihaz basariyla eklendi',
+            ),
             backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
           ),
@@ -278,9 +282,11 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(widget.isEditing
-                ? 'Cihaz guncellenirken hata olustu'
-                : 'Cihaz eklenirken hata olustu'),
+            content: Text(
+              widget.isEditing
+                  ? 'Cihaz guncellenirken hata olustu'
+                  : 'Cihaz eklenirken hata olustu',
+            ),
             backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
           ),
@@ -348,15 +354,15 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
                 // Type dropdown
                 DropdownButtonFormField<int>(
                   initialValue: _selectedType,
-                  decoration: const InputDecoration(
-                    labelText: 'Cihaz Tipi',
-                  ),
+                  decoration: const InputDecoration(labelText: 'Cihaz Tipi'),
                   dropdownColor: AppColors.dark800,
                   items: DeviceTypeLabels.entries
-                      .map((e) => DropdownMenuItem(
-                            value: e.key,
-                            child: Text(e.value),
-                          ))
+                      .map(
+                        (e) => DropdownMenuItem(
+                          value: e.key,
+                          child: Text(e.value),
+                        ),
+                      )
                       .toList(),
                   onChanged: (val) {
                     if (val != null) setState(() => _selectedType = val);
@@ -367,15 +373,15 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
                 if (widget.isEditing) ...[
                   DropdownButtonFormField<int>(
                     initialValue: _selectedStatus,
-                    decoration: const InputDecoration(
-                      labelText: 'Durum',
-                    ),
+                    decoration: const InputDecoration(labelText: 'Durum'),
                     dropdownColor: AppColors.dark800,
                     items: DeviceStatusLabels.entries
-                        .map((e) => DropdownMenuItem(
-                              value: e.key,
-                              child: Text(e.value),
-                            ))
+                        .map(
+                          (e) => DropdownMenuItem(
+                            value: e.key,
+                            child: Text(e.value),
+                          ),
+                        )
                         .toList(),
                     onChanged: (val) {
                       if (val != null) setState(() => _selectedStatus = val);
@@ -395,8 +401,11 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
                             ? DateFormat('dd/MM/yyyy').format(_purchaseDate!)
                             : '',
                       ),
-                      suffixIcon: const Icon(Icons.calendar_today,
-                          color: AppColors.textTertiary, size: 20),
+                      suffixIcon: const Icon(
+                        Icons.calendar_today,
+                        color: AppColors.textTertiary,
+                        size: 20,
+                      ),
                     ),
                   ),
                 ),
@@ -428,7 +437,9 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
                   textInputAction: TextInputAction.next,
                 ),
                 const _SectionHeader(
-                    title: 'TEMEL DONANIM', icon: Icons.memory),
+                  title: 'TEMEL DONANIM',
+                  icon: Icons.memory,
+                ),
                 const SizedBox(height: 8),
                 AppTextField(
                   label: 'CPU Bilgisi',
@@ -458,7 +469,9 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
                   textInputAction: TextInputAction.next,
                 ),
                 const _SectionHeader(
-                    title: 'SİSTEM BİLGİLERİ', icon: Icons.computer),
+                  title: 'SİSTEM BİLGİLERİ',
+                  icon: Icons.computer,
+                ),
                 const SizedBox(height: 8),
                 AppTextField(
                   label: 'Hostname',
@@ -473,8 +486,7 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
                   controller: _osController,
                   textInputAction: TextInputAction.next,
                 ),
-                const _SectionHeader(
-                    title: 'AĞ BİLGİLERİ', icon: Icons.lan),
+                const _SectionHeader(title: 'AĞ BİLGİLERİ', icon: Icons.lan),
                 const SizedBox(height: 8),
                 AppTextField(
                   label: 'MAC Adresi',
@@ -493,8 +505,9 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
                   validator: _validateIp,
                 ),
                 const _SectionHeader(
-                    title: 'TEKNİK DETAYLAR',
-                    icon: Icons.settings_input_component),
+                  title: 'TEKNİK DETAYLAR',
+                  icon: Icons.settings_input_component,
+                ),
                 const SizedBox(height: 8),
                 AppTextField(
                   label: 'BIOS Versiyonu',

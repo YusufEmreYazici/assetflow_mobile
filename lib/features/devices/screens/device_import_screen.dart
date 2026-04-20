@@ -29,7 +29,16 @@ class _DeviceImportScreenState extends State<DeviceImportScreen> {
   int _successCount = 0;
   int _errorCount = 0;
 
-  static const _headers = ['name', 'brand', 'model', 'serialNumber', 'type', 'status', 'assetCode', 'notes'];
+  static const _headers = [
+    'name',
+    'brand',
+    'model',
+    'serialNumber',
+    'type',
+    'status',
+    'assetCode',
+    'notes',
+  ];
 
   Future<void> _pickFile() async {
     setState(() => _picking = true);
@@ -94,7 +103,9 @@ class _DeviceImportScreenState extends State<DeviceImportScreen> {
       } catch (e) {
         setState(() {
           row.status = _RowStatus.error;
-          row.errorMsg = e.toString().length > 60 ? 'Sunucu hatası' : e.toString();
+          row.errorMsg = e.toString().length > 60
+              ? 'Sunucu hatası'
+              : e.toString();
           _errorCount++;
         });
       }
@@ -103,11 +114,15 @@ class _DeviceImportScreenState extends State<DeviceImportScreen> {
     setState(() => _importing = false);
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('$_successCount başarılı, $_errorCount hatalı'),
-        backgroundColor: _errorCount == 0 ? AppColors.success : AppColors.warning,
-        behavior: SnackBarBehavior.floating,
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('$_successCount başarılı, $_errorCount hatalı'),
+          backgroundColor: _errorCount == 0
+              ? AppColors.success
+              : AppColors.warning,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
       if (_errorCount == 0) Navigator.pop(context, true);
     }
   }
@@ -134,7 +149,14 @@ class _DeviceImportScreenState extends State<DeviceImportScreen> {
                   children: [
                     Icon(Icons.info_outline, size: 16, color: AppColors.info),
                     SizedBox(width: 6),
-                    Text('CSV Format', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.info)),
+                    Text(
+                      'CSV Format',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.info,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 6),
@@ -174,14 +196,30 @@ class _DeviceImportScreenState extends State<DeviceImportScreen> {
               children: [
                 Text(
                   '${_rows.length} satır yüklendi',
-                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
                 const Spacer(),
                 if (_successCount > 0)
-                  Text('✓ $_successCount', style: const TextStyle(fontSize: 12, color: AppColors.success)),
+                  Text(
+                    '✓ $_successCount',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.success,
+                    ),
+                  ),
                 if (_errorCount > 0) ...[
                   const SizedBox(width: 8),
-                  Text('✗ $_errorCount', style: const TextStyle(fontSize: 12, color: AppColors.error)),
+                  Text(
+                    '✗ $_errorCount',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.error,
+                    ),
+                  ),
                 ],
               ],
             ),
@@ -189,7 +227,9 @@ class _DeviceImportScreenState extends State<DeviceImportScreen> {
             ...(_rows.map((row) => _buildRow(row))),
             const SizedBox(height: 16),
             AppButton(
-              text: _importing ? 'İçe Aktarılıyor...' : '${_rows.length} Cihazı İçe Aktar',
+              text: _importing
+                  ? 'İçe Aktarılıyor...'
+                  : '${_rows.length} Cihazı İçe Aktar',
               icon: Icons.cloud_upload,
               onPressed: _importing ? null : _import,
               isLoading: _importing,
@@ -241,7 +281,9 @@ class _DeviceImportScreenState extends State<DeviceImportScreen> {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    color: row.name.isNotEmpty ? AppColors.textPrimary : AppColors.error,
+                    color: row.name.isNotEmpty
+                        ? AppColors.textPrimary
+                        : AppColors.error,
                   ),
                 ),
                 Text(
@@ -250,12 +292,18 @@ class _DeviceImportScreenState extends State<DeviceImportScreen> {
                     if (row.model.isNotEmpty) row.model,
                     DeviceTypeLabels[row.deviceType] ?? '',
                   ].join(' · '),
-                  style: const TextStyle(fontSize: 11, color: AppColors.textSecondary),
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
                 if (row.status == _RowStatus.error && row.errorMsg != null)
                   Text(
                     row.errorMsg!,
-                    style: const TextStyle(fontSize: 10, color: AppColors.error),
+                    style: const TextStyle(
+                      fontSize: 10,
+                      color: AppColors.error,
+                    ),
                   ),
               ],
             ),

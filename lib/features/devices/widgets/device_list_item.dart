@@ -6,11 +6,7 @@ class DeviceListItem extends StatelessWidget {
   final Device device;
   final VoidCallback? onTap;
 
-  const DeviceListItem({
-    super.key,
-    required this.device,
-    this.onTap,
-  });
+  const DeviceListItem({super.key, required this.device, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +47,10 @@ class DeviceListItem extends StatelessWidget {
             if (device.brand != null || device.model != null) ...[
               const SizedBox(height: 4),
               Text(
-                [device.brand, device.model]
-                    .where((e) => e != null && e.isNotEmpty)
-                    .join(' '),
+                [
+                  device.brand,
+                  device.model,
+                ].where((e) => e != null && e.isNotEmpty).join(' '),
                 style: const TextStyle(
                   fontSize: 13,
                   color: AppColors.textSecondary,
@@ -77,8 +74,11 @@ class DeviceListItem extends StatelessWidget {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.location_on_outlined,
-                          size: 14, color: AppColors.textTertiary),
+                      const Icon(
+                        Icons.location_on_outlined,
+                        size: 14,
+                        color: AppColors.textTertiary,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         device.locationName!,

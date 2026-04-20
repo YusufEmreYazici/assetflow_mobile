@@ -36,14 +36,14 @@ class Location {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'address': address,
-        'building': building,
-        'floor': floor,
-        'room': room,
-        'description': description,
-        'isActive': isActive,
-        'deviceCount': deviceCount,
-      };
+    'id': id,
+    'name': name,
+    'address': address,
+    'building': building,
+    'floor': floor,
+    'room': room,
+    'description': description,
+    'isActive': isActive,
+    'deviceCount': deviceCount,
+  };
 }

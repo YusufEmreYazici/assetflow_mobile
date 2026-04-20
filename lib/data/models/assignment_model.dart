@@ -73,27 +73,27 @@ class Assignment {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'assetTag': assetTag,
-        'type': type,
-        'deviceId': deviceId,
-        'deviceName': deviceName,
-        'deviceSerialNumber': deviceSerialNumber,
-        'deviceBrand': deviceBrand,
-        'deviceModel': deviceModel,
-        'employeeId': employeeId,
-        'employeeName': employeeName,
-        'employeeRegistrationNumber': employeeRegistrationNumber,
-        'employeeDepartment': employeeDepartment,
-        'employeeTitle': employeeTitle,
-        'assignedAt': assignedAt.toIso8601String(),
-        'expectedReturnDate': expectedReturnDate?.toIso8601String(),
-        'returnedAt': returnedAt?.toIso8601String(),
-        'returnCondition': returnCondition,
-        'isActive': isActive,
-        'notes': notes,
-        'assignedByName': assignedByName,
-      };
+    'id': id,
+    'assetTag': assetTag,
+    'type': type,
+    'deviceId': deviceId,
+    'deviceName': deviceName,
+    'deviceSerialNumber': deviceSerialNumber,
+    'deviceBrand': deviceBrand,
+    'deviceModel': deviceModel,
+    'employeeId': employeeId,
+    'employeeName': employeeName,
+    'employeeRegistrationNumber': employeeRegistrationNumber,
+    'employeeDepartment': employeeDepartment,
+    'employeeTitle': employeeTitle,
+    'assignedAt': assignedAt.toIso8601String(),
+    'expectedReturnDate': expectedReturnDate?.toIso8601String(),
+    'returnedAt': returnedAt?.toIso8601String(),
+    'returnCondition': returnCondition,
+    'isActive': isActive,
+    'notes': notes,
+    'assignedByName': assignedByName,
+  };
 }
 
 const Map<int, String> AssignmentTypeLabels = {

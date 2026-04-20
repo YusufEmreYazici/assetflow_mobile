@@ -20,12 +20,14 @@ class DashboardData {
   });
 
   factory DashboardData.fromJson(Map<String, dynamic> json) {
-    final devicesByTypeRaw = json['devicesByType'] as Map<String, dynamic>? ?? {};
+    final devicesByTypeRaw =
+        json['devicesByType'] as Map<String, dynamic>? ?? {};
     final devicesByType = devicesByTypeRaw.map(
       (key, value) => MapEntry(key, value as int),
     );
 
-    final warrantiesRaw = json['upcomingWarrantyExpirations'] as List<dynamic>? ?? [];
+    final warrantiesRaw =
+        json['upcomingWarrantyExpirations'] as List<dynamic>? ?? [];
     final warranties = warrantiesRaw
         .map((e) => WarrantyAlertItem.fromJson(e as Map<String, dynamic>))
         .toList();
@@ -43,16 +45,17 @@ class DashboardData {
   }
 
   Map<String, dynamic> toJson() => {
-        'totalDevices': totalDevices,
-        'assignedDevices': assignedDevices,
-        'inStorageDevices': inStorageDevices,
-        'expiringWarranties': expiringWarranties,
-        'expiredWarranties': expiredWarranties,
-        'totalEmployees': totalEmployees,
-        'devicesByType': devicesByType,
-        'upcomingWarrantyExpirations':
-            upcomingWarrantyExpirations.map((e) => e.toJson()).toList(),
-      };
+    'totalDevices': totalDevices,
+    'assignedDevices': assignedDevices,
+    'inStorageDevices': inStorageDevices,
+    'expiringWarranties': expiringWarranties,
+    'expiredWarranties': expiredWarranties,
+    'totalEmployees': totalEmployees,
+    'devicesByType': devicesByType,
+    'upcomingWarrantyExpirations': upcomingWarrantyExpirations
+        .map((e) => e.toJson())
+        .toList(),
+  };
 }
 
 class WarrantyAlertItem {
@@ -81,10 +84,10 @@ class WarrantyAlertItem {
   }
 
   Map<String, dynamic> toJson() => {
-        'deviceId': deviceId,
-        'deviceName': deviceName,
-        'assignedTo': assignedTo,
-        'warrantyEndDate': warrantyEndDate.toIso8601String(),
-        'daysRemaining': daysRemaining,
-      };
+    'deviceId': deviceId,
+    'deviceName': deviceName,
+    'assignedTo': assignedTo,
+    'warrantyEndDate': warrantyEndDate.toIso8601String(),
+    'daysRemaining': daysRemaining,
+  };
 }

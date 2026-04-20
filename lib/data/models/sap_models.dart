@@ -20,7 +20,9 @@ class SapSyncResult {
       newCount: json['newCount'] as int? ?? 0,
       updatedCount: json['updatedCount'] as int? ?? 0,
       errorCount: json['errorCount'] as int? ?? 0,
-      syncTime: DateTime.tryParse(json['syncTime']?.toString() ?? '') ?? DateTime.now(),
+      syncTime:
+          DateTime.tryParse(json['syncTime']?.toString() ?? '') ??
+          DateTime.now(),
       success: json['success'] as bool? ?? true,
       errorMessage: json['errorMessage'] as String?,
     );
@@ -52,7 +54,9 @@ class SapBudgetItem {
       amount: (json['amount'] as num?)?.toDouble() ?? 0.0,
       description: json['description'] as String? ?? '',
       status: json['status'] as String? ?? 'pending',
-      createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? '') ?? DateTime.now(),
+      createdAt:
+          DateTime.tryParse(json['createdAt']?.toString() ?? '') ??
+          DateTime.now(),
       requestedBy: json['requestedBy'] as String? ?? '',
       department: json['department'] as String?,
     );
@@ -81,8 +85,6 @@ class SapConnectionStatus {
     );
   }
 
-  static SapConnectionStatus get notConfigured => const SapConnectionStatus(
-        isConfigured: false,
-        isConnected: false,
-      );
+  static SapConnectionStatus get notConfigured =>
+      const SapConnectionStatus(isConfigured: false, isConnected: false);
 }

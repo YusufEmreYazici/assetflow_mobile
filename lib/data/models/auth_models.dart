@@ -2,15 +2,9 @@ class LoginRequest {
   final String email;
   final String password;
 
-  LoginRequest({
-    required this.email,
-    required this.password,
-  });
+  LoginRequest({required this.email, required this.password});
 
-  Map<String, dynamic> toJson() => {
-        'email': email,
-        'password': password,
-      };
+  Map<String, dynamic> toJson() => {'email': email, 'password': password};
 }
 
 class RegisterRequest {
@@ -29,12 +23,12 @@ class RegisterRequest {
   });
 
   Map<String, dynamic> toJson() => {
-        'email': email,
-        'password': password,
-        'confirmPassword': confirmPassword,
-        'fullName': fullName,
-        'companyName': companyName,
-      };
+    'email': email,
+    'password': password,
+    'confirmPassword': confirmPassword,
+    'fullName': fullName,
+    'companyName': companyName,
+  };
 }
 
 class AuthResponse {
@@ -69,12 +63,12 @@ class AuthResponse {
   }
 
   Map<String, dynamic> toJson() => {
-        'token': token,
-        'refreshToken': refreshToken,
-        'tokenExpiresAt': tokenExpiresAt.toIso8601String(),
-        'email': email,
-        'fullName': fullName,
-        'role': role,
-        'companyId': companyId,
-      };
+    'token': token,
+    'refreshToken': refreshToken,
+    'tokenExpiresAt': tokenExpiresAt.toIso8601String(),
+    'email': email,
+    'fullName': fullName,
+    'role': role,
+    'companyId': companyId,
+  };
 }

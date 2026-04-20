@@ -41,15 +41,15 @@ class Employee {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'fullName': fullName,
-        'registrationNumber': registrationNumber,
-        'email': email,
-        'department': department,
-        'title': title,
-        'phone': phone,
-        'isActive': isActive,
-        'hireDate': hireDate?.toIso8601String(),
-        'assignedDeviceCount': assignedDeviceCount,
-      };
+    'id': id,
+    'fullName': fullName,
+    'registrationNumber': registrationNumber,
+    'email': email,
+    'department': department,
+    'title': title,
+    'phone': phone,
+    'isActive': isActive,
+    'hireDate': hireDate?.toIso8601String(),
+    'assignedDeviceCount': assignedDeviceCount,
+  };
 }

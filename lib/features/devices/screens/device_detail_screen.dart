@@ -8,10 +8,11 @@ import 'package:assetflow_mobile/data/services/device_service.dart';
 import 'package:assetflow_mobile/features/assignments/widgets/assignment_form_section.dart';
 import 'package:assetflow_mobile/features/devices/screens/device_form_screen.dart';
 
-final _deviceDetailProvider =
-    FutureProvider.autoDispose.family<Device, String>((ref, id) async {
-  return DeviceService().getById(id);
-});
+final _deviceDetailProvider = FutureProvider.autoDispose.family<Device, String>(
+  (ref, id) async {
+    return DeviceService().getById(id);
+  },
+);
 
 class DeviceDetailScreen extends ConsumerWidget {
   final String id;
@@ -36,13 +37,14 @@ class DeviceDetailScreen extends ConsumerWidget {
             children: [
               const Icon(Icons.error_outline, color: AppColors.error, size: 48),
               const SizedBox(height: 16),
-              Text(error.toString(),
-                  style: const TextStyle(color: AppColors.textPrimary),
-                  textAlign: TextAlign.center),
+              Text(
+                error.toString(),
+                style: const TextStyle(color: AppColors.textPrimary),
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 16),
               ElevatedButton.icon(
-                onPressed: () =>
-                    ref.invalidate(_deviceDetailProvider(id)),
+                onPressed: () => ref.invalidate(_deviceDetailProvider(id)),
                 icon: const Icon(Icons.refresh),
                 label: const Text('Tekrar Dene'),
               ),
@@ -115,10 +117,14 @@ class DeviceDetailScreen extends ConsumerWidget {
               rows: [
                 if (device.purchaseDate != null)
                   _InfoRow(
-                      'Satin Alma Tarihi', dateFormat.format(device.purchaseDate!)),
+                    'Satin Alma Tarihi',
+                    dateFormat.format(device.purchaseDate!),
+                  ),
                 if (device.purchasePrice != null)
-                  _InfoRow('Fiyat',
-                      '${NumberFormat('#,##0.00', 'tr_TR').format(device.purchasePrice)} TL'),
+                  _InfoRow(
+                    'Fiyat',
+                    '${NumberFormat('#,##0.00', 'tr_TR').format(device.purchasePrice)} TL',
+                  ),
                 if (device.supplier != null)
                   _InfoRow('Tedarikci', device.supplier!),
               ],
@@ -137,10 +143,14 @@ class DeviceDetailScreen extends ConsumerWidget {
               rows: [
                 if (device.warrantyDurationMonths != null)
                   _InfoRow(
-                      'Garanti Suresi', '${device.warrantyDurationMonths} Ay'),
+                    'Garanti Suresi',
+                    '${device.warrantyDurationMonths} Ay',
+                  ),
                 if (device.warrantyEndDate != null)
-                  _InfoRow('Garanti Bitis',
-                      dateFormat.format(device.warrantyEndDate!)),
+                  _InfoRow(
+                    'Garanti Bitis',
+                    dateFormat.format(device.warrantyEndDate!),
+                  ),
                 if (device.warrantyStatus != null)
                   _InfoRow(
                     'Garanti Durumu',
@@ -158,9 +168,7 @@ class DeviceDetailScreen extends ConsumerWidget {
             _SectionCard(
               title: 'Lokasyon',
               icon: Icons.location_on_outlined,
-              rows: [
-                _InfoRow('Lokasyon', device.locationName!),
-              ],
+              rows: [_InfoRow('Lokasyon', device.locationName!)],
             ),
           if (device.locationName != null) const SizedBox(height: 12),
 
@@ -200,9 +208,7 @@ class DeviceDetailScreen extends ConsumerWidget {
             _SectionCard(
               title: 'Notlar',
               icon: Icons.notes,
-              rows: [
-                _InfoRow('', device.notes!),
-              ],
+              rows: [_InfoRow('', device.notes!)],
             ),
         ],
       ),
@@ -226,7 +232,8 @@ class DeviceDetailScreen extends ConsumerWidget {
       builder: (ctx) => AlertDialog(
         title: const Text('Cihazi Sil'),
         content: Text(
-            '"${device.name}" cihazini silmek istediginize emin misiniz?'),
+          '"${device.name}" cihazini silmek istediginize emin misiniz?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
@@ -351,7 +358,11 @@ class _FormSectionCard extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
             child: Row(
               children: [
-                const Icon(Icons.description, size: 18, color: AppColors.primary400),
+                const Icon(
+                  Icons.description,
+                  size: 18,
+                  color: AppColors.primary400,
+                ),
                 const SizedBox(width: 8),
                 const Text(
                   'Zimmet / İade Formu',
@@ -458,8 +469,8 @@ class _SectionCard extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w500,
-                                  color: row.valueColor ??
-                                      AppColors.textPrimary,
+                                  color:
+                                      row.valueColor ?? AppColors.textPrimary,
                                 ),
                               ),
                             ),
