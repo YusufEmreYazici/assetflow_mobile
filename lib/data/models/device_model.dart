@@ -26,6 +26,8 @@ class Device {
   final String? osInfo;
   final String? ipAddress;
   final String? macAddress;
+  final String? biosVersion;
+  final String? motherboardInfo;
 
   Device({
     required this.id,
@@ -55,6 +57,8 @@ class Device {
     this.osInfo,
     this.ipAddress,
     this.macAddress,
+    this.biosVersion,
+    this.motherboardInfo,
   });
 
   factory Device.fromJson(Map<String, dynamic> json) {
@@ -92,6 +96,8 @@ class Device {
       osInfo: json['osInfo'] as String?,
       ipAddress: json['ipAddress'] as String?,
       macAddress: json['macAddress'] as String?,
+      biosVersion: json['biosVersion'] as String?,
+      motherboardInfo: json['motherboardInfo'] as String?,
     );
   }
 
@@ -123,6 +129,8 @@ class Device {
         'osInfo': osInfo,
         'ipAddress': ipAddress,
         'macAddress': macAddress,
+        'biosVersion': biosVersion,
+        'motherboardInfo': motherboardInfo,
       };
 }
 
