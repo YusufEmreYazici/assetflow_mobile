@@ -33,8 +33,7 @@ class AuditLogTile extends StatelessWidget {
 
     if (!_hasDetails) {
       return ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         leading: _buildIcon(icon, color),
         title: Text(
           _actionLabel(log.action, log.entityName),
@@ -57,8 +56,7 @@ class AuditLogTile extends StatelessWidget {
         splashColor: Colors.transparent,
       ),
       child: ExpansionTile(
-        tilePadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         childrenPadding: const EdgeInsets.only(bottom: 8),
         leading: _buildIcon(icon, color),
         title: Text(
@@ -79,14 +77,14 @@ class AuditLogTile extends StatelessWidget {
   }
 
   Widget _buildIcon(IconData icon, Color color) => Container(
-        width: 36,
-        height: 36,
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.15),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Icon(icon, color: color, size: 18),
-      );
+    width: 36,
+    height: 36,
+    decoration: BoxDecoration(
+      color: color.withValues(alpha: 0.15),
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Icon(icon, color: color, size: 18),
+  );
 
   List<Widget> _buildDetailRows() {
     if (log.action == 'Update' && log.affectedColumns != null) {
@@ -198,11 +196,11 @@ class AuditLogTile extends StatelessWidget {
   }
 
   static (IconData, Color) _iconColorFor(String action) => switch (action) {
-        'Create' => (Icons.add_circle_outline, AppColors.success),
-        'Update' => (Icons.edit_outlined, AppColors.info),
-        'Delete' => (Icons.delete_outline, AppColors.error),
-        _ => (Icons.history, AppColors.textTertiary),
-      };
+    'Create' => (Icons.add_circle_outline, AppColors.success),
+    'Update' => (Icons.edit_outlined, AppColors.info),
+    'Delete' => (Icons.delete_outline, AppColors.error),
+    _ => (Icons.history, AppColors.textTertiary),
+  };
 
   static String _actionLabel(String action, String entityName) {
     final entity = _entityLabel(entityName);
@@ -215,11 +213,11 @@ class AuditLogTile extends StatelessWidget {
   }
 
   static String _entityLabel(String entityName) => switch (entityName) {
-        'Device' => 'Cihaz',
-        'Assignment' => 'Zimmet',
-        'AssignmentForm' => 'Form',
-        _ => entityName,
-      };
+    'Device' => 'Cihaz',
+    'Assignment' => 'Zimmet',
+    'AssignmentForm' => 'Form',
+    _ => entityName,
+  };
 
   static String _relativeTime(DateTime t) {
     final diff = DateTime.now().difference(t);
@@ -231,11 +229,12 @@ class AuditLogTile extends StatelessWidget {
 
   static String _formatValue(dynamic value) {
     if (value == null) return '-';
-    if (value is String &&
-        RegExp(r'^\d{4}-\d{2}-\d{2}T').hasMatch(value)) {
+    if (value is String && RegExp(r'^\d{4}-\d{2}-\d{2}T').hasMatch(value)) {
       try {
-        return DateFormat('d MMM yyyy, HH:mm', 'tr_TR')
-            .format(DateTime.parse(value).toLocal());
+        return DateFormat(
+          'd MMM yyyy, HH:mm',
+          'tr_TR',
+        ).format(DateTime.parse(value).toLocal());
       } catch (_) {
         return value;
       }
@@ -246,47 +245,47 @@ class AuditLogTile extends StatelessWidget {
   }
 
   static String _fieldLabel(String field) => switch (field) {
-        'Name' => 'Ad',
-        'Brand' => 'Marka',
-        'Model' => 'Model',
-        'SerialNumber' => 'Seri No',
-        'AssetCode' => 'Demirbaş Kodu',
-        'Status' => 'Durum',
-        'Type' => 'Tip',
-        'Notes' => 'Notlar',
-        'PurchaseDate' => 'Satın Alma Tarihi',
-        'PurchasePrice' => 'Satın Alma Fiyatı',
-        'Supplier' => 'Tedarikçi',
-        'WarrantyEndDate' => 'Garanti Bitiş',
-        'WarrantyDurationMonths' => 'Garanti (Ay)',
-        'LocationId' => 'Lokasyon',
-        'CpuInfo' => 'İşlemci',
-        'RamInfo' => 'RAM',
-        'StorageInfo' => 'Depolama',
-        'GpuInfo' => 'Ekran Kartı',
-        'HostName' => 'Hostname',
-        'OsInfo' => 'İşletim Sistemi',
-        'MacAddress' => 'MAC Adresi',
-        'IpAddress' => 'IP Adresi',
-        'BiosVersion' => 'BIOS',
-        'MotherboardInfo' => 'Anakart',
-        'AssignedAt' => 'Atama Tarihi',
-        'ReturnedAt' => 'İade Tarihi',
-        'ReturnCondition' => 'İade Durumu',
-        'ReturnNotes' => 'İade Notları',
-        'EmployeeId' => 'Personel',
-        'DeviceId' => 'Cihaz',
-        'AssetTag' => 'Zimmet No',
-        'ExpectedReturnDate' => 'Beklenen İade',
-        'AssignedByUserId' => 'Atayan',
-        'UserId' => 'Kullanıcı',
-        'CreatedByUserId' => 'Oluşturan',
-        'GeneratedByUserId' => 'Form Üreten',
-        'SignedUploadedByUserId' => 'İmza Yükleyen',
-        'GeneratedFilePath' => 'Form Dosyası',
-        'SignedFilePath' => 'İmzalı Dosya',
-        'FormNumber' => 'Form No',
-        'AssignmentId' => 'Zimmet',
-        _ => field,
-      };
+    'Name' => 'Ad',
+    'Brand' => 'Marka',
+    'Model' => 'Model',
+    'SerialNumber' => 'Seri No',
+    'AssetCode' => 'Demirbaş Kodu',
+    'Status' => 'Durum',
+    'Type' => 'Tip',
+    'Notes' => 'Notlar',
+    'PurchaseDate' => 'Satın Alma Tarihi',
+    'PurchasePrice' => 'Satın Alma Fiyatı',
+    'Supplier' => 'Tedarikçi',
+    'WarrantyEndDate' => 'Garanti Bitiş',
+    'WarrantyDurationMonths' => 'Garanti (Ay)',
+    'LocationId' => 'Lokasyon',
+    'CpuInfo' => 'İşlemci',
+    'RamInfo' => 'RAM',
+    'StorageInfo' => 'Depolama',
+    'GpuInfo' => 'Ekran Kartı',
+    'HostName' => 'Hostname',
+    'OsInfo' => 'İşletim Sistemi',
+    'MacAddress' => 'MAC Adresi',
+    'IpAddress' => 'IP Adresi',
+    'BiosVersion' => 'BIOS',
+    'MotherboardInfo' => 'Anakart',
+    'AssignedAt' => 'Atama Tarihi',
+    'ReturnedAt' => 'İade Tarihi',
+    'ReturnCondition' => 'İade Durumu',
+    'ReturnNotes' => 'İade Notları',
+    'EmployeeId' => 'Personel',
+    'DeviceId' => 'Cihaz',
+    'AssetTag' => 'Zimmet No',
+    'ExpectedReturnDate' => 'Beklenen İade',
+    'AssignedByUserId' => 'Atayan',
+    'UserId' => 'Kullanıcı',
+    'CreatedByUserId' => 'Oluşturan',
+    'GeneratedByUserId' => 'Form Üreten',
+    'SignedUploadedByUserId' => 'İmza Yükleyen',
+    'GeneratedFilePath' => 'Form Dosyası',
+    'SignedFilePath' => 'İmzalı Dosya',
+    'FormNumber' => 'Form No',
+    'AssignmentId' => 'Zimmet',
+    _ => field,
+  };
 }
