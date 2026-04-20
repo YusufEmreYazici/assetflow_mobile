@@ -20,6 +20,35 @@ class DeviceFormScreen extends ConsumerStatefulWidget {
   ConsumerState<DeviceFormScreen> createState() => _DeviceFormScreenState();
 }
 
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final IconData icon;
+
+  const _SectionHeader({required this.title, required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 24, 0, 12),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: AppColors.primary600),
+          const SizedBox(width: 8),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primary600,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
