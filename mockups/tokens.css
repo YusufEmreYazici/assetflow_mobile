@@ -1,0 +1,156 @@
+/* AssetFlow — Enterprise Pro design tokens */
+:root {
+  /* Brand / primary */
+  --navy: #1A3A5C;
+  --navy-dark: #0F2845;
+  --navy-light: #4670A8;
+
+  /* Surface */
+  --surface-light: #F0F4F8;
+  --surface-white: #FFFFFF;
+  --surface-divider: #E5EBF0;
+  --surface-input-border: #D1DAE5;
+
+  /* Text */
+  --text-primary: #1A3A5C;
+  --text-secondary: #6B7A8C;
+  --text-tertiary: #9CA8B8;
+
+  /* Semantic */
+  --success: #2D8659;
+  --success-bg: #E8F4ED;
+  --warning: #B85423;
+  --warning-bg: #FDF3E7;
+  --error: #C53030;
+  --error-bg: #FDECEC;
+  --info: #4670A8;
+  --info-bg: #EAF0F8;
+
+  /* Radii */
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+
+  /* Spacing */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+
+  /* Type */
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, sans-serif;
+}
+
+/* Dark theme — applied via [data-theme="dark"] */
+[data-theme="dark"] {
+  --navy: #4670A8;
+  --navy-dark: #2B4C7A;
+  --navy-light: #6A8FC4;
+
+  --surface-light: #0B1622;
+  --surface-white: #152235;
+  --surface-divider: #1F2E45;
+  --surface-input-border: #293B56;
+
+  --text-primary: #E5EBF0;
+  --text-secondary: #9CA8B8;
+  --text-tertiary: #6B7A8C;
+
+  --success: #3FA06B;
+  --success-bg: #1A3428;
+  --warning: #D27048;
+  --warning-bg: #3A2418;
+  --error: #E04545;
+  --error-bg: #3A1C1C;
+  --info: #6A8FC4;
+  --info-bg: #1C2A40;
+}
+
+/* Base resets */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; font-family: var(--font); -webkit-font-smoothing: antialiased; }
+body { background: #E8ECF1; color: var(--text-primary); }
+
+/* Utility classes used in the prototype */
+.label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.section-title {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 16px;
+  border-radius: var(--r-md);
+  font: 500 14px var(--font);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 120ms ease;
+  user-select: none;
+}
+.btn-primary {
+  background: var(--navy); color: #fff;
+}
+.btn-primary:hover { background: var(--navy-dark); }
+.btn-secondary {
+  background: var(--surface-white); color: var(--navy); border-color: var(--surface-input-border);
+}
+.btn-secondary:hover { background: var(--surface-light); }
+.btn-ghost {
+  background: transparent; color: var(--navy);
+}
+
+/* Input */
+.input {
+  width: 100%;
+  background: var(--surface-white);
+  border: 1px solid var(--surface-input-border);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  font: 400 14px var(--font);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 120ms ease;
+}
+.input:focus { border-color: var(--navy); }
+.input::placeholder { color: var(--text-tertiary); }
+
+/* Card */
+.card {
+  background: var(--surface-white);
+  border-radius: var(--r-md);
+  padding: var(--s-4);
+}
+
+/* Status chip */
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 22px; padding: 0 8px;
+  border-radius: 4px;
+  font: 500 11px var(--font);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+.chip-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+.chip-success { background: var(--success-bg); color: var(--success); }
+.chip-warning { background: var(--warning-bg); color: var(--warning); }
+.chip-error   { background: var(--error-bg);   color: var(--error); }
+.chip-info    { background: var(--info-bg);    color: var(--info); }
+.chip-neutral { background: var(--surface-light); color: var(--text-secondary); }
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 0; height: 0; }
+
+/* No tap highlight on mobile */
+* { -webkit-tap-highlight-color: transparent; }

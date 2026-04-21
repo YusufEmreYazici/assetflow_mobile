@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AssetFlow — Redesign</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <style>
+    body {
+      min-height: 100vh;
+      background: #E8ECF1;
+      background-image:
+        radial-gradient(circle at 10% 10%, rgba(26,58,92,0.05), transparent 60%),
+        radial-gradient(circle at 90% 90%, rgba(70,112,168,0.05), transparent 60%);
+      display: flex; flex-direction: column; align-items: center;
+      padding: 60px 20px 80px;
+    }
+    .page-head {
+      width: 100%; max-width: 1200px;
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 24px;
+      margin-bottom: 32px;
+    }
+    .page-head h1 {
+      font: 500 28px var(--font); color: var(--navy);
+      letter-spacing: -0.3px; margin: 0 0 4px 0;
+    }
+    .page-head .sub {
+      font: 500 10px var(--font); color: var(--text-secondary);
+      letter-spacing: 1.4px; text-transform: uppercase;
+    }
+    .page-head p { font: 400 13px var(--font); color: var(--text-secondary); margin: 10px 0 0; max-width: 560px; line-height: 1.55; }
+
+    /* Stage shell */
+    .stage {
+      width: 100%; max-width: 1200px;
+      display: flex; flex-direction: column; gap: 28px;
+    }
+    .screen-row {
+      display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;
+      padding: 24px;
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid rgba(26,58,92,0.08);
+    }
+    .screen-row-dark {
+      background: #0B1622;
+      border-color: rgba(255,255,255,0.08);
+    }
+    .screen-row-dark .row-title { color: #E5EBF0; }
+    .screen-row-dark .row-sub   { color: #6B7A8C; }
+    .row-title-wrap {
+      flex-basis: 180px; flex-shrink: 0;
+      position: sticky; top: 20px;
+    }
+    .row-title { font: 500 16px var(--font); color: var(--navy); letter-spacing: -0.1px; margin: 0 0 6px; }
+    .row-sub { font: 400 12px var(--font); color: var(--text-secondary); line-height: 1.5; }
+    .row-frames { display: flex; flex-wrap: wrap; gap: 24px; flex: 1; min-width: 0; }
+
+    .frame-wrap { display: flex; flex-direction: column; gap: 10px; }
+    .frame-label { font: 500 10px var(--font); color: var(--text-secondary); letter-spacing: 1.2px; text-transform: uppercase; }
+
+    /* Toolbar for prototype mode */
+    .toolbar {
+      width: 100%; max-width: 1200px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 12px 16px;
+      background: #fff; border: 1px solid rgba(26,58,92,0.08);
+      border-radius: 12px; margin-bottom: 24px;
+    }
+    .toolbar .tabs { display: flex; gap: 4px; background: #F0F4F8; padding: 4px; border-radius: 8px; }
+    .toolbar .tabs button {
+      border: none; background: transparent; padding: 6px 12px; border-radius: 6px; cursor: pointer;
+      font: 500 12px var(--font); color: var(--text-secondary);
+    }
+    .toolbar .tabs button.active { background: #fff; color: var(--navy); box-shadow: 0 1px 2px rgba(26,58,92,0.1); }
+
+    .toolbar-right { display: flex; align-items: center; gap: 10px; }
+    .toolbar-right .theme-toggle {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 10px; border-radius: 6px;
+      background: #F0F4F8; border: 1px solid rgba(26,58,92,0.08);
+      font: 500 12px var(--font); color: var(--navy); cursor: pointer;
+    }
+
+    /* Showcase caption */
+    .caption { font: 400 11px var(--font); color: var(--text-tertiary); }
+
+    /* Loading placeholder */
+    .loading { padding: 80px; text-align: center; font: 400 14px var(--font); color: var(--text-secondary); }
+  </style>
+</head>
+<body>
+  <div id="root" class="loading">AssetFlow yükleniyor…</div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script type="text/babel" src="ios-frame.jsx"></script>
+  <script type="text/babel" src="data.jsx"></script>
+  <script type="text/babel" src="icons.jsx"></script>
+  <script type="text/babel" src="ui.jsx"></script>
+  <script type="text/babel" src="screens/login.jsx"></script>
+  <script type="text/babel" src="screens/password-reset.jsx"></script>
+  <script type="text/babel" src="screens/drawer.jsx"></script>
+  <script type="text/babel" src="screens/dashboard-a.jsx"></script>
+  <script type="text/babel" src="screens/dashboard-b.jsx"></script>
+  <script type="text/babel" src="screens/device-list.jsx"></script>
+  <script type="text/babel" src="screens/device-detail.jsx"></script>
+  <script type="text/babel" src="screens/device-form.jsx"></script>
+  <script type="text/babel" src="screens/assign-wizard.jsx"></script>
+  <script type="text/babel" src="screens/audit-log.jsx"></script>
+  <script type="text/babel" src="screens/person.jsx"></script>
+  <script type="text/babel" src="screens/location-notif.jsx"></script>
+  <script type="text/babel" src="screens/profile-sap-export.jsx"></script>
+  <script type="text/babel" src="screens/states.jsx"></script>
+
+  <script type="text/babel">
+    // ═════════ TWEAKS — Dark mode, accent, font, density ═════════
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "dark": false,
+      "accent": "navy",
+      "density": "comfortable",
+      "fontSize": 14
+    }/*EDITMODE-END*/;
+
+    const ACCENT_MAP = {
+      navy:   { navy: "#1A3A5C", navyDark: "#0F2845", navyLight: "#4670A8" },
+      teal:   { navy: "#0F5C5C", navyDark: "#0A4545", navyLight: "#3E9B9B" },
+      plum:   { navy: "#5C1A4A", navyDark: "#3F0F34", navyLight: "#A846A0" },
+      forest: { navy: "#1F4D2B", navyDark: "#133A1E", navyLight: "#4A8F5F" },
+      slate:  { navy: "#334155", navyDark: "#1E293B", navyLight: "#64748B" },
+    };
+
+    function applyTweaks(t) {
+      const root = document.documentElement;
+      root.setAttribute("data-theme", t.dark ? "dark" : "light");
+      if (!t.dark && ACCENT_MAP[t.accent]) {
+        const a = ACCENT_MAP[t.accent];
+        root.style.setProperty("--navy",       a.navy);
+        root.style.setProperty("--navy-dark",  a.navyDark);
+        root.style.setProperty("--navy-light", a.navyLight);
+        root.style.setProperty("--text-primary", a.navy);
+      } else {
+        root.style.removeProperty("--navy");
+        root.style.removeProperty("--navy-dark");
+        root.style.removeProperty("--navy-light");
+        root.style.removeProperty("--text-primary");
+      }
+    }
+
+    function TweaksPanel({ tweaks, onChange, onClose }) {
+      const set = (k, v) => {
+        const next = { ...tweaks, [k]: v };
+        onChange(next);
+        window.parent.postMessage({ type: "__edit_mode_set_keys", edits: { [k]: v } }, "*");
+      };
+      return (
+        <div style={{
+          position: "fixed", bottom: 20, right: 20, width: 280, zIndex: 9999,
+          background: "#fff", border: "1px solid rgba(26,58,92,0.15)",
+          borderRadius: 12, boxShadow: "0 20px 40px rgba(0,0,0,0.15)",
+          fontFamily: "var(--font)", overflow: "hidden",
+        }}>
+          <div style={{ padding: "12px 16px", borderBottom: "1px solid #E5EBF0", display: "flex", alignItems: "center", justifyContent: "space-between", background: "#1A3A5C", color: "#fff" }}>
+            <div style={{ fontSize: 13, fontWeight: 500, letterSpacing: 0.4 }}>Tweaks</div>
+            <button onClick={onClose} style={{ width: 22, height: 22, border: "none", background: "rgba(255,255,255,0.15)", color: "#fff", borderRadius: 4, cursor: "pointer", fontSize: 14, lineHeight: 1 }}>×</button>
+          </div>
+          <div style={{ padding: 16 }}>
+            {/* Dark mode */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+              <div>
+                <div style={{ fontSize: 12, fontWeight: 500, color: "#1A3A5C" }}>Karanlık mod</div>
+                <div style={{ fontSize: 10, color: "#6B7A8C", marginTop: 2 }}>Navy koyu yüzeylere dönüşür</div>
+              </div>
+              <div onClick={() => set("dark", !tweaks.dark)} style={{ width: 40, height: 22, borderRadius: 11, background: tweaks.dark ? "#2D8659" : "#D1DAE5", position: "relative", cursor: "pointer", transition: "background .2s" }}>
+                <div style={{ position: "absolute", top: 2, left: tweaks.dark ? 20 : 2, width: 18, height: 18, borderRadius: "50%", background: "#fff", transition: "left .2s", boxShadow: "0 1px 3px rgba(0,0,0,0.2)" }} />
+              </div>
+            </div>
+
+            {/* Accent */}
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: 11, fontWeight: 500, color: "#6B7A8C", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 8 }}>Marka Rengi</div>
+              <div style={{ display: "flex", gap: 8 }}>
+                {Object.entries(ACCENT_MAP).map(([k, v]) => (
+                  <button key={k} onClick={() => set("accent", k)} title={k} style={{
+                    width: 32, height: 32, borderRadius: 8, background: v.navy,
+                    border: tweaks.accent === k ? "2px solid #fff" : "2px solid transparent",
+                    boxShadow: tweaks.accent === k ? "0 0 0 2px " + v.navy : "none",
+                    cursor: "pointer",
+                  }} />
+                ))}
+              </div>
+            </div>
+
+            {/* Density */}
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 500, color: "#6B7A8C", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 8 }}>Yoğunluk</div>
+              <div style={{ display: "flex", gap: 4, background: "#F0F4F8", padding: 3, borderRadius: 6 }}>
+                {["compact","comfortable","spacious"].map(d => (
+                  <button key={d} onClick={() => set("density", d)} style={{
+                    flex: 1, padding: "6px 0", border: "none",
+                    background: tweaks.density === d ? "#fff" : "transparent",
+                    color: tweaks.density === d ? "#1A3A5C" : "#6B7A8C",
+                    borderRadius: 4, fontSize: 10, fontWeight: 500, fontFamily: "var(--font)",
+                    cursor: "pointer", textTransform: "capitalize",
+                    boxShadow: tweaks.density === d ? "0 1px 2px rgba(0,0,0,0.08)" : "none",
+                  }}>{d === "compact" ? "Sıkı" : d === "comfortable" ? "Normal" : "Geniş"}</button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  </script>
+
+  <script type="text/babel">
+    // Standalone "open drawer" demo screen — dashboard with drawer pinned open
+    function DashboardAWithDrawer() {
+      return (
+        <div style={{ height: "100%", background: "var(--surface-light)", display: "flex", flexDirection: "column", position: "relative" }}>
+          <div style={{ flex: 1, overflow: "auto", paddingBottom: 20 }}>
+            <AppHeader onMenu={() => {}} />
+            <div style={{ padding: 20 }}>
+              <SectionHeader>ÖZET</SectionHeader>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                <KpiCard label="Toplam Cihaz" value="158" accent="var(--navy)" icon="device" />
+                <KpiCard label="Aktif Zimmet" value="94" accent="var(--success)" icon="assign" />
+                <KpiCard label="Personel" value="158" accent="var(--text-secondary)" icon="people" />
+                <KpiCard label="Uyarılar" value="7" accent="var(--warning)" bg="var(--warning-bg)" icon="warning" />
+              </div>
+            </div>
+          </div>
+          <BottomNav active="home" onChange={() => {}} onMore={() => {}} />
+          <AppDrawer open={true} onClose={() => {}} current="home" onNavigate={() => {}} />
+        </div>
+      );
+    }
+
+    function App() {
+      const [pwStep, setPwStep] = React.useState("forgot");
+      const [tweaks, setTweaks] = React.useState(TWEAK_DEFAULTS);
+      const [tweaksOpen, setTweaksOpen] = React.useState(false);
+
+      React.useEffect(() => { applyTweaks(tweaks); }, [tweaks]);
+
+      React.useEffect(() => {
+        const handler = (e) => {
+          const d = e.data || {};
+          if (d.type === "__activate_edit_mode")   setTweaksOpen(true);
+          if (d.type === "__deactivate_edit_mode") setTweaksOpen(false);
+        };
+        window.addEventListener("message", handler);
+        window.parent.postMessage({ type: "__edit_mode_available" }, "*");
+        return () => window.removeEventListener("message", handler);
+      }, []);
+
+      return (
+        <div className="stage">
+          <div className="page-head">
+            <div>
+              <div className="sub">AssetFlow · Redesign</div>
+              <h1>AssetFlow — Enterprise Pro Mobile</h1>
+              <p>Kurumsal IT varlık yönetimi mobil uygulaması. Ekranlar sırasıyla ekleniyor; her ekran için 2 varyasyon (layout/yoğunluk farkı) sunulacak. Etkileşimli: sekme, wizard, search, expand/collapse, bottom nav çalışıyor.</p>
+            </div>
+          </div>
+
+          {/* ─── 01 Login ─── */}
+          <div className="screen-row" data-screen-label="01 Login">
+            <div className="row-title-wrap">
+              <div className="row-title">01 · Giriş</div>
+              <div className="row-sub">AssetFlow wordmark. Kurumsal hesap (GÜVENOK domain'i) + SSO. Focus state'li input'lar, şifre göz ikonu, giriş yapılıyor spinner'ı.</div>
+            </div>
+            <div className="row-frames">
+              <div className="frame-wrap">
+                <div className="frame-label">Login · 390 × 844</div>
+                <IOSDevice width={390} height={844}>
+                  <LoginScreen onLogin={() => alert("Giriş başarılı")} />
+                </IOSDevice>
+              </div>
+            </div>
+          </div>
+
+          {/* ─── 02 Şifre Sıfırlama (3 ekran) ─── */}
+          <div className="screen-row" data-screen-label="02 Şifre Sıfırlama">
+            <div className="row-title-wrap">
+              <div className="row-title">02 · Şifre Sıfırlama</div>
+              <div className="row-sub">3 ekranlık akış: <b>Forgot</b> → email validasyonu · <b>Sent</b> → 60s yeniden gönder cooldown'u · <b>Reset</b> → güçlülük meter + eşleşme kontrolü. Aşağıdaki "Akışı başlat" butonu ile interaktif dene.</div>
+              <div style={{ marginTop: 12, display: "flex", gap: 6, flexWrap: "wrap" }}>
+                {["forgot","sent","reset"].map(s => (
+                  <button key={s} onClick={() => setPwStep(s)} style={{
+                    padding: "6px 10px", borderRadius: 6, cursor: "pointer",
+                    border: "1px solid var(--surface-input-border)",
+                    background: pwStep === s ? "var(--navy)" : "#fff",
+                    color: pwStep === s ? "#fff" : "var(--navy)",
+                    font: "500 11px var(--font)", textTransform: "uppercase", letterSpacing: 0.5,
+                  }}>{s}</button>
+                ))}
+              </div>
+            </div>
+            <div className="row-frames">
+              <div className="frame-wrap">
+                <div className="frame-label">02a · Şifremi Unuttum</div>
+                <IOSDevice width={390} height={844}>
+                  <ForgotPasswordScreen onSubmit={() => setPwStep("sent")} onBack={() => alert("Login'e dön")} />
+                </IOSDevice>
+              </div>
+              <div className="frame-wrap">
+                <div className="frame-label">02b · E-posta Gönderildi</div>
+                <IOSDevice width={390} height={844}>
+                  <PasswordEmailSentScreen email="zeynep.aksoy@guvenok.com.tr" onOpenReset={() => setPwStep("reset")} onBackToLogin={() => setPwStep("forgot")} />
+                </IOSDevice>
+              </div>
+              <div className="frame-wrap">
+                <div className="frame-label">02c · Yeni Şifre Belirle</div>
+                <IOSDevice width={390} height={844}>
+                  <ResetPasswordScreen onDone={() => alert("Şifre güncellendi")} onBackToLogin={() => setPwStep("forgot")} />
+                </IOSDevice>
+              </div>
+              <div className="frame-wrap">
+                <div className="frame-label">Canlı akış · başla → {pwStep}</div>
+                <IOSDevice width={390} height={844}>
+                  {pwStep === "forgot" && <ForgotPasswordScreen onSubmit={() => setPwStep("sent")} onBack={() => alert("Back")} />}
+                  {pwStep === "sent"   && <PasswordEmailSentScreen email="zeynep.aksoy@guvenok.com.tr" onOpenReset={() => setPwStep("reset")} onBackToLogin={() => setPwStep("forgot")} />}
+                  {pwStep === "reset"  && <ResetPasswordScreen onDone={() => setPwStep("forgot")} onBackToLogin={() => setPwStep("forgot")} />}
+                </IOSDevice>
+              </div>
+            </div>
+          </div>
+
+          {/* ─── 03 Dashboard — 2 varyasyon + drawer ─── */}
+          <div className="screen-row" data-screen-label="03 Dashboard">
+            <div className="row-title-wrap">
+              <div className="row-title">03 · Dashboard</div>
+              <div className="row-sub">Header'da hamburger ikonu + bottom nav'de "Daha Fazla" sekmesi → <b>AppDrawer</b>'ı açar. Bottom nav 4 sekmeye düştü (Anasayfa/Cihazlar/Personel/Daha Fazla). Varyasyon <b>A</b> klasik 2×2 KPI, <b>B</b> analytics-leaning.</div>
+            </div>
+            <div className="row-frames">
+              <div className="frame-wrap">
+                <div className="frame-label">A · 2×2 KPI + aktivite</div>
+                <IOSDevice width={390} height={844}>
+                  <DashboardA />
+                </IOSDevice>
+                <div className="caption">Hamburger ikonuna tıkla · drawer açılsın</div>
+              </div>
+              <div className="frame-wrap">
+                <div className="frame-label">B · Analytics-leaning</div>
+                <IOSDevice width={390} height={844}>
+                  <DashboardB />
+                </IOSDevice>
+                <div className="caption">Hero KPI + lokasyon dağılımı</div>
+              </div>
+              <div className="frame-wrap">
+                <div className="frame-label">AppDrawer · tam görünüm</div>
+                <IOSDevice width={390} height={844}>
+                  <DashboardAWithDrawer />
+                </IOSDevice>
+                <div className="caption">Profil + 4 section · Çıkış Yap · v2.4.1</div>
+              </div>
+            </div>
+          </div>
+
+          {/* ─── 04 Cihaz Listesi ─── */}
+          <div className="screen-row" data-screen-label="04 Cihaz Listesi">
+            <div className="row-title-wrap">
+              <div className="row-title">04 · Cihaz Listesi</div>
+              <div className="row-sub">Search + filter chip'ler (Tümü/Zimmetli/Depoda/Bakımda/Emekli) + tip ikonlu kart listesi. Sağ alt FAB. Search canlı filtreliyor.</div>
+            </div>
+            <div className="row-frames">
+              <div className="frame-wrap">
+                <div className="frame-label">Cihazlar · varsayılan</div>
+                <IOSDevice width={390} height={844}>
+                  <DeviceListScreen onOpenDevice={(d) => alert(d.name)} />
+                </IOSDevice>
+                <div className="caption">Filter chip'e tıkla · search kutusuna yaz</div>
+              </div>
+            </div>
+          </div>
+
+          {/* ─── 05 Cihaz Detay ─── */}
+          <div className="screen-row" data-screen-label="05 Cihaz Detay">
+            <div className="row-title-wrap">
+              <div className="row-title">05 · Cihaz Detay</div>
+              <div className="row-sub">4 tab: Genel / Donanım / Zimmetler / Geçmiş. <b>A</b>: kompakt header + tek section, <b>B</b>: navy header'da 3'lü metrik + KV kartları bölümlü. Geçmiş tab'ında audit timeline — expand/collapse ile eski→yeni diff. Cihaz zimmetliyse "İade Et", değilse "Zimmetle" floating action.</div>
+            </div>
+            <div className="row-frames">
+              <div className="frame-wrap">
+                <div className="frame-label">A · Kompakt (Zimmetli)</div>
+                <IOSDevice width={390} height={844}>
+                  <DeviceDetailScreen device={DEVICES[0]} variant="A" />
+                </IOSDevice>
+                <div className="caption">Tab'lara tıkla · Geçmiş'te satır aç/kapat</div>
+              </div>
+              <div className="frame-wrap">
+                <div className="frame-label">B · Metrikli header</div>
+                <IOSDevice width={390} height={844}>
+                  <DeviceDetailScreen device={DEVICES[0]} variant="B" />
+                </IOSDevice>
+                <div className="caption">Navy header'da durum / zimmetli / lokasyon</div>
+              </div>
+              <div className="frame-wrap">
+                <div className="frame-label">Depoda · Zimmetle CTA</div>
+                <IOSDevice width={390} height={844}>
+                  <DeviceDetailScreen device={DEVICES[2]} variant="A" />
+                </IOSDevice>
+                <div className="caption">Zimmetli değil → "Zimmetle" butonu navy</div>
+              </div>
+            </div>
+          </div>
+
+          {/* ─── 06 Cihaz Ekle ─── */}
+          <div className="screen-row" data-screen-label="06 Cihaz Ekle">
+            <div className="row-title-wrap">
+              <div className="row-title">06 · Cihaz Ekle (Form)</div>
+              <div className="row-sub">4 step wizard: Temel → Donanım → Alım → Lokasyon. Step indicator üstte (done = yeşil check, current = navy+outline, pending = gri). Alt sabit Geri/İleri butonları, son step'te Kaydet yeşil.</div>
+            </div>
+            <div className="row-frames">
+              <div className="frame-wrap">
+                <div className="frame-label">Step 1 · Temel</div>
+                <IOSDevice width={390} height={844}>
+                  <DeviceFormScreen />
+                </IOSDevice>
+                <div className="caption">İleri'ye bas → step ilerlesin</div>
+              </div>
+            </div>
+          </div>
+
+          {/* ─── 07 Zimmet Akışı ─── */}
+          <div className="screen-row" data-screen-label="07 Zimmet Akışı">
+            <div className="row-title-wrap">
+              <div className="row-title">07 · Zimmet Akışı (4-step)</div>
+              <div className="row-sub">Kişi seç → Cihaz seç (sadece depoda olanlar) → Şartlar (süre, kişisel/yurt dışı izinleri) → Özet + dijital imza. Her step'te canlı state; son adımda imza atıldığında "Onayla" yeşile döner. Zimmet no otomatik üretiliyor (ZMT-YYYYMMDD-NNNN).</div>
+            </div>
+            <div className="row-frames">
+              <div className="frame-wrap">
+                <div className="frame-label">Step 1 · Kişi Seç</div>
+                <IOSDevice width={390} height={844}>
+                  <AssignWizardScreen startStep={0} />
+                </IOSDevice>
+                <div className="caption">Kişiye tıkla → İleri aktifleşir</div>
+              </div>
+              <div className="frame-wrap">
+                <div className="frame-label">Step 3 · Şartlar</div>
+                <IOSDevice width={390} height={844}>
+                  <AssignWizardScreen startStep={2} />
+                </IOSDevice>
+                <div className="caption">Checkbox'lar · süre dropdown</div>
+              </div>
+              <div className="frame-wrap">
+                <div className="frame-label">Step 4 · Özet + İmza</div>
+                <IOSDevice width={390} height={844}>
+                  <AssignWizardScreen startStep={3} />
+                </IOSDevice>
+                <div className="caption">İmza kutusuna dokun → script font'la imza</div>
+              </div>
+            </div>
+          </div>
+
+          {/* ─── 08 Audit Log ─── */}
+          <div className="screen-row" data-screen-label="08 Audit Log">
+            <div className="row-title-wrap">
+              <div className="row-title">08 · Audit Log</div>
+              <div className="row-sub">Tüm sistemdeki değişiklik günlüğü. Filter chip (Tümü/Oluşturma/Güncelleme/Silme/Sistem) → tarihe göre grupla → kayıt bazlı tag + renkli dot. Detay satırları (değişiklik içerenler) expand ile eski→yeni diff gösterir. Sağ üstte Export.</div>
+            </div>
+            <div className="row-frames">
+              <div className="frame-wrap">
+                <div className="frame-label">Tüm kayıtlar</div>
+                <IOSDevice width={390} height={844}>
+                  <AuditLogScreen />
+                </IOSDevice>
+                <div className="caption">Filter chip'e tıkla · "UPDATE" satırını aç</div>
+              </div>
+            </div>
+          </div>
+
+          {/* ─── 09 Personel Liste ─── */}
+          <div className="screen-row" data-screen-label="09 Personel Liste">
+            <div className="row-title-wrap">
+              <div className="row-title">09 · Personel Liste</div>
+              <div className="row-sub">Alfabetik gruplama, avatar + isim + sicil/departman + zimmet sayısı. Search canlı filtreliyor.</div>
+            </div>
+            <div className="row-frames">
+              <div className="frame-wrap">
+                <div className="frame-label">Tüm personel</div>
+                <IOSDevice width={390} height={844}>
+                  <PersonListScreen />
+                </IOSDevice>
+                <div className="caption">İsim ara · kart sağındaki sayı zimmetli cihaz adedi</div>
+              </div>
+            </div>
+          </div>
+
+          {/* ─── 10 Personel Detay ─── */}
+          <div className="screen-row" data-screen-label="10 Personel Detay">
+            <div className="row-title-wrap">
+              <div className="row-title">10 · Personel Detay</div>
+              <div className="row-sub">Büyük avatar + ünvan + sicil/departman + 3'lü metrik (zimmet sayısı/lokasyon/başlangıç). 3 tab: Zimmetler (aktif cihaz listesi), İletişim (KV), Geçmiş (zimmet timeline).</div>
+            </div>
+            <div className="row-frames">
+              <div className="frame-wrap">
+                <div className="frame-label">Zimmetler tab</div>
+                <IOSDevice width={390} height={844}>
+                  <PersonDetailScreen person={PEOPLE[0]} />
+                </IOSDevice>
+                <div className="caption">Tab'lara tıkla</div>
+              </div>
+              <div className="frame-wrap">
+                <div className="frame-label">Zimmet yoksa empty state</div>
+                <IOSDevice width={390} height={844}>
+                  <PersonDetailScreen person={PEOPLE[5]} />
+                </IOSDevice>
+                <div className="caption">Zimmeti olmayan personel</div>
+              </div>
+            </div>
+          </div>
+
+          {/* ─── 11 Lokasyon ─── */}
+          <div className="screen-row" data-screen-label="11 Lokasyon">
+            <div className="row-title-wrap">
+              <div className="row-title">11 · Lokasyon</div>
+              <div className="row-sub">Liste: tesis kartları — cihaz / personel / aktif % + progress bar. Detay: navy header + 4'lü metrik (cihaz/kişi/aktif/depo), 3 tab (Cihazlar/Personel/Depolar).</div>
+            </div>
+            <div className="row-frames">
+              <div className="frame-wrap">
+                <div className="frame-label">Liste</div>
+                <IOSDevice width={390} height={844}>
+                  <LocationListScreen />
+                </IOSDevice>
+                <div className="caption">Arama · metrikli kartlar</div>
+              </div>
+              <div className="frame-wrap">
+                <div className="frame-label">Detay · Mersin Limanı</div>
+                <IOSDevice width={390} height={844}>
+                  <LocationDetailScreen loc={LOCATION_DATA[1]} />
+                </IOSDevice>
+                <div className="caption">Tab'lara tıkla</div>
+              </div>
+            </div>
+          </div>
+
+          {/* ─── 12 Bildirim ─── */}
+          <div className="screen-row" data-screen-label="12 Bildirim">
+            <div className="row-title-wrap">
+              <div className="row-title">12 · Bildirim Merkezi</div>
+              <div className="row-sub">Filter chip'ler (Tümü/Okunmamış/Uyarı/Bilgi/Başarı/Hata), okunmamışlar sol navy border + arkaplan vurgusu + sağda mavi dot. Ikon kutuları kind'a göre renkli.</div>
+            </div>
+            <div className="row-frames">
+              <div className="frame-wrap">
+                <div className="frame-label">Tüm bildirimler</div>
+                <IOSDevice width={390} height={844}>
+                  <NotificationsScreen />
+                </IOSDevice>
+                <div className="caption">"Okunmamış" filter'ını dene</div>
+              </div>
+            </div>
+          </div>
+
+          {/* ─── 13 Profil ─── */}
+          <div className="screen-row" data-screen-label="13 Profil">
+            <div className="row-title-wrap">
+              <div className="row-title">13 · Profil / Ayarlar</div>
+              <div className="row-sub">Kullanıcı kartı, hesap bilgileri, tercihler (bildirim/dil/dark mode toggle), güvenlik (2FA, oturumlar), hakkında, çıkış. Row komponenti: ikon kutusu + label + value/toggle/chevron.</div>
+            </div>
+            <div className="row-frames">
+              <div className="frame-wrap">
+                <div className="frame-label">Zeynep Aksoy · IT Specialist</div>
+                <IOSDevice width={390} height={844}>
+                  <ProfileScreen />
+                </IOSDevice>
+                <div className="caption">Scroll et · toggle / chevron mix</div>
+              </div>
+            </div>
+          </div>
+
+          {/* ─── 14 SAP Entegrasyon ─── */}
+          <div className="screen-row" data-screen-label="14 SAP Entegrasyon">
+            <div className="row-title-wrap">
+              <div className="row-title">14 · SAP Entegrasyon</div>
+              <div className="row-sub">Bağlantı durumu (yeşil pulse dot), endpoint/client bilgileri, "Şimdi Senkronize Et" CTA (tıklayınca spinner animasyonu), bugünkü metrikler, son işlem logları (yeşil/sarı dot).</div>
+            </div>
+            <div className="row-frames">
+              <div className="frame-wrap">
+                <div className="frame-label">SAP canlı</div>
+                <IOSDevice width={390} height={844}>
+                  <SapIntegrationScreen />
+                </IOSDevice>
+                <div className="caption">"Şimdi Senkronize" → 1.5sn spinner</div>
+              </div>
+            </div>
+          </div>
+
+          {/* ─── 15 Export ─── */}
+          <div className="screen-row" data-screen-label="15 Export">
+            <div className="row-title-wrap">
+              <div className="row-title">15 · Dışa Aktar</div>
+              <div className="row-sub">Format seç (Excel/CSV/PDF segmented), kapsam (radio listesi), alanlar (checkbox'lar), canlı dosya adı önizlemesi, sabit alt CTA.</div>
+            </div>
+            <div className="row-frames">
+              <div className="frame-wrap">
+                <div className="frame-label">Excel · Tüm Cihazlar</div>
+                <IOSDevice width={390} height={844}>
+                  <ExportScreen />
+                </IOSDevice>
+                <div className="caption">Format/kapsam/alan seç → önizleme güncellenir</div>
+              </div>
+            </div>
+          </div>
+
+          {/* ─── 16 States ─── */}
+          <div className="screen-row" data-screen-label="16 States">
+            <div className="row-title-wrap">
+              <div className="row-title">16 · Empty / Loading / Error / Offline</div>
+              <div className="row-sub">Uç durum ekranları: veri yok empty state, skeleton loading (shimmer animasyonu), network/403/500 hata varyasyonları (error kodu ile), çevrimdışı modu banner + opak kartlar.</div>
+            </div>
+            <div className="row-frames">
+              <div className="frame-wrap">
+                <div className="frame-label">Empty · Cihaz yok</div>
+                <IOSDevice width={390} height={844}>
+                  <EmptyState icon="laptop" title="Henüz cihaz yok" body="Bu lokasyonda kayıtlı cihaz bulunmuyor. İlk cihazınızı ekleyerek başlayın." cta="Cihaz Ekle" />
+                </IOSDevice>
+                <div className="caption">Depo boş veya filter hiçbir sonuç dönmüyor</div>
+              </div>
+              <div className="frame-wrap">
+                <div className="frame-label">Loading · Skeleton</div>
+                <IOSDevice width={390} height={844}>
+                  <LoadingState />
+                </IOSDevice>
+                <div className="caption">Shimmer animasyonlu yer tutucular</div>
+              </div>
+              <div className="frame-wrap">
+                <div className="frame-label">Error · Bağlantı</div>
+                <IOSDevice width={390} height={844}>
+                  <ErrorState kind="network" />
+                </IOSDevice>
+                <div className="caption">Network hatası → Yeniden Dene / Destek</div>
+              </div>
+              <div className="frame-wrap">
+                <div className="frame-label">Error · 403 Yetkisiz</div>
+                <IOSDevice width={390} height={844}>
+                  <ErrorState kind="403" />
+                </IOSDevice>
+                <div className="caption">Hata kodu ile destek referansı</div>
+              </div>
+              <div className="frame-wrap">
+                <div className="frame-label">Offline · Önbellek</div>
+                <IOSDevice width={390} height={844}>
+                  <OfflineBanner />
+                </IOSDevice>
+                <div className="caption">Üst sarı banner + opak kartlar</div>
+              </div>
+            </div>
+          </div>
+
+          {tweaksOpen && <TweaksPanel tweaks={tweaks} onChange={setTweaks} onClose={() => setTweaksOpen(false)} />}
+        </div>
+      );
+    }
+    const r = document.getElementById("root");
+    r.classList.remove("loading"); r.textContent = "";
+    ReactDOM.createRoot(r).render(<App />);
+  </script>
+</body>
+</html>
