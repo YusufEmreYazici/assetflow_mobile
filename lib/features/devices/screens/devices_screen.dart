@@ -9,7 +9,8 @@ import 'package:assetflow_mobile/features/devices/providers/device_provider.dart
 import 'package:assetflow_mobile/features/devices/widgets/device_row.dart';
 
 class DevicesScreen extends ConsumerStatefulWidget {
-  const DevicesScreen({super.key});
+  final bool returnMode;
+  const DevicesScreen({super.key, this.returnMode = false});
 
   @override
   ConsumerState<DevicesScreen> createState() => _DevicesScreenState();
@@ -33,6 +34,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
   void initState() {
     super.initState();
     _scrollCtrl.addListener(_onScroll);
+    if (widget.returnMode) _filterStatus = 0;
   }
 
   @override
@@ -87,6 +89,31 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
               ),
             ),
           ),
+          if (widget.returnMode)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              decoration: const BoxDecoration(
+                color: AppColors.infoBg,
+                border: Border(
+                  bottom: BorderSide(color: AppColors.info, width: 1),
+                ),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.info_outline, size: 16, color: AppColors.info),
+                  const SizedBox(width: 8),
+                  Text(
+                    'İade edilecek cihazı seçin',
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.info,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           Expanded(
             child: Column(
               children: [

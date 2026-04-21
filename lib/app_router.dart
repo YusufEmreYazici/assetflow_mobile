@@ -112,7 +112,9 @@ final routerProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(routes: [
             GoRoute(
               path: '/devices',
-              builder: (ctx, routeState) => const DevicesScreen(),
+              builder: (ctx, routeState) => DevicesScreen(
+                returnMode: (routeState.extra as Map<String, dynamic>?)?['returnMode'] == true,
+              ),
               routes: [
                 GoRoute(path: 'new', builder: (ctx, routeState) => const DeviceFormScreen()),
                 GoRoute(

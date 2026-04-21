@@ -207,7 +207,10 @@ class DashboardBView extends ConsumerWidget {
                         onTap: () => context.push('/assignments')),
                     const SizedBox(width: 8),
                     QuickAction(icon: Icons.upload_outlined,  label: 'İade',
-                        onTap: () {}),
+                        onTap: () => context.push(
+                          '/devices',
+                          extra: <String, dynamic>{'returnMode': true},
+                        )),
                   ],
                 ),
               ],
