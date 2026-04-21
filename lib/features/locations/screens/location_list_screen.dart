@@ -29,16 +29,15 @@ class LocationListScreen extends ConsumerWidget {
               data: (l) => '${l.length} LOKASYON',
               orElse: () => '',
             ),
-            onBack: () => Scaffold.maybeOf(context)?.openEndDrawer(),
-            action: GestureDetector(
-              onTap: () => context.push('/locations/new'),
+            leading: GestureDetector(
+              onTap: () => Scaffold.maybeOf(context)?.openEndDrawer(),
               child: Container(
                 width: 36, height: 36,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.14),
+                  color: Colors.white.withValues(alpha: 0.10),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(Icons.add, size: 18, color: Colors.white),
+                child: const Icon(Icons.menu, size: 18, color: Colors.white),
               ),
             ),
           ),
