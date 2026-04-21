@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/app_chip.dart';
+import 'package:assetflow_mobile/core/widgets/favorite_star.dart';
 import 'package:assetflow_mobile/data/models/device_model.dart';
 
-class DeviceDetailHeader extends StatelessWidget {
+class DeviceDetailHeader extends ConsumerWidget {
   final Device device;
   final VoidCallback? onBack;
   final VoidCallback? onEdit;
@@ -24,7 +26,7 @@ class DeviceDetailHeader extends StatelessWidget {
       };
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final typeLabel = deviceTypeLabels[device.type] ?? 'Cihaz';
     final statusLabel = deviceStatusLabels[device.status] ?? '?';
 
@@ -96,6 +98,12 @@ class DeviceDetailHeader extends StatelessWidget {
                   ],
                 ),
               ),
+              FavoriteStar(
+                deviceId: device.id,
+                size: 20,
+                inactiveColor: Colors.white.withValues(alpha: 0.6),
+              ),
+              const SizedBox(width: 4),
               GestureDetector(
                 onTap: onEdit,
                 child: Container(

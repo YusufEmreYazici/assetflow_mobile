@@ -8,6 +8,7 @@ import 'package:assetflow_mobile/data/services/device_service.dart';
 import 'package:assetflow_mobile/data/services/location_service.dart';
 import 'package:assetflow_mobile/features/devices/providers/bulk_selection_provider.dart';
 import 'package:assetflow_mobile/features/devices/providers/device_provider.dart';
+import 'package:assetflow_mobile/features/devices/providers/favorites_provider.dart';
 
 class BulkActionBar extends ConsumerStatefulWidget {
   final List<String> filteredDeviceIds;
@@ -276,9 +277,13 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
               leading: const Icon(Icons.star_border, color: AppColors.warning),
               title: Text('Favorilere Ekle', style: GoogleFonts.inter(fontSize: 14)),
               onTap: () {
+                final ids = ref.read(bulkSelectionProvider).selectedIds;
+                ref.read(favoritesProvider.notifier).addAll(ids);
                 Navigator.pop(ctx);
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text('Favoriler özelliği yakında aktif olacak'),
+                selectionNotifier.exit();
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('${ids.length} cihaz favorilere eklendi'),
+                  backgroundColor: AppColors.warning,
                   behavior: SnackBarBehavior.floating,
                 ));
               },

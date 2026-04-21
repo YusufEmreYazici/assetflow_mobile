@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:assetflow_mobile/data/models/device_model.dart';
 import 'package:assetflow_mobile/features/devices/models/device_filter.dart';
 import 'package:assetflow_mobile/features/devices/providers/device_provider.dart';
+import 'package:assetflow_mobile/features/devices/providers/favorites_provider.dart';
 
 // ── Filter state ─────────────────────────────────────────────────────────────
 
@@ -70,7 +71,8 @@ final filterPresetsProvider =
 final filteredDevicesProvider = Provider.autoDispose<List<Device>>((ref) {
   final devices = ref.watch(deviceProvider).devices;
   final filter = ref.watch(deviceFilterProvider);
+  final favorites = ref.watch(favoritesProvider);
 
   if (filter.isEmpty) return devices;
-  return devices.where((d) => filter.matches(d)).toList();
+  return devices.where((d) => filter.matches(d, favorites: favorites)).toList();
 });

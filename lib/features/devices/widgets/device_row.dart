@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/app_chip.dart';
+import 'package:assetflow_mobile/core/widgets/favorite_star.dart';
 import 'package:assetflow_mobile/data/models/device_model.dart';
 
-class DeviceRow extends StatelessWidget {
+class DeviceRow extends ConsumerWidget {
   final Device device;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
@@ -44,7 +46,7 @@ class DeviceRow extends StatelessWidget {
   String get _statusLabel => deviceStatusLabels[device.status] ?? '?';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
@@ -117,9 +119,11 @@ class DeviceRow extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 4),
             if (!selectionMode)
-              const Icon(Icons.chevron_right, size: 16, color: AppColors.textTertiary),
+              FavoriteStar(deviceId: device.id, size: 20),
+            if (selectionMode)
+              const SizedBox(width: 8),
           ],
         ),
       ),
