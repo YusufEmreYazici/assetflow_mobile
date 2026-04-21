@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:assetflow_mobile/core/services/offline_cache_service.dart';
 import 'package:assetflow_mobile/data/models/assignment_model.dart';
 import 'package:assetflow_mobile/data/services/assignment_service.dart';
 import 'package:assetflow_mobile/core/utils/notification_service.dart';
@@ -78,6 +79,7 @@ class AssignmentNotifier extends StateNotifier<AssignmentListState> {
     if (reset) {
       state = state.copyWith(isLoading: true, error: null, page: 1);
     }
+    final cacheKey = 'assignments_${state.filter.name}_page1';
     try {
       final result = await _service.getAll(
         page: 1,
@@ -85,13 +87,15 @@ class AssignmentNotifier extends StateNotifier<AssignmentListState> {
         search: state.searchQuery.isNotEmpty ? state.searchQuery : null,
         isActive: _activeFilter,
       );
-      final cacheKey = 'assignments_${state.filter.name}_page1';
       if (state.searchQuery.isEmpty) {
         await CacheManager.instance.set(
           cacheKey,
           result.items.map((a) => a.toJson()).toList(),
           ttl: const Duration(minutes: 15),
         );
+        if (state.filter == AssignmentFilter.all) {
+          await OfflineCacheService.cacheAssignments(result.items);
+        }
       }
       state = state.copyWith(
         assignments: result.items,
@@ -101,43 +105,46 @@ class AssignmentNotifier extends StateNotifier<AssignmentListState> {
       );
     } on DioException catch (e) {
       if (state.searchQuery.isEmpty) {
-        final cacheKey = 'assignments_${state.filter.name}_page1';
+        if (OfflineCacheService.hasAssignmentCache) {
+          state = state.copyWith(
+            assignments: OfflineCacheService.getCachedAssignments(),
+            isLoading: false,
+            page: 1,
+            hasMore: false,
+          );
+          return;
+        }
         final cached = await CacheManager.instance.getStale(cacheKey);
         if (cached != null) {
           final items = (cached as List)
               .map((j) => Assignment.fromJson(j as Map<String, dynamic>))
               .toList();
-          state = state.copyWith(
-            assignments: items,
-            isLoading: false,
-            page: 1,
-            hasMore: false,
-          );
+          state = state.copyWith(assignments: items, isLoading: false, page: 1, hasMore: false);
           return;
         }
       }
       state = state.copyWith(isLoading: false, error: _extractError(e));
     } catch (_) {
       if (state.searchQuery.isEmpty) {
-        final cacheKey = 'assignments_${state.filter.name}_page1';
-        final cached = await CacheManager.instance.getStale(cacheKey);
-        if (cached != null) {
-          final items = (cached as List)
-              .map((j) => Assignment.fromJson(j as Map<String, dynamic>))
-              .toList();
+        if (OfflineCacheService.hasAssignmentCache) {
           state = state.copyWith(
-            assignments: items,
+            assignments: OfflineCacheService.getCachedAssignments(),
             isLoading: false,
             page: 1,
             hasMore: false,
           );
           return;
         }
+        final cached = await CacheManager.instance.getStale(cacheKey);
+        if (cached != null) {
+          final items = (cached as List)
+              .map((j) => Assignment.fromJson(j as Map<String, dynamic>))
+              .toList();
+          state = state.copyWith(assignments: items, isLoading: false, page: 1, hasMore: false);
+          return;
+        }
       }
-      state = state.copyWith(
-        isLoading: false,
-        error: 'Beklenmeyen bir hata olustu.',
-      );
+      state = state.copyWith(isLoading: false, error: 'Beklenmeyen bir hata olustu.');
     }
   }
 

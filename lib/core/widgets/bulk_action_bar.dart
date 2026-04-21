@@ -6,6 +6,7 @@ import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/data/models/device_model.dart';
 import 'package:assetflow_mobile/data/services/device_service.dart';
 import 'package:assetflow_mobile/data/services/location_service.dart';
+import 'package:assetflow_mobile/core/widgets/connectivity_wrapper.dart';
 import 'package:assetflow_mobile/features/devices/providers/bulk_selection_provider.dart';
 import 'package:assetflow_mobile/features/devices/providers/device_provider.dart';
 import 'package:assetflow_mobile/features/devices/providers/favorites_provider.dart';
@@ -23,7 +24,15 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
   bool _isBusy = false;
   String _busyText = '';
 
+  void _warnOffline() {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('Çevrimiçi olduğunuzda bu işlemi yapabilirsiniz'),
+      behavior: SnackBarBehavior.floating,
+    ));
+  }
+
   Future<void> _changeStatus() async {
+    if (!ref.read(connectivityProvider)) { _warnOffline(); return; }
     final selected = ref.read(bulkSelectionProvider).selectedIds.toList();
     if (selected.isEmpty) return;
 
@@ -93,6 +102,7 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
   }
 
   Future<void> _changeLocation() async {
+    if (!ref.read(connectivityProvider)) { _warnOffline(); return; }
     final selected = ref.read(bulkSelectionProvider).selectedIds.toList();
     if (selected.isEmpty) return;
 
@@ -195,6 +205,7 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
   }
 
   Future<void> _deleteSelected() async {
+    if (!ref.read(connectivityProvider)) { _warnOffline(); return; }
     final selected = ref.read(bulkSelectionProvider).selectedIds.toList();
     if (selected.isEmpty) return;
 

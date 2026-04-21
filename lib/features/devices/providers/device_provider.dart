@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:assetflow_mobile/core/services/offline_cache_service.dart';
 import 'package:assetflow_mobile/data/models/device_model.dart';
 import 'package:assetflow_mobile/data/services/device_service.dart';
 import 'package:assetflow_mobile/core/utils/cache_manager.dart';
@@ -58,12 +59,12 @@ class DeviceNotifier extends StateNotifier<DeviceListState> {
     }
     try {
       final result = await _service.getAll(page: 1, pageSize: _pageSize);
-      // Cache first page
       await CacheManager.instance.set(
         'devices_page1',
         result.items.map((d) => d.toJson()).toList(),
         ttl: const Duration(minutes: 15),
       );
+      await OfflineCacheService.cacheDevices(result.items);
       state = state.copyWith(
         devices: result.items,
         isLoading: false,
@@ -71,39 +72,43 @@ class DeviceNotifier extends StateNotifier<DeviceListState> {
         hasMore: result.page < result.totalPages,
       );
     } on DioException catch (e) {
-      // Try offline cache
+      if (OfflineCacheService.hasDeviceCache) {
+        state = state.copyWith(
+          devices: OfflineCacheService.getCachedDevices(),
+          isLoading: false,
+          page: 1,
+          hasMore: false,
+        );
+        return;
+      }
       final cached = await CacheManager.instance.getStale('devices_page1');
       if (cached != null) {
         final items = (cached as List)
             .map((j) => Device.fromJson(j as Map<String, dynamic>))
             .toList();
-        state = state.copyWith(
-          devices: items,
-          isLoading: false,
-          page: 1,
-          hasMore: false,
-        );
+        state = state.copyWith(devices: items, isLoading: false, page: 1, hasMore: false);
         return;
       }
       state = state.copyWith(isLoading: false, error: _extractError(e));
     } catch (e) {
-      final cached = await CacheManager.instance.getStale('devices_page1');
-      if (cached != null) {
-        final items = (cached as List)
-            .map((j) => Device.fromJson(j as Map<String, dynamic>))
-            .toList();
+      if (OfflineCacheService.hasDeviceCache) {
         state = state.copyWith(
-          devices: items,
+          devices: OfflineCacheService.getCachedDevices(),
           isLoading: false,
           page: 1,
           hasMore: false,
         );
         return;
       }
-      state = state.copyWith(
-        isLoading: false,
-        error: 'Beklenmeyen bir hata olustu.',
-      );
+      final cached = await CacheManager.instance.getStale('devices_page1');
+      if (cached != null) {
+        final items = (cached as List)
+            .map((j) => Device.fromJson(j as Map<String, dynamic>))
+            .toList();
+        state = state.copyWith(devices: items, isLoading: false, page: 1, hasMore: false);
+        return;
+      }
+      state = state.copyWith(isLoading: false, error: 'Beklenmeyen bir hata olustu.');
     }
   }
 

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:assetflow_mobile/core/services/offline_cache_service.dart';
 import 'package:assetflow_mobile/data/models/employee_model.dart';
 import 'package:assetflow_mobile/data/services/employee_service.dart';
 import 'package:assetflow_mobile/core/utils/cache_manager.dart';
@@ -61,6 +62,7 @@ class EmployeeNotifier extends StateNotifier<EmployeeListState> {
         result.items.map((e) => e.toJson()).toList(),
         ttl: const Duration(minutes: 15),
       );
+      await OfflineCacheService.cacheEmployees(result.items);
       state = state.copyWith(
         employees: result.items,
         isLoading: false,
@@ -68,6 +70,15 @@ class EmployeeNotifier extends StateNotifier<EmployeeListState> {
         hasMore: result.page < result.totalPages,
       );
     } on DioException catch (e) {
+      if (OfflineCacheService.hasEmployeeCache) {
+        state = state.copyWith(
+          employees: OfflineCacheService.getCachedEmployees(),
+          isLoading: false,
+          page: 1,
+          hasMore: false,
+        );
+        return;
+      }
       final cached = await CacheManager.instance.getStale('employees_page1');
       if (cached != null) {
         final items = (cached as List).map((j) => Employee.fromJson(j as Map<String, dynamic>)).toList();
@@ -76,6 +87,15 @@ class EmployeeNotifier extends StateNotifier<EmployeeListState> {
       }
       state = state.copyWith(isLoading: false, error: _extractError(e));
     } catch (_) {
+      if (OfflineCacheService.hasEmployeeCache) {
+        state = state.copyWith(
+          employees: OfflineCacheService.getCachedEmployees(),
+          isLoading: false,
+          page: 1,
+          hasMore: false,
+        );
+        return;
+      }
       final cached = await CacheManager.instance.getStale('employees_page1');
       if (cached != null) {
         final items = (cached as List).map((j) => Employee.fromJson(j as Map<String, dynamic>)).toList();

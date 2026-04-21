@@ -10,6 +10,7 @@ import 'package:assetflow_mobile/data/models/device_model.dart';
 import 'package:assetflow_mobile/features/devices/models/device_filter.dart';
 import 'package:assetflow_mobile/features/devices/providers/bulk_selection_provider.dart';
 import 'package:assetflow_mobile/features/devices/providers/device_filter_provider.dart';
+import 'package:assetflow_mobile/core/widgets/connectivity_wrapper.dart';
 import 'package:assetflow_mobile/features/devices/providers/device_provider.dart';
 import 'package:assetflow_mobile/features/devices/widgets/advanced_filter_sheet.dart';
 import 'package:assetflow_mobile/features/devices/widgets/device_row.dart';
@@ -98,6 +99,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
     final presets = ref.watch(filterPresetsProvider);
     final selectionState = ref.watch(bulkSelectionProvider);
     final inSelection = selectionState.isActive;
+    final isOnline = ref.watch(connectivityProvider);
 
     return Scaffold(
       backgroundColor: AppColors.surfaceLight,
@@ -106,11 +108,14 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
           : null,
       floatingActionButton: inSelection
           ? null
-          : FloatingActionButton(
-              onPressed: () => context.push('/devices/new'),
-              backgroundColor: AppColors.navy,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-              child: const Icon(Icons.add, color: Colors.white, size: 22),
+          : Tooltip(
+              message: isOnline ? '' : 'Çevrimiçi olduğunuzda yapabilirsiniz',
+              child: FloatingActionButton(
+                onPressed: isOnline ? () => context.push('/devices/new') : null,
+                backgroundColor: isOnline ? AppColors.navy : AppColors.textTertiary,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                child: const Icon(Icons.add, color: Colors.white, size: 22),
+              ),
             ),
       body: Column(
         children: [
@@ -154,15 +159,21 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                   title: 'Cihazlar',
                   subtitle: '${filtered.length} CİHAZ',
                   onBack: () => Scaffold.maybeOf(context)?.openEndDrawer(),
-                  action: GestureDetector(
-                    onTap: () => context.push('/devices/new'),
-                    child: Container(
-                      width: 36, height: 36,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.14),
-                        borderRadius: BorderRadius.circular(8),
+                  action: Tooltip(
+                    message: isOnline ? '' : 'Çevrimiçi olduğunuzda yapabilirsiniz',
+                    child: GestureDetector(
+                      onTap: isOnline ? () => context.push('/devices/new') : null,
+                      child: Container(
+                        width: 36, height: 36,
+                        decoration: BoxDecoration(
+                          color: isOnline
+                              ? Colors.white.withValues(alpha: 0.14)
+                              : Colors.white.withValues(alpha: 0.06),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(Icons.add, size: 18,
+                            color: isOnline ? Colors.white : Colors.white.withValues(alpha: 0.4)),
                       ),
-                      child: const Icon(Icons.add, size: 18, color: Colors.white),
                     ),
                   ),
                 ),
