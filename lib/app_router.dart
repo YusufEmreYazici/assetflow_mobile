@@ -18,6 +18,8 @@ import 'package:assetflow_mobile/features/employees/screens/employees_screen.dar
 import 'package:assetflow_mobile/features/assignments/screens/assignments_screen.dart';
 import 'package:assetflow_mobile/features/assignments/screens/assign_wizard_screen.dart';
 import 'package:assetflow_mobile/features/locations/screens/locations_screen.dart';
+import 'package:assetflow_mobile/features/locations/screens/location_list_screen.dart';
+import 'package:assetflow_mobile/features/locations/screens/location_detail_screen.dart';
 import 'package:assetflow_mobile/features/profile/screens/profile_screen.dart';
 import 'package:assetflow_mobile/features/people/person_list_screen.dart';
 import 'package:assetflow_mobile/features/people/person_detail_screen.dart';
@@ -149,7 +151,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/person/:id',
         builder: (_, state) => PersonDetailScreen(id: state.pathParameters['id']!),
       ),
-      GoRoute(path: '/locations',    builder: (_, __) => const LocationsScreen()),
+      GoRoute(path: '/locations',    builder: (_, __) => const LocationListScreen()),
+      GoRoute(path: '/locations-old', builder: (_, __) => const LocationsScreen()),
+      GoRoute(
+        path: '/location/:id',
+        builder: (_, state) => LocationDetailScreen(id: state.pathParameters['id']!),
+      ),
       GoRoute(path: '/profile',      builder: (_, __) => const ProfileScreen()),
       GoRoute(path: '/sap',          builder: (_, __) => const SapScreen()),
       GoRoute(path: '/notifications', builder: (_, __) => const _PlaceholderScreen('Bildirimler')),
