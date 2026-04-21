@@ -19,6 +19,8 @@ import 'package:assetflow_mobile/features/assignments/screens/assignments_screen
 import 'package:assetflow_mobile/features/assignments/screens/assign_wizard_screen.dart';
 import 'package:assetflow_mobile/features/locations/screens/locations_screen.dart';
 import 'package:assetflow_mobile/features/profile/screens/profile_screen.dart';
+import 'package:assetflow_mobile/features/people/person_list_screen.dart';
+import 'package:assetflow_mobile/features/people/person_detail_screen.dart';
 import 'package:assetflow_mobile/features/sap/screens/sap_screen.dart';
 
 class _PlaceholderScreen extends StatelessWidget {
@@ -141,6 +143,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/assignments/:id/return',
         builder: (_, state) => _PlaceholderScreen('İade Et'),
+      ),
+      GoRoute(path: '/people',        builder: (_, __) => const PersonListScreen()),
+      GoRoute(
+        path: '/person/:id',
+        builder: (_, state) => PersonDetailScreen(id: state.pathParameters['id']!),
       ),
       GoRoute(path: '/locations',    builder: (_, __) => const LocationsScreen()),
       GoRoute(path: '/profile',      builder: (_, __) => const ProfileScreen()),
