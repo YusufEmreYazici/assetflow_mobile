@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/core/widgets/page_header.dart';
 import 'package:assetflow_mobile/data/models/assignment_model.dart';
 import 'package:assetflow_mobile/data/services/assignment_service.dart';
 import 'package:assetflow_mobile/features/assignments/providers/assignment_provider.dart';
@@ -138,8 +140,37 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
     final state = ref.watch(assignmentProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Zimmet Yonetimi')),
+      backgroundColor: AppColors.surfaceLight,
       body: Column(
+        children: [
+          PageHeader(
+            title: 'Zimmetler',
+            subtitle: '${state.assignments.length} ZİMMET',
+            leading: GestureDetector(
+              onTap: () => Scaffold.maybeOf(context)?.openEndDrawer(),
+              child: Container(
+                width: 36, height: 36,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Icons.menu, size: 18, color: Colors.white),
+              ),
+            ),
+            action: GestureDetector(
+              onTap: _navigateToAssign,
+              child: Container(
+                width: 36, height: 36,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Icons.add, size: 18, color: Colors.white),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Column(
         children: [
           // Search bar
           Padding(
@@ -248,10 +279,15 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
                   ),
           ),
         ],
+          ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _navigateToAssign,
-        child: const Icon(Icons.add),
+        backgroundColor: AppColors.navy,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
@@ -261,7 +297,9 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
     final isActive = a.isActive;
     final typeLabel = assignmentTypeLabels[a.type] ?? 'Kalici';
 
-    return Card(
+    return GestureDetector(
+      onTap: () => context.push('/assignments/${a.id}'),
+      child: Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -495,6 +533,7 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
             ],
           ],
         ),
+      ),
       ),
     );
   }

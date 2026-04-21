@@ -110,9 +110,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     final isRead = _readIds.contains(notif.id);
     if (!isRead) {
       setState(() => _readIds.add(notif.id));
-    } else if (notif.relatedRoute != null) {
-      context.push(notif.relatedRoute!);
+      return;
     }
+    final route = notif.relatedRoute;
+    if (route == null || !mounted) return;
+    try {
+      context.push(route);
+    } catch (_) {}
   }
 
   @override
