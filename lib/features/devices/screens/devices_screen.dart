@@ -6,7 +6,10 @@ import 'package:assetflow_mobile/core/services/barcode_scanner_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/page_header.dart';
 import 'package:assetflow_mobile/data/models/device_model.dart';
+import 'package:assetflow_mobile/features/devices/models/device_filter.dart';
+import 'package:assetflow_mobile/features/devices/providers/device_filter_provider.dart';
 import 'package:assetflow_mobile/features/devices/providers/device_provider.dart';
+import 'package:assetflow_mobile/features/devices/widgets/advanced_filter_sheet.dart';
 import 'package:assetflow_mobile/features/devices/widgets/device_row.dart';
 
 class DevicesScreen extends ConsumerStatefulWidget {
@@ -22,14 +25,14 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
   final _scrollCtrl = ScrollController();
   final _searchCtrl = TextEditingController();
   String _query = '';
-  int? _filterStatus; // null = all
+  int? _filterStatus;
 
-  static const _filters = [
-    (null,  'Tümü'),
-    (0,     'Aktif'),
-    (1,     'Depoda'),
-    (2,     'Bakımda'),
-    (3,     'Emekli'),
+  static const _statusFilters = [
+    (null, 'Tümü'),
+    (0,    'Aktif'),
+    (1,    'Depoda'),
+    (2,    'Bakımda'),
+    (3,    'Emekli'),
   ];
 
   @override
@@ -56,24 +59,41 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
     }
   }
 
-  List<Device> _filtered(List<Device> all) {
-    return all.where((d) {
+  List<Device> _applyLocalFilters(List<Device> base) {
+    return base.where((d) {
       if (_filterStatus != null && d.status != _filterStatus) return false;
       if (_query.isNotEmpty) {
         final q = _query.toLowerCase();
-        final name = d.name.toLowerCase();
-        final code = (d.assetCode ?? '').toLowerCase();
-        final assignee = (d.assignedTo ?? '').toLowerCase();
-        if (!name.contains(q) && !code.contains(q) && !assignee.contains(q)) return false;
+        if (!d.name.toLowerCase().contains(q) &&
+            !(d.assetCode ?? '').toLowerCase().contains(q) &&
+            !(d.assignedTo ?? '').toLowerCase().contains(q)) {
+          return false;
+        }
       }
       return true;
     }).toList();
   }
 
+  Future<void> _openFilterSheet() async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.90,
+        child: const AdvancedFilterSheet(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(deviceProvider);
-    final filtered = _filtered(state.devices);
+    final advFiltered = ref.watch(filteredDevicesProvider);
+    final filtered = _applyLocalFilters(advFiltered);
+    final advFilter = ref.watch(deviceFilterProvider);
+    final presets = ref.watch(filterPresetsProvider);
 
     return Scaffold(
       backgroundColor: AppColors.surfaceLight,
@@ -101,139 +121,227 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: const BoxDecoration(
                 color: AppColors.infoBg,
-                border: Border(
-                  bottom: BorderSide(color: AppColors.info, width: 1),
-                ),
+                border: Border(bottom: BorderSide(color: AppColors.info)),
               ),
               child: Row(
                 children: [
                   const Icon(Icons.info_outline, size: 16, color: AppColors.info),
                   const SizedBox(width: 8),
-                  Text(
-                    'İade edilecek cihazı seçin',
-                    style: GoogleFonts.inter(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.info,
-                    ),
-                  ),
+                  Text('İade edilecek cihazı seçin',
+                      style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.info)),
                 ],
               ),
             ),
           Expanded(
             child: Column(
               children: [
-                // Search
+                // Search bar + filter icon
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-                  child: TextField(
-                    controller: _searchCtrl,
-                    onChanged: (v) => setState(() => _query = v),
-                    style: GoogleFonts.inter(fontSize: 13, color: AppColors.textPrimary),
-                    decoration: InputDecoration(
-                      hintText: 'Cihaz, kod, personel ara…',
-                      hintStyle: GoogleFonts.inter(fontSize: 13, color: AppColors.textTertiary),
-                      filled: true,
-                      fillColor: AppColors.surfaceWhite,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                      prefixIcon: const Icon(Icons.search, size: 18, color: AppColors.textTertiary),
-                      suffixIcon: _query.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.clear, size: 16, color: AppColors.textTertiary),
-                              onPressed: () {
-                                _searchCtrl.clear();
-                                setState(() => _query = '');
-                              },
-                            )
-                          : IconButton(
-                              icon: const Icon(Icons.qr_code_scanner, size: 18, color: AppColors.textTertiary),
-                              tooltip: 'QR / Barkod Tara',
-                              onPressed: () async {
-                                final code = await BarcodeScannerService.scanBarcode(context);
-                                if (code != null && mounted) {
-                                  _searchCtrl.text = code;
-                                  setState(() => _query = code.toLowerCase());
-                                }
-                              },
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _searchCtrl,
+                          onChanged: (v) => setState(() => _query = v),
+                          style: GoogleFonts.inter(fontSize: 13, color: AppColors.textPrimary),
+                          decoration: InputDecoration(
+                            hintText: 'Cihaz, kod, personel ara…',
+                            hintStyle: GoogleFonts.inter(fontSize: 13, color: AppColors.textTertiary),
+                            filled: true,
+                            fillColor: AppColors.surfaceWhite,
+                            contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                            prefixIcon: const Icon(Icons.search, size: 18, color: AppColors.textTertiary),
+                            suffixIcon: _query.isNotEmpty
+                                ? IconButton(
+                                    icon: const Icon(Icons.clear, size: 16, color: AppColors.textTertiary),
+                                    onPressed: () {
+                                      _searchCtrl.clear();
+                                      setState(() => _query = '');
+                                    },
+                                  )
+                                : IconButton(
+                                    icon: const Icon(Icons.qr_code_scanner, size: 18, color: AppColors.textTertiary),
+                                    tooltip: 'QR / Barkod Tara',
+                                    onPressed: () async {
+                                      final code = await BarcodeScannerService.scanBarcode(context);
+                                      if (code != null && mounted) {
+                                        _searchCtrl.text = code;
+                                        setState(() => _query = code.toLowerCase());
+                                      }
+                                    },
+                                  ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(AppRadius.md),
+                              borderSide: const BorderSide(color: AppColors.surfaceInputBorder),
                             ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppRadius.md),
-                        borderSide: const BorderSide(color: AppColors.surfaceInputBorder),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(AppRadius.md),
+                              borderSide: const BorderSide(color: AppColors.navy, width: 2),
+                            ),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+                          ),
+                        ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppRadius.md),
-                        borderSide: const BorderSide(color: AppColors.navy, width: 2),
+                      const SizedBox(width: 8),
+                      // Filter button with active count badge
+                      GestureDetector(
+                        onTap: _openFilterSheet,
+                        child: Container(
+                          width: 42, height: 42,
+                          decoration: BoxDecoration(
+                            color: advFilter.activeCount > 0 ? AppColors.navy : AppColors.surfaceWhite,
+                            borderRadius: BorderRadius.circular(AppRadius.md),
+                            border: Border.all(
+                              color: advFilter.activeCount > 0 ? AppColors.navy : AppColors.surfaceInputBorder,
+                            ),
+                          ),
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            alignment: Alignment.center,
+                            children: [
+                              Icon(
+                                Icons.tune_rounded,
+                                size: 18,
+                                color: advFilter.activeCount > 0 ? Colors.white : AppColors.textSecondary,
+                              ),
+                              if (advFilter.activeCount > 0)
+                                Positioned(
+                                  top: -4, right: -4,
+                                  child: Container(
+                                    width: 16, height: 16,
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.error,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      '${advFilter.activeCount}',
+                                      style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w700),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppRadius.md),
-                      ),
-                    ),
+                    ],
                   ),
                 ),
-                // Filter chips
+
+                // Status filter chips
                 SizedBox(
-                  height: 44,
+                  height: 42,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-                    itemCount: _filters.length,
-                    separatorBuilder: (context, index) => const SizedBox(width: 6),
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                    itemCount: _statusFilters.length,
+                    separatorBuilder: (_, index) => const SizedBox(width: 6),
                     itemBuilder: (_, i) {
-                      final (status, label) = _filters[i];
+                      final (status, label) = _statusFilters[i];
                       final active = _filterStatus == status;
                       return GestureDetector(
                         onTap: () => setState(() => _filterStatus = status),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                           decoration: BoxDecoration(
                             color: active ? AppColors.navy : AppColors.surfaceWhite,
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: active ? AppColors.navy : AppColors.surfaceInputBorder,
-                            ),
+                            border: Border.all(color: active ? AppColors.navy : AppColors.surfaceInputBorder),
                           ),
-                          child: Text(
-                            label,
-                            style: GoogleFonts.inter(
-                              fontSize: 12, fontWeight: FontWeight.w500,
-                              color: active ? Colors.white : AppColors.textSecondary,
-                            ),
-                          ),
+                          child: Text(label, style: GoogleFonts.inter(
+                            fontSize: 12, fontWeight: FontWeight.w500,
+                            color: active ? Colors.white : AppColors.textSecondary,
+                          )),
                         ),
                       );
                     },
                   ),
                 ),
-                // List
+
+                // Preset chips (T6)
+                if (presets.isNotEmpty)
+                  SizedBox(
+                    height: 38,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+                      itemCount: presets.length,
+                      separatorBuilder: (_, index) => const SizedBox(width: 6),
+                      itemBuilder: (_, i) {
+                        final preset = presets[i];
+                        return GestureDetector(
+                          onTap: () => ref.read(deviceFilterProvider.notifier).state = preset.filter,
+                          onLongPress: () => _showPresetDeleteMenu(context, preset.id, preset.name),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary50,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: AppColors.primary200),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.push_pin_outlined, size: 11, color: AppColors.primary600),
+                                const SizedBox(width: 4),
+                                Text(preset.name, style: GoogleFonts.inter(
+                                  fontSize: 11, fontWeight: FontWeight.w500, color: AppColors.primary700,
+                                )),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+
+                // Active filter summary strip
+                if (advFilter.activeCount > 0)
+                  GestureDetector(
+                    onTap: () => ref.read(deviceFilterProvider.notifier).state = const DeviceFilter(),
+                    child: Container(
+                      margin: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: AppColors.infoBg,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: AppColors.info.withValues(alpha: 0.4)),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.filter_alt_outlined, size: 13, color: AppColors.navy),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              '${advFilter.activeCount} filtre aktif',
+                              style: GoogleFonts.inter(fontSize: 11, color: AppColors.navy, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                          const Icon(Icons.close, size: 13, color: AppColors.textTertiary),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                // Device list
                 Expanded(
                   child: state.isLoading && state.devices.isEmpty
-                      ? const Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.navy, strokeWidth: 2,
-                          ),
-                        )
+                      ? const Center(child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2))
                       : filtered.isEmpty
                           ? Center(
-                              child: Text(
-                                'Sonuç bulunamadı.',
-                                style: GoogleFonts.inter(
-                                  fontSize: 13, color: AppColors.textSecondary,
-                                ),
-                              ),
+                              child: Text('Sonuç bulunamadı.',
+                                  style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary)),
                             )
                           : ListView.builder(
                               controller: _scrollCtrl,
-                              padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
+                              padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
                               itemCount: filtered.length + (state.isLoadingMore ? 1 : 0),
                               itemBuilder: (_, i) {
                                 if (i == filtered.length) {
                                   return const Padding(
                                     padding: EdgeInsets.all(16),
-                                    child: Center(
-                                      child: CircularProgressIndicator(
-                                        color: AppColors.navy, strokeWidth: 2,
-                                      ),
-                                    ),
+                                    child: Center(child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2)),
                                   );
                                 }
                                 final d = filtered[i];
@@ -265,6 +373,43 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
         backgroundColor: AppColors.navy,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         child: const Icon(Icons.add, color: Colors.white, size: 22),
+      ),
+    );
+  }
+
+  void _showPresetDeleteMenu(BuildContext context, String id, String name) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 8),
+            Container(
+              width: 36, height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.surfaceDivider,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 12),
+            ListTile(
+              leading: const Icon(Icons.delete_outline, color: AppColors.error),
+              title: Text('"$name" presetini sil', style: GoogleFonts.inter(
+                fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.error,
+              )),
+              onTap: () {
+                ref.read(filterPresetsProvider.notifier).remove(id);
+                Navigator.pop(ctx);
+              },
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }
