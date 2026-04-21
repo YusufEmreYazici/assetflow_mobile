@@ -14,6 +14,7 @@ import 'mini_bar_chart.dart';
 import 'metric_strip.dart';
 import 'status_bar.dart';
 import 'quick_action.dart';
+import 'favorites_section.dart';
 
 class DashboardBView extends ConsumerWidget {
   final VoidCallback? onMenuTap;
@@ -231,6 +232,13 @@ class DashboardBView extends ConsumerWidget {
                 ),
               ],
             ),
+          ),
+
+          // Favorites
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.xl, AppSpacing.xl, AppSpacing.xl, 0),
+            child: const FavoritesSection(),
           ),
 
           // Recent activity

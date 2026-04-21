@@ -12,6 +12,7 @@ import 'package:assetflow_mobile/features/dashboard/providers/dashboard_provider
 import 'kpi_card.dart';
 import 'activity_tile.dart';
 import 'quick_action.dart';
+import 'favorites_section.dart';
 
 class DashboardAView extends ConsumerWidget {
   final VoidCallback? onMenuTap;
@@ -172,6 +173,13 @@ class DashboardAView extends ConsumerWidget {
                 ),
               ],
             ),
+          ),
+
+          // Favorites
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.xl, AppSpacing.xxl, AppSpacing.xl, 0),
+            child: const FavoritesSection(),
           ),
 
           // Activity feed
