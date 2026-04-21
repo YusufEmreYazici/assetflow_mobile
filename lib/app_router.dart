@@ -5,6 +5,9 @@ import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/features/auth/providers/auth_provider.dart';
 import 'package:assetflow_mobile/features/auth/screens/login_screen.dart';
 import 'package:assetflow_mobile/features/auth/screens/register_screen.dart';
+import 'package:assetflow_mobile/features/auth/screens/forgot_password_screen.dart';
+import 'package:assetflow_mobile/features/auth/screens/password_email_sent_screen.dart';
+import 'package:assetflow_mobile/features/auth/screens/reset_password_screen.dart';
 import 'package:assetflow_mobile/features/dashboard/screens/dashboard_screen.dart';
 import 'package:assetflow_mobile/features/devices/screens/devices_screen.dart';
 import 'package:assetflow_mobile/features/devices/screens/device_detail_screen.dart';
@@ -187,9 +190,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       final authState = ref.read(authProvider);
       final isAuth = authState.isAuthenticated;
       final isLoading = authState.isLoading;
-      final isLoginRoute = state.matchedLocation == '/login';
-      final isRegisterRoute = state.matchedLocation == '/register';
-      final isAuthRoute = isLoginRoute || isRegisterRoute;
+      final loc = state.matchedLocation;
+      final isAuthRoute = loc == '/login' || loc == '/register' ||
+          loc == '/forgot-password' || loc.startsWith('/password-sent') ||
+          loc == '/reset-password';
 
       if (isLoading) return null;
       if (!isAuth && !isAuthRoute) return '/login';
@@ -205,6 +209,21 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        builder: (context, state) => const ForgotPasswordScreen(),
+      ),
+      GoRoute(
+        path: '/password-sent',
+        builder: (context, state) {
+          final email = state.uri.queryParameters['email'] ?? '';
+          return PasswordEmailSentScreen(email: email);
+        },
+      ),
+      GoRoute(
+        path: '/reset-password',
+        builder: (context, state) => const ResetPasswordScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
