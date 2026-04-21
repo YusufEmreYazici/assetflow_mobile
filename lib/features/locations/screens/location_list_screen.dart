@@ -29,7 +29,7 @@ class LocationListScreen extends ConsumerWidget {
               data: (l) => '${l.length} LOKASYON',
               orElse: () => '',
             ),
-            onBack: () => Scaffold.maybeOf(context)?.openDrawer(),
+            onBack: () => Scaffold.maybeOf(context)?.openEndDrawer(),
             action: GestureDetector(
               onTap: () => context.push('/locations/new'),
               child: Container(

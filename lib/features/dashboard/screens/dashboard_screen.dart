@@ -12,7 +12,7 @@ class DashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final variant = ref.watch(dashboardVariantProvider);
 
-    final onMenu = Scaffold.maybeOf(context)?.openDrawer;
+    final onMenu = Scaffold.maybeOf(context)?.openEndDrawer;
 
     return Scaffold(
       backgroundColor: AppColors.surfaceLight,

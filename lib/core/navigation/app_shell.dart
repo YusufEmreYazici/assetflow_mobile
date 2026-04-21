@@ -94,7 +94,7 @@ class _AppShellState extends ConsumerState<AppShell> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: AppColors.surfaceLight,
-      drawer: AppDrawer(
+      endDrawer: AppDrawer(
         currentKey: _currentDrawerKey(),
         userName: userName,
         userEmail: userEmail,
@@ -112,7 +112,7 @@ class _AppShellState extends ConsumerState<AppShell> {
       bottomNavigationBar: AppBottomNav(
         active: _activeTab,
         onChange: _onTabChange,
-        onMore: () => _scaffoldKey.currentState?.openDrawer(),
+        onMore: () => _scaffoldKey.currentState?.openEndDrawer(),
       ),
     );
   }

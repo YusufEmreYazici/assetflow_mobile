@@ -99,7 +99,7 @@ class _PersonListScreenState extends ConsumerState<PersonListScreen> {
           PageHeader(
             title: 'Personel',
             subtitle: '${filtered.length} PERSONEL',
-            onBack: () => Scaffold.maybeOf(context)?.openDrawer(),
+            onBack: () => Scaffold.maybeOf(context)?.openEndDrawer(),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),

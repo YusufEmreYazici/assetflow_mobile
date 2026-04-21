@@ -74,7 +74,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
           PageHeader(
             title: 'Cihazlar',
             subtitle: '${filtered.length} CİHAZ',
-            onBack: () => Scaffold.maybeOf(context)?.openDrawer(),
+            onBack: () => Scaffold.maybeOf(context)?.openEndDrawer(),
             action: GestureDetector(
               onTap: () => context.push('/devices/new'),
               child: Container(
