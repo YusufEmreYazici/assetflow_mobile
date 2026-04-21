@@ -114,13 +114,13 @@ class _AssignmentCard extends StatelessWidget {
           color: isActive ? AppColors.success : AppColors.surfaceDivider,
         ),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: IntrinsicHeight(
+        child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (isActive)
             Container(
               width: 3,
-              height: double.infinity,
               constraints: const BoxConstraints(minHeight: 60),
               decoration: BoxDecoration(
                 color: AppColors.success,
@@ -196,6 +196,7 @@ class _AssignmentCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

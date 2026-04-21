@@ -168,8 +168,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           ),
           // Tab bar
           Container(
-            color: AppColors.surfaceWhite,
             decoration: const BoxDecoration(
+              color: AppColors.surfaceWhite,
               border: Border(
                 bottom: BorderSide(color: AppColors.surfaceDivider),
               ),
