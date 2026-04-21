@@ -43,7 +43,7 @@ class _AssetFlowAppState extends ConsumerState<AssetFlowApp> {
     return MaterialApp.router(
       title: 'AssetFlow',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
+      theme: AppTheme.lightTheme,
       routerConfig: router,
     );
   }
