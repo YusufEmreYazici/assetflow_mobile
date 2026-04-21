@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/core/widgets/page_header.dart';
 import 'package:assetflow_mobile/features/employees/providers/employee_provider.dart';
 import 'package:assetflow_mobile/features/employees/screens/employee_form_screen.dart';
 
@@ -78,8 +79,37 @@ class _EmployeesScreenState extends ConsumerState<EmployeesScreen> {
     final state = ref.watch(employeeProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Personeller')),
-      body: state.isLoading
+      backgroundColor: AppColors.surfaceLight,
+      body: Column(
+        children: [
+          PageHeader(
+            title: 'Personel',
+            subtitle: '${state.employees.length} PERSONEL',
+            leading: GestureDetector(
+              onTap: () => Scaffold.maybeOf(context)?.openEndDrawer(),
+              child: Container(
+                width: 36, height: 36,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Icons.menu, size: 18, color: Colors.white),
+              ),
+            ),
+            action: GestureDetector(
+              onTap: () => _navigateToForm(),
+              child: Container(
+                width: 36, height: 36,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Icons.add, size: 18, color: Colors.white),
+              ),
+            ),
+          ),
+          Expanded(
+            child: state.isLoading
           ? _buildShimmer()
           : state.error != null
               ? _buildError(state.error!)
@@ -234,9 +264,14 @@ class _EmployeesScreenState extends ConsumerState<EmployeesScreen> {
                         },
                       ),
                     ),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _navigateToForm(),
-        child: const Icon(Icons.add),
+        backgroundColor: AppColors.navy,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }

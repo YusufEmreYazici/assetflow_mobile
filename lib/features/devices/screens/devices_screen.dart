@@ -158,7 +158,17 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
               : PageHeader(
                   title: 'Cihazlar',
                   subtitle: '${filtered.length} CİHAZ',
-                  onBack: () => Scaffold.maybeOf(context)?.openEndDrawer(),
+                  leading: GestureDetector(
+                    onTap: () => Scaffold.maybeOf(context)?.openEndDrawer(),
+                    child: Container(
+                      width: 36, height: 36,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.10),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(Icons.menu, size: 18, color: Colors.white),
+                    ),
+                  ),
                   action: Tooltip(
                     message: isOnline ? '' : 'Çevrimiçi olduğunuzda yapabilirsiniz',
                     child: GestureDetector(
