@@ -6,6 +6,7 @@ class PageHeader extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final String? subtitle;
   final VoidCallback? onBack;
+  final Widget? leading;
   final Widget? action;
 
   const PageHeader({
@@ -13,14 +14,34 @@ class PageHeader extends StatelessWidget implements PreferredSizeWidget {
     required this.title,
     this.subtitle,
     this.onBack,
+    this.leading,
     this.action,
   });
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
+  Widget? _buildLeading() {
+    if (leading != null) return leading;
+    if (onBack != null) {
+      return GestureDetector(
+        onTap: onBack,
+        child: Container(
+          width: 36, height: 36,
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.10),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
+        ),
+      );
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final leadingWidget = _buildLeading();
     return Container(
       color: AppColors.navy,
       padding: EdgeInsets.only(
@@ -32,18 +53,8 @@ class PageHeader extends StatelessWidget implements PreferredSizeWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (onBack != null) ...[
-            GestureDetector(
-              onTap: onBack,
-              child: Container(
-                width: 36, height: 36,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
-              ),
-            ),
+          if (leadingWidget != null) ...[
+            leadingWidget,
             const SizedBox(width: 10),
           ],
           Expanded(

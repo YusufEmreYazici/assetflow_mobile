@@ -44,10 +44,6 @@ class AppHeader extends StatelessWidget {
         children: [
           Row(
             children: [
-              if (onMenu != null) ...[
-                _NavButton(onTap: onMenu!, child: const Icon(Icons.menu, size: 18, color: Colors.white)),
-                const SizedBox(width: 10),
-              ],
               Container(
                 width: 32, height: 32,
                 decoration: BoxDecoration(
@@ -106,6 +102,10 @@ class AppHeader extends StatelessWidget {
                     ),
                 ],
               ),
+              if (onMenu != null) ...[
+                const SizedBox(width: 8),
+                _NavButton(onTap: onMenu!, child: const Icon(Icons.menu, size: 18, color: Colors.white)),
+              ],
             ],
           ),
           const SizedBox(height: 14),
