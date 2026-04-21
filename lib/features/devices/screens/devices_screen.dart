@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/core/widgets/page_header.dart';
+import 'package:assetflow_mobile/data/models/device_model.dart';
 import 'package:assetflow_mobile/features/devices/providers/device_provider.dart';
-import 'package:assetflow_mobile/features/devices/widgets/device_list_item.dart';
-import 'package:assetflow_mobile/features/devices/screens/device_form_screen.dart';
-import 'package:assetflow_mobile/features/devices/screens/device_import_screen.dart';
+import 'package:assetflow_mobile/features/devices/widgets/device_row.dart';
 
 class DevicesScreen extends ConsumerStatefulWidget {
   const DevicesScreen({super.key});
@@ -16,222 +16,212 @@ class DevicesScreen extends ConsumerStatefulWidget {
 }
 
 class _DevicesScreenState extends ConsumerState<DevicesScreen> {
-  final _scrollController = ScrollController();
+  final _scrollCtrl = ScrollController();
+  final _searchCtrl = TextEditingController();
+  String _query = '';
+  int? _filterStatus; // null = all
+
+  static const _filters = [
+    (null,  'Tümü'),
+    (0,     'Aktif'),
+    (1,     'Depoda'),
+    (2,     'Bakımda'),
+    (3,     'Emekli'),
+  ];
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll);
+    _scrollCtrl.addListener(_onScroll);
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _scrollCtrl.dispose();
+    _searchCtrl.dispose();
     super.dispose();
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
+    if (_scrollCtrl.position.pixels >= _scrollCtrl.position.maxScrollExtent - 200) {
       ref.read(deviceProvider.notifier).loadMore();
     }
   }
 
-  Future<void> _onRefresh() async {
-    await ref.read(deviceProvider.notifier).refresh();
-  }
-
-  void _confirmDelete(String id, String name) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Cihazi Sil'),
-        content: Text('"$name" cihazini silmek istediginize emin misiniz?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Iptal'),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(ctx);
-              final success = await ref
-                  .read(deviceProvider.notifier)
-                  .deleteDevice(id);
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      success
-                          ? 'Cihaz basariyla silindi'
-                          : 'Cihaz silinirken hata olustu',
-                    ),
-                    backgroundColor: success
-                        ? AppColors.success
-                        : AppColors.error,
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-              }
-            },
-            child: const Text('Sil', style: TextStyle(color: AppColors.error)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _navigateToForm() async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const DeviceFormScreen()),
-    );
-    if (result == true) ref.read(deviceProvider.notifier).refresh();
-  }
-
-  Future<void> _navigateToImport() async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const DeviceImportScreen()),
-    );
-    if (result == true) ref.read(deviceProvider.notifier).refresh();
+  List<Device> _filtered(List<Device> all) {
+    return all.where((d) {
+      if (_filterStatus != null && d.status != _filterStatus) return false;
+      if (_query.isNotEmpty) {
+        final q = _query.toLowerCase();
+        final name = d.name.toLowerCase();
+        final code = (d.assetCode ?? '').toLowerCase();
+        final assignee = (d.assignedTo ?? '').toLowerCase();
+        if (!name.contains(q) && !code.contains(q) && !assignee.contains(q)) return false;
+      }
+      return true;
+    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(deviceProvider);
+    final filtered = _filtered(state.devices);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Cihazlar'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.upload_file_outlined),
-            tooltip: 'CSV İçe Aktar',
-            onPressed: _navigateToImport,
-          ),
-          IconButton(icon: const Icon(Icons.add), onPressed: _navigateToForm),
-        ],
-      ),
-      body: state.isLoading
-          ? _buildShimmer()
-          : state.error != null
-          ? _buildError(state.error!)
-          : state.devices.isEmpty
-          ? _buildEmpty()
-          : RefreshIndicator(
-              color: AppColors.primary500,
-              backgroundColor: AppColors.dark800,
-              onRefresh: _onRefresh,
-              child: ListView.builder(
-                controller: _scrollController,
-                padding: const EdgeInsets.all(16),
-                itemCount: state.devices.length + (state.isLoadingMore ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index == state.devices.length) {
-                    return const Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.primary500,
-                        ),
-                      ),
-                    );
-                  }
-                  final device = state.devices[index];
-                  return Dismissible(
-                    key: ValueKey(device.id),
-                    direction: DismissDirection.endToStart,
-                    background: Container(
-                      alignment: Alignment.centerRight,
-                      padding: const EdgeInsets.only(right: 20),
-                      margin: const EdgeInsets.only(bottom: 8),
-                      decoration: BoxDecoration(
-                        color: AppColors.error,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(Icons.delete, color: Colors.white),
-                    ),
-                    confirmDismiss: (_) async {
-                      _confirmDelete(device.id, device.name);
-                      return false;
-                    },
-                    child: DeviceListItem(
-                      device: device,
-                      onTap: () {
-                        context.go('/devices/${device.id}');
-                      },
-                    ),
-                  );
-                },
+      backgroundColor: AppColors.surfaceLight,
+      body: Column(
+        children: [
+          PageHeader(
+            title: 'Cihazlar',
+            subtitle: '${filtered.length} CİHAZ',
+            onBack: () => Scaffold.maybeOf(context)?.openDrawer(),
+            action: GestureDetector(
+              onTap: () => context.push('/devices/new'),
+              child: Container(
+                width: 36, height: 36,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Icons.add, size: 18, color: Colors.white),
               ),
             ),
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                // Search
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+                  child: TextField(
+                    controller: _searchCtrl,
+                    onChanged: (v) => setState(() => _query = v),
+                    style: GoogleFonts.inter(fontSize: 13, color: AppColors.textPrimary),
+                    decoration: InputDecoration(
+                      hintText: 'Cihaz, kod, personel ara…',
+                      hintStyle: GoogleFonts.inter(fontSize: 13, color: AppColors.textTertiary),
+                      filled: true,
+                      fillColor: AppColors.surfaceWhite,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                      prefixIcon: const Icon(Icons.search, size: 18, color: AppColors.textTertiary),
+                      suffixIcon: _query.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear, size: 16, color: AppColors.textTertiary),
+                              onPressed: () {
+                                _searchCtrl.clear();
+                                setState(() => _query = '');
+                              },
+                            )
+                          : null,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(AppRadius.md),
+                        borderSide: const BorderSide(color: AppColors.surfaceInputBorder),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(AppRadius.md),
+                        borderSide: const BorderSide(color: AppColors.navy, width: 2),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(AppRadius.md),
+                      ),
+                    ),
+                  ),
+                ),
+                // Filter chips
+                SizedBox(
+                  height: 44,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                    itemCount: _filters.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 6),
+                    itemBuilder: (_, i) {
+                      final (status, label) = _filters[i];
+                      final active = _filterStatus == status;
+                      return GestureDetector(
+                        onTap: () => setState(() => _filterStatus = status),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: active ? AppColors.navy : AppColors.surfaceWhite,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: active ? AppColors.navy : AppColors.surfaceInputBorder,
+                            ),
+                          ),
+                          child: Text(
+                            label,
+                            style: GoogleFonts.inter(
+                              fontSize: 12, fontWeight: FontWeight.w500,
+                              color: active ? Colors.white : AppColors.textSecondary,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                // List
+                Expanded(
+                  child: state.isLoading && state.devices.isEmpty
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.navy, strokeWidth: 2,
+                          ),
+                        )
+                      : filtered.isEmpty
+                          ? Center(
+                              child: Text(
+                                'Sonuç bulunamadı.',
+                                style: GoogleFonts.inter(
+                                  fontSize: 13, color: AppColors.textSecondary,
+                                ),
+                              ),
+                            )
+                          : ListView.builder(
+                              controller: _scrollCtrl,
+                              padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
+                              itemCount: filtered.length + (state.isLoadingMore ? 1 : 0),
+                              itemBuilder: (_, i) {
+                                if (i == filtered.length) {
+                                  return const Padding(
+                                    padding: EdgeInsets.all(16),
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        color: AppColors.navy, strokeWidth: 2,
+                                      ),
+                                    ),
+                                  );
+                                }
+                                final d = filtered[i];
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    color: AppColors.surfaceWhite,
+                                    borderRadius: i == 0
+                                        ? const BorderRadius.vertical(top: Radius.circular(AppRadius.md))
+                                        : i == filtered.length - 1
+                                            ? const BorderRadius.vertical(bottom: Radius.circular(AppRadius.md))
+                                            : BorderRadius.zero,
+                                  ),
+                                  child: DeviceRow(
+                                    device: d,
+                                    isLast: i == filtered.length - 1,
+                                    onTap: () => context.push('/devices/${d.id}'),
+                                  ),
+                                );
+                              },
+                            ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _navigateToForm,
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-
-  Widget _buildShimmer() {
-    return Shimmer.fromColors(
-      baseColor: AppColors.dark800,
-      highlightColor: AppColors.dark700,
-      child: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: 8,
-        itemBuilder: (_, __) => Container(
-          margin: const EdgeInsets.only(bottom: 8),
-          height: 90,
-          decoration: BoxDecoration(
-            color: AppColors.dark800,
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildError(String error) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.error_outline, color: AppColors.error, size: 48),
-          const SizedBox(height: 16),
-          Text(
-            error,
-            style: const TextStyle(color: AppColors.textPrimary),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton.icon(
-            onPressed: () => ref.read(deviceProvider.notifier).refresh(),
-            icon: const Icon(Icons.refresh),
-            label: const Text('Tekrar Dene'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEmpty() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.devices, size: 64, color: AppColors.textTertiary),
-          const SizedBox(height: 16),
-          const Text(
-            'Henuz cihaz eklenmemis',
-            style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Yeni cihaz eklemek icin + butonunu kullanin',
-            style: TextStyle(fontSize: 13, color: AppColors.textTertiary),
-          ),
-        ],
+        onPressed: () => context.push('/devices/new'),
+        backgroundColor: AppColors.navy,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        child: const Icon(Icons.add, color: Colors.white, size: 22),
       ),
     );
   }
