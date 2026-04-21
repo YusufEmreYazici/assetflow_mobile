@@ -110,6 +110,7 @@ class DashboardBView extends ConsumerWidget {
                         ),
                       ),
                       Column(
+                        mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Container(
@@ -126,17 +127,18 @@ class DashboardBView extends ConsumerWidget {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: 4),
                           Text(
                             'Son 6 ay',
                             style: GoogleFonts.inter(
                               fontSize: 10, color: AppColors.textTertiary,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 2),
                           SizedBox(
                             width: 90,
                             child: MiniBarChart(
+                              height: 36,
                               data: const [142, 147, 150, 152, 155, 158],
                               labels: const ['K', 'A', 'O', 'Ş', 'M', 'N'],
                             ),

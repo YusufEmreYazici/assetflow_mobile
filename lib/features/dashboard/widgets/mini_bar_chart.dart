@@ -6,19 +6,21 @@ class MiniBarChart extends StatelessWidget {
   final List<int> data;
   final List<String> labels;
   final Color accent;
+  final double height;
 
   const MiniBarChart({
     super.key,
     required this.data,
     required this.labels,
     this.accent = AppColors.navy,
+    this.height = 44,
   });
 
   @override
   Widget build(BuildContext context) {
     final maxVal = data.isEmpty ? 1 : data.reduce((a, b) => a > b ? a : b);
     return SizedBox(
-      height: 44,
+      height: height,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: List.generate(data.length, (i) {
