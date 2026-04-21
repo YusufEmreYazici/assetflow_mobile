@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
@@ -24,6 +25,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       detail: 'ThinkPad T14 cihazının garantisi 14 gün içinde sona eriyor.',
       time: DateTime.now().subtract(const Duration(minutes: 10)),
       category: 'warranty',
+      relatedRoute: '/devices/dev-001',
     ),
     _Notif(
       id: '2',
@@ -32,6 +34,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       detail: 'Samsung S27A600N monitörü Ahmet Yılmaz\'a zimmetlendi.',
       time: DateTime.now().subtract(const Duration(hours: 1)),
       category: 'assignment',
+      relatedRoute: '/devices/dev-002',
     ),
     _Notif(
       id: '3',
@@ -40,6 +43,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       detail: 'Dell XPS 15 iyi durumda iade edildi.',
       time: DateTime.now().subtract(const Duration(hours: 3)),
       category: 'assignment',
+      relatedRoute: '/devices/dev-003',
     ),
     _Notif(
       id: '4',
@@ -48,6 +52,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       detail: 'HP LaserJet Pro M404n yazıcısının garantisi sona erdi.',
       time: DateTime.now().subtract(const Duration(hours: 6)),
       category: 'warranty',
+      relatedRoute: '/devices/dev-004',
     ),
     _Notif(
       id: '5',
@@ -56,6 +61,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       detail: '18-25 Nisan 2026 haftalık varlık raporu oluşturuldu.',
       time: DateTime.now().subtract(const Duration(days: 1)),
       category: 'system',
+      relatedRoute: '/settings',
     ),
     _Notif(
       id: '6',
@@ -64,6 +70,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       detail: 'Önümüzdeki 30 gün içinde 3 cihazın garantisi sona eriyor.',
       time: DateTime.now().subtract(const Duration(days: 2)),
       category: 'warranty',
+      relatedRoute: '/devices',
     ),
     _Notif(
       id: '7',
@@ -72,6 +79,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       detail: 'Pazar gecesi 02:00-04:00 arası planlı bakım yapılacak.',
       time: DateTime.now().subtract(const Duration(days: 3)),
       category: 'system',
+      relatedRoute: '/settings',
     ),
   ];
 
@@ -98,12 +106,20 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     });
   }
 
+  void _handleTap(_Notif notif) {
+    final isRead = _readIds.contains(notif.id);
+    if (!isRead) {
+      setState(() => _readIds.add(notif.id));
+    } else if (notif.relatedRoute != null) {
+      context.push(notif.relatedRoute!);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final filtered = _filtered();
-    final unreadCount = _mockNotifications
-        .where((n) => !_readIds.contains(n.id))
-        .length;
+    final unreadCount =
+        _mockNotifications.where((n) => !_readIds.contains(n.id)).length;
 
     return Scaffold(
       backgroundColor: AppColors.surfaceLight,
@@ -122,12 +138,17 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: Container(
-                    width: 36, height: 36,
+                    width: 36,
+                    height: 36,
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.10),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
+                    child: const Icon(
+                      Icons.chevron_left,
+                      size: 22,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -138,7 +159,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       Text(
                         'Bildirimler',
                         style: GoogleFonts.inter(
-                          fontSize: 17, fontWeight: FontWeight.w500, color: Colors.white,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
                         ),
                       ),
                       if (unreadCount > 0)
@@ -158,7 +181,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     child: Text(
                       'Tümünü Oku',
                       style: GoogleFonts.inter(
-                        fontSize: 12, fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
                         color: Colors.white.withValues(alpha: 0.85),
                       ),
                     ),
@@ -166,7 +190,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               ],
             ),
           ),
-          // Tab bar
           Container(
             decoration: const BoxDecoration(
               color: AppColors.surfaceWhite,
@@ -176,18 +199,24 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             ),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
               child: Row(
                 children: _tabs.asMap().entries.map((e) {
                   final isActive = e.key == _tabIndex;
                   return GestureDetector(
                     onTap: () => setState(() => _tabIndex = e.key),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 14,
+                        horizontal: 12,
+                      ),
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
-                            color: isActive ? AppColors.navy : Colors.transparent,
+                            color: isActive
+                                ? AppColors.navy
+                                : Colors.transparent,
                             width: 2,
                           ),
                         ),
@@ -195,8 +224,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       child: Text(
                         e.value,
                         style: GoogleFonts.inter(
-                          fontSize: 13, fontWeight: FontWeight.w500,
-                          color: isActive ? AppColors.navy : AppColors.textSecondary,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: isActive
+                              ? AppColors.navy
+                              : AppColors.textSecondary,
                         ),
                       ),
                     ),
@@ -211,17 +243,23 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     child: Text(
                       'Bildirim bulunamadı.',
                       style: GoogleFonts.inter(
-                        fontSize: 13, color: AppColors.textSecondary,
+                        fontSize: 13,
+                        color: AppColors.textSecondary,
                       ),
                     ),
                   )
                 : ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 20),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.lg,
+                      AppSpacing.md,
+                      AppSpacing.lg,
+                      20,
+                    ),
                     itemCount: filtered.length,
-                    itemBuilder: (_, i) => _NotifCard(
+                    itemBuilder: (context, i) => _NotifCard(
                       notif: filtered[i],
                       isRead: _readIds.contains(filtered[i].id),
-                      onTap: () => setState(() => _readIds.add(filtered[i].id)),
+                      onTap: () => _handleTap(filtered[i]),
                     ),
                   ),
           ),
@@ -240,6 +278,8 @@ class _Notif {
   final String detail;
   final DateTime time;
   final String category;
+  final String? relatedRoute;
+
   const _Notif({
     required this.id,
     required this.kind,
@@ -247,6 +287,7 @@ class _Notif {
     required this.detail,
     required this.time,
     required this.category,
+    this.relatedRoute,
   });
 }
 
@@ -254,7 +295,11 @@ class _NotifCard extends StatelessWidget {
   final _Notif notif;
   final bool isRead;
   final VoidCallback onTap;
-  const _NotifCard({required this.notif, required this.isRead, required this.onTap});
+  const _NotifCard({
+    required this.notif,
+    required this.isRead,
+    required this.onTap,
+  });
 
   IconData get _icon => switch (notif.kind) {
         _NotifKind.success => Icons.check_circle_outline,
@@ -287,6 +332,7 @@ class _NotifCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasNavigation = notif.relatedRoute != null;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -296,14 +342,17 @@ class _NotifCard extends StatelessWidget {
           color: isRead ? AppColors.surfaceWhite : _bgColor,
           borderRadius: BorderRadius.circular(AppRadius.md),
           border: Border.all(
-            color: isRead ? AppColors.surfaceDivider : _color.withValues(alpha: 0.3),
+            color: isRead
+                ? AppColors.surfaceDivider
+                : _color.withValues(alpha: 0.3),
           ),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 36, height: 36,
+              width: 36,
+              height: 36,
               decoration: BoxDecoration(
                 color: _color.withValues(alpha: isRead ? 0.08 : 0.15),
                 borderRadius: BorderRadius.circular(AppRadius.sm),
@@ -322,18 +371,26 @@ class _NotifCard extends StatelessWidget {
                           notif.title,
                           style: GoogleFonts.inter(
                             fontSize: 13,
-                            fontWeight: isRead ? FontWeight.w400 : FontWeight.w500,
+                            fontWeight:
+                                isRead ? FontWeight.w400 : FontWeight.w500,
                             color: AppColors.textPrimary,
                           ),
                         ),
                       ),
                       if (!isRead)
                         Container(
-                          width: 8, height: 8,
+                          width: 8,
+                          height: 8,
                           decoration: BoxDecoration(
                             color: _color,
                             shape: BoxShape.circle,
                           ),
+                        )
+                      else if (hasNavigation)
+                        const Icon(
+                          Icons.chevron_right,
+                          size: 16,
+                          color: AppColors.textTertiary,
                         ),
                     ],
                   ),
@@ -341,15 +398,33 @@ class _NotifCard extends StatelessWidget {
                   Text(
                     notif.detail,
                     style: GoogleFonts.inter(
-                      fontSize: 12, color: AppColors.textSecondary, height: 1.4,
+                      fontSize: 12,
+                      color: AppColors.textSecondary,
+                      height: 1.4,
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    _relativeTime(),
-                    style: GoogleFonts.inter(
-                      fontSize: 10, color: AppColors.textTertiary,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        _relativeTime(),
+                        style: GoogleFonts.inter(
+                          fontSize: 10,
+                          color: AppColors.textTertiary,
+                        ),
+                      ),
+                      if (isRead && hasNavigation) ...[
+                        const SizedBox(width: 6),
+                        Text(
+                          'Detaya git',
+                          style: GoogleFonts.inter(
+                            fontSize: 10,
+                            color: AppColors.navy,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                 ],
               ),
