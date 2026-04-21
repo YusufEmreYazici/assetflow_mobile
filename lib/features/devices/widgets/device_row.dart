@@ -53,12 +53,10 @@ class DeviceRow extends ConsumerWidget {
       onLongPress: onLongPress,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        color: isSelected ? AppColors.navy.withValues(alpha: 0.07) : Colors.transparent,
-        decoration: isLast
-            ? null
-            : const BoxDecoration(
-                border: Border(bottom: BorderSide(color: AppColors.surfaceDivider)),
-              ),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.navy.withValues(alpha: 0.07) : Colors.transparent,
+          border: isLast ? null : const Border(bottom: BorderSide(color: AppColors.surfaceDivider)),
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [
