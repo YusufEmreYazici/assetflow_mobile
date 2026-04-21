@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:assetflow_mobile/core/services/barcode_scanner_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/app_header.dart';
 import 'package:assetflow_mobile/core/widgets/section_header.dart';
@@ -200,17 +201,32 @@ class DashboardBView extends ConsumerWidget {
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    QuickAction(icon: Icons.add,              label: 'Cihaz',  primary: true,
+                    QuickAction(icon: Icons.add, label: 'Cihaz', primary: true,
                         onTap: () => context.push('/devices/new')),
                     const SizedBox(width: 8),
                     QuickAction(icon: Icons.assignment_outlined, label: 'Zimmet',
                         onTap: () => context.push('/assignments')),
-                    const SizedBox(width: 8),
-                    QuickAction(icon: Icons.upload_outlined,  label: 'İade',
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    QuickAction(icon: Icons.upload_outlined, label: 'İade',
                         onTap: () => context.push(
                           '/devices',
                           extra: <String, dynamic>{'returnMode': true},
                         )),
+                    const SizedBox(width: 8),
+                    QuickAction(
+                      icon: Icons.qr_code_scanner,
+                      label: 'QR Tara',
+                      onTap: () async {
+                        final code = await BarcodeScannerService.scanBarcode(context);
+                        if (code != null && context.mounted) {
+                          context.go('/devices', extra: <String, dynamic>{'qrCode': code});
+                        }
+                      },
+                    ),
                   ],
                 ),
               ],

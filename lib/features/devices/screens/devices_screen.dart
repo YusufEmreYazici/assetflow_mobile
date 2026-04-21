@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:assetflow_mobile/core/services/barcode_scanner_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/page_header.dart';
 import 'package:assetflow_mobile/data/models/device_model.dart';
@@ -10,7 +11,8 @@ import 'package:assetflow_mobile/features/devices/widgets/device_row.dart';
 
 class DevicesScreen extends ConsumerStatefulWidget {
   final bool returnMode;
-  const DevicesScreen({super.key, this.returnMode = false});
+  final String? initialSearch;
+  const DevicesScreen({super.key, this.returnMode = false, this.initialSearch});
 
   @override
   ConsumerState<DevicesScreen> createState() => _DevicesScreenState();
@@ -35,6 +37,10 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
     super.initState();
     _scrollCtrl.addListener(_onScroll);
     if (widget.returnMode) _filterStatus = 0;
+    if (widget.initialSearch != null) {
+      _searchCtrl.text = widget.initialSearch!;
+      _query = widget.initialSearch!.toLowerCase();
+    }
   }
 
   @override
@@ -139,7 +145,17 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                                 setState(() => _query = '');
                               },
                             )
-                          : null,
+                          : IconButton(
+                              icon: const Icon(Icons.qr_code_scanner, size: 18, color: AppColors.textTertiary),
+                              tooltip: 'QR / Barkod Tara',
+                              onPressed: () async {
+                                final code = await BarcodeScannerService.scanBarcode(context);
+                                if (code != null && mounted) {
+                                  _searchCtrl.text = code;
+                                  setState(() => _query = code.toLowerCase());
+                                }
+                              },
+                            ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(AppRadius.md),
                         borderSide: const BorderSide(color: AppColors.surfaceInputBorder),

@@ -114,6 +114,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               path: '/devices',
               builder: (ctx, routeState) => DevicesScreen(
                 returnMode: (routeState.extra as Map<String, dynamic>?)?['returnMode'] == true,
+                initialSearch: (routeState.extra as Map<String, dynamic>?)?['qrCode'] as String?,
               ),
               routes: [
                 GoRoute(path: 'new', builder: (ctx, routeState) => const DeviceFormScreen()),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:assetflow_mobile/core/services/barcode_scanner_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/app_input.dart';
 import 'package:assetflow_mobile/data/models/device_model.dart';
@@ -106,6 +107,39 @@ class _AssignWizardScreenState extends ConsumerState<AssignWizardScreen> {
         backgroundColor: AppColors.warning,
       ),
     );
+  }
+
+  Future<void> _scanDeviceQR() async {
+    final code = await BarcodeScannerService.scanBarcode(context);
+    if (code == null || !mounted) return;
+
+    final devicesAsync = ref.read(_availableDevicesProvider);
+    final devices = devicesAsync.value ?? [];
+
+    Device? found;
+    for (final d in devices) {
+      if ((d.assetCode ?? '').toLowerCase() == code.toLowerCase()) {
+        found = d;
+        break;
+      }
+    }
+
+    if (found != null) {
+      final device = found;
+      setState(() {
+        _selectedDevice = device;
+        _deviceSearch = device.name.toLowerCase();
+        _deviceSearchCtrl.text = device.name;
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Cihaz bulunamadı: $code'),
+          backgroundColor: AppColors.warning,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   Future<void> _save() async {
@@ -296,6 +330,11 @@ class _AssignWizardScreenState extends ConsumerState<AssignWizardScreen> {
             hint: 'Cihaz adı veya kod ara…',
             controller: _deviceSearchCtrl,
             prefixIcon: const Icon(Icons.search, size: 18, color: AppColors.textTertiary),
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.qr_code_scanner, size: 18, color: AppColors.textTertiary),
+              tooltip: 'QR / Barkod Tara',
+              onPressed: _scanDeviceQR,
+            ),
             onChanged: (v) => setState(() => _deviceSearch = v.toLowerCase()),
           ),
         ),

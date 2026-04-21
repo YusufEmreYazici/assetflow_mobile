@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:assetflow_mobile/core/services/barcode_scanner_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/app_header.dart';
 import 'package:assetflow_mobile/core/widgets/section_header.dart';
@@ -119,6 +120,40 @@ class DashboardAView extends ConsumerWidget {
               children: [
                 const SectionHeader(title: 'HIZLI İŞLEMLER', padding: EdgeInsets.zero),
                 const SizedBox(height: 10),
+                // QR shortcut banner
+                GestureDetector(
+                  onTap: () async {
+                    final code = await BarcodeScannerService.scanBarcode(context);
+                    if (code != null && context.mounted) {
+                      context.go('/devices', extra: <String, dynamic>{'qrCode': code});
+                    }
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary50,
+                      borderRadius: BorderRadius.circular(AppRadius.md),
+                      border: Border.all(color: AppColors.primary200),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.qr_code_scanner, size: 16, color: AppColors.primary600),
+                        const SizedBox(width: 8),
+                        Text(
+                          'QR / Barkod Tara',
+                          style: GoogleFonts.inter(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.primary700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
                 Row(
                   children: [
                     QuickAction(
