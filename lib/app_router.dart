@@ -26,6 +26,7 @@ import 'package:assetflow_mobile/features/people/person_detail_screen.dart';
 import 'package:assetflow_mobile/features/sap/screens/sap_screen.dart';
 import 'package:assetflow_mobile/features/notifications/notifications_screen.dart';
 import 'package:assetflow_mobile/features/audit_log/audit_log_screen.dart';
+import 'package:assetflow_mobile/features/profile/screens/settings_screen.dart';
 
 class _PlaceholderScreen extends StatelessWidget {
   final String title;
@@ -164,7 +165,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/notifications', builder: (_, __) => const NotificationsScreen()),
       GoRoute(path: '/audit-log',    builder: (_, __) => const AuditLogScreen()),
       GoRoute(path: '/excel-export', builder: (_, __) => const _PlaceholderScreen('Excel Export')),
-      GoRoute(path: '/settings',     builder: (_, __) => const _PlaceholderScreen('Ayarlar')),
+      GoRoute(path: '/settings',     builder: (_, __) => const SettingsScreen()),
     ],
   );
 });
