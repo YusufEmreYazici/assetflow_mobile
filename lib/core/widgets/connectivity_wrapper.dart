@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:assetflow_mobile/core/services/offline_cache_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/constants/api_constants.dart';
 
@@ -58,18 +59,24 @@ class OfflineBanner extends ConsumerWidget {
 
     if (isOnline) return const SizedBox.shrink();
 
+    final lastSync = OfflineCacheService.getLastSyncLabel('devices');
+    final syncText = lastSync != null ? ' · Son sync: $lastSync' : '';
+
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
       color: AppColors.warning,
-      child: const Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.wifi_off, size: 16, color: Colors.black87),
-          SizedBox(width: 6),
-          Text(
-            'Cevrimdisi - Kaydedilmis veriler gosteriliyor',
-            style: TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.w500),
+          const Icon(Icons.wifi_off, size: 14, color: Colors.black87),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              'Çevrimdışı — kayıtlı veriler gösteriliyor$syncText',
+              style: const TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.w500),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ],
       ),
