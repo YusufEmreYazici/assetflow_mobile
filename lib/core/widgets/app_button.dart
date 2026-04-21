@@ -1,102 +1,81 @@
 import 'package:flutter/material.dart';
-import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../theme/app_theme.dart';
 
-enum AppButtonVariant { primary, secondary, danger }
+enum AppButtonVariant { primary, secondary, danger, ghost }
 
 class AppButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
-  final bool isLoading;
   final AppButtonVariant variant;
+  final bool isLoading;
   final bool isFullWidth;
   final IconData? icon;
+  final double height;
 
   const AppButton({
     super.key,
     required this.text,
     this.onPressed,
-    this.isLoading = false,
     this.variant = AppButtonVariant.primary,
+    this.isLoading = false,
     this.isFullWidth = false,
     this.icon,
+    this.height = 48,
   });
 
   @override
   Widget build(BuildContext context) {
-    final button = switch (variant) {
-      AppButtonVariant.primary => _buildPrimary(context),
-      AppButtonVariant.secondary => _buildSecondary(context),
-      AppButtonVariant.danger => _buildDanger(context),
+    final (bg, fg, borderColor) = switch (variant) {
+      AppButtonVariant.primary   => (AppColors.navy, Colors.white, AppColors.navy),
+      AppButtonVariant.secondary => (AppColors.surfaceWhite, AppColors.navy, AppColors.surfaceInputBorder),
+      AppButtonVariant.danger    => (AppColors.error, Colors.white, AppColors.error),
+      AppButtonVariant.ghost     => (Colors.transparent, AppColors.navy, Colors.transparent),
     };
 
-    if (isFullWidth) {
-      return SizedBox(width: double.infinity, child: button);
-    }
-    return button;
-  }
+    Widget child = isLoading
+        ? SizedBox(
+            width: 18, height: 18,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation(fg),
+            ),
+          )
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (icon != null) ...[
+                Icon(icon, size: 18, color: fg),
+                const SizedBox(width: 8),
+              ],
+              Text(
+                text,
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: fg,
+                  letterSpacing: 0.2,
+                ),
+              ),
+            ],
+          );
 
-  Widget _buildChild() {
-    if (isLoading) {
-      return const SizedBox(
-        width: 20,
-        height: 20,
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-          color: Colors.white,
+    final button = GestureDetector(
+      onTap: (isLoading || onPressed == null) ? null : onPressed,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 120),
+        height: height,
+        decoration: BoxDecoration(
+          color: (isLoading || onPressed == null)
+              ? bg.withValues(alpha: 0.6)
+              : bg,
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          border: Border.all(color: borderColor),
         ),
-      );
-    }
-    if (icon != null) {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 18),
-          const SizedBox(width: 8),
-          Text(text),
-        ],
-      );
-    }
-    return Text(text);
-  }
-
-  Widget _buildPrimary(BuildContext context) {
-    return ElevatedButton(
-      onPressed: isLoading ? null : onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primary600,
-        foregroundColor: AppColors.textOnPrimary,
-        disabledBackgroundColor: AppColors.primary600.withValues(alpha: 0.5),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        child: Center(child: child),
       ),
-      child: _buildChild(),
     );
-  }
 
-  Widget _buildSecondary(BuildContext context) {
-    return OutlinedButton(
-      onPressed: isLoading ? null : onPressed,
-      style: OutlinedButton.styleFrom(
-        foregroundColor: AppColors.textPrimary,
-        side: const BorderSide(color: AppColors.border),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-      child: _buildChild(),
-    );
-  }
-
-  Widget _buildDanger(BuildContext context) {
-    return ElevatedButton(
-      onPressed: isLoading ? null : onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.error,
-        foregroundColor: AppColors.textOnPrimary,
-        disabledBackgroundColor: AppColors.error.withValues(alpha: 0.5),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-      child: _buildChild(),
-    );
+    return isFullWidth ? SizedBox(width: double.infinity, child: button) : button;
   }
 }
