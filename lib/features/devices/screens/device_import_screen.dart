@@ -290,7 +290,7 @@ class _DeviceImportScreenState extends State<DeviceImportScreen> {
                   [
                     if (row.brand.isNotEmpty) row.brand,
                     if (row.model.isNotEmpty) row.model,
-                    DeviceTypeLabels[row.deviceType] ?? '',
+                    deviceTypeLabels[row.deviceType] ?? '',
                   ].join(' · '),
                   style: const TextStyle(
                     fontSize: 11,

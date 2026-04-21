@@ -390,7 +390,7 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
       child: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: 4,
-        itemBuilder: (_, __) => Container(
+        itemBuilder: (context, index) => Container(
           margin: const EdgeInsets.only(bottom: 10),
           height: 140,
           decoration: BoxDecoration(color: AppColors.dark800, borderRadius: BorderRadius.circular(12)),

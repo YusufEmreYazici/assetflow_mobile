@@ -259,7 +259,7 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
   Widget _buildAssignmentItem(Assignment a) {
     final dateFormat = DateFormat('dd/MM/yyyy');
     final isActive = a.isActive;
-    final typeLabel = AssignmentTypeLabels[a.type] ?? 'Kalici';
+    final typeLabel = assignmentTypeLabels[a.type] ?? 'Kalici';
 
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
@@ -506,7 +506,7 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
       child: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: 8,
-        itemBuilder: (_, __) => Container(
+        itemBuilder: (context, index) => Container(
           margin: const EdgeInsets.only(bottom: 8),
           height: 100,
           decoration: BoxDecoration(

@@ -248,7 +248,7 @@ class _EmployeesScreenState extends ConsumerState<EmployeesScreen> {
       child: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: 10,
-        itemBuilder: (_, __) => Container(
+        itemBuilder: (context, index) => Container(
           margin: const EdgeInsets.only(bottom: 8),
           height: 80,
           decoration: BoxDecoration(color: AppColors.dark800, borderRadius: BorderRadius.circular(12)),

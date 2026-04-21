@@ -96,13 +96,13 @@ class Assignment {
   };
 }
 
-const Map<int, String> AssignmentTypeLabels = {
+const Map<int, String> assignmentTypeLabels = {
   0: 'Zimmet',
   1: 'Odunc',
   2: 'Gecici',
 };
 
-const Map<int, String> ReturnConditionLabels = {
+const Map<int, String> returnConditionLabels = {
   0: 'Iyi',
   1: 'Hasarli',
   2: 'Arizali',

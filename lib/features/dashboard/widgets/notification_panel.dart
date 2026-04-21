@@ -447,7 +447,7 @@ class _AssignmentNotifTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final typeLabel = AssignmentTypeLabels[assignment.type] ?? 'Zimmet';
+    final typeLabel = assignmentTypeLabels[assignment.type] ?? 'Zimmet';
     final baseColor = assignment.type == 0
         ? AppColors.success
         : assignment.type == 1

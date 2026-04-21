@@ -25,7 +25,7 @@ class DeviceAssignmentsTab extends ConsumerWidget {
       loading: () => const Center(
         child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2),
       ),
-      error: (_, __) => Center(
+      error: (err, stack) => Center(
         child: Text(
           'Zimmetler yüklenemedi.',
           style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary),

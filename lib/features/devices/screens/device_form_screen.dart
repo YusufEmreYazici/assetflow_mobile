@@ -136,13 +136,19 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
   void _next() {
     if (_step == 0 && !(_step0Key.currentState?.validate() ?? false)) return;
     if (_step == 2 && !(_step2Key.currentState?.validate() ?? false)) return;
-    if (_step < 3) setState(() => _step++);
-    else _save();
+    if (_step < 3) {
+      setState(() => _step++);
+    } else {
+      _save();
+    }
   }
 
   void _back() {
-    if (_step > 0) setState(() => _step--);
-    else Navigator.pop(context);
+    if (_step > 0) {
+      setState(() => _step--);
+    } else {
+      Navigator.pop(context);
+    }
   }
 
   Future<void> _save() async {
@@ -262,7 +268,7 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
           _DropdownField(
             label: 'CİHAZ TİPİ',
             value: _selectedType,
-            items: DeviceTypeLabels.entries
+            items: deviceTypeLabels.entries
                 .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value)))
                 .toList(),
             onChanged: (v) => setState(() => _selectedType = v ?? 0),
@@ -506,7 +512,7 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
         _DropdownField(
           label: 'DURUM',
           value: _selectedStatus,
-          items: DeviceStatusLabels.entries
+          items: deviceStatusLabels.entries
               .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value)))
               .toList(),
           onChanged: (v) => setState(() => _selectedStatus = v ?? 0),
@@ -521,7 +527,7 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
               ),
             ),
           ),
-          error: (_, __) => Text(
+          error: (err, stack) => Text(
             'Lokasyonlar yüklenemedi.',
             style: GoogleFonts.inter(
               fontSize: 13, color: AppColors.textSecondary,
@@ -769,7 +775,7 @@ class _DropdownField<T> extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         DropdownButtonFormField<T>(
-          value: value,
+          initialValue: value,
           items: items,
           onChanged: onChanged,
           style: GoogleFonts.inter(

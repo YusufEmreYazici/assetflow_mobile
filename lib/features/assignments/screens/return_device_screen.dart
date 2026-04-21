@@ -54,7 +54,7 @@ class _ReturnDeviceScreenState extends ConsumerState<ReturnDeviceScreen> {
             DropdownButtonFormField<int>(
               initialValue: _condition,
               dropdownColor: AppColors.dark800,
-              items: ReturnConditionLabels.entries
+              items: returnConditionLabels.entries
                   .map(
                     (e) => DropdownMenuItem(value: e.key, child: Text(e.value)),
                   )

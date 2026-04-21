@@ -71,7 +71,7 @@ class PageHeader extends StatelessWidget implements PreferredSizeWidget {
               ],
             ),
           ),
-          if (action != null) action!,
+          ?action,
         ],
       ),
     );

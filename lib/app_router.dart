@@ -90,16 +90,16 @@ final routerProvider = Provider<GoRouter>((ref) {
     },
     routes: [
       // ── Auth routes ──────────────────────────────────────────────────
-      GoRoute(path: '/login',  builder: (_, __) => const LoginScreen()),
-      GoRoute(path: '/register', builder: (_, __) => const RegisterScreen()),
-      GoRoute(path: '/forgot-password', builder: (_, __) => const ForgotPasswordScreen()),
+      GoRoute(path: '/login',  builder: (ctx, routeState) => const LoginScreen()),
+      GoRoute(path: '/register', builder: (ctx, routeState) => const RegisterScreen()),
+      GoRoute(path: '/forgot-password', builder: (ctx, routeState) => const ForgotPasswordScreen()),
       GoRoute(
         path: '/password-sent',
         builder: (_, state) => PasswordEmailSentScreen(
           email: state.uri.queryParameters['email'] ?? '',
         ),
       ),
-      GoRoute(path: '/reset-password', builder: (_, __) => const ResetPasswordScreen()),
+      GoRoute(path: '/reset-password', builder: (ctx, routeState) => const ResetPasswordScreen()),
 
       // ── Shell (authenticated) ────────────────────────────────────────
       StatefulShellRoute.indexedStack(
@@ -107,14 +107,14 @@ final routerProvider = Provider<GoRouter>((ref) {
             AppShell(navigationShell: navigationShell),
         branches: [
           StatefulShellBranch(routes: [
-            GoRoute(path: '/', builder: (_, __) => const DashboardScreen()),
+            GoRoute(path: '/', builder: (ctx, routeState) => const DashboardScreen()),
           ]),
           StatefulShellBranch(routes: [
             GoRoute(
               path: '/devices',
-              builder: (_, __) => const DevicesScreen(),
+              builder: (ctx, routeState) => const DevicesScreen(),
               routes: [
-                GoRoute(path: 'new', builder: (_, __) => const DeviceFormScreen()),
+                GoRoute(path: 'new', builder: (ctx, routeState) => const DeviceFormScreen()),
                 GoRoute(
                   path: ':id',
                   builder: (_, state) => DeviceDetailScreen(
@@ -123,7 +123,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                   routes: [
                     GoRoute(
                       path: 'edit',
-                      builder: (_, __) => const _PlaceholderScreen('Cihaz Düzenle'),
+                      builder: (ctx, routeState) => const _PlaceholderScreen('Cihaz Düzenle'),
                     ),
                   ],
                 ),
@@ -131,10 +131,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             ),
           ]),
           StatefulShellBranch(routes: [
-            GoRoute(path: '/employees', builder: (_, __) => const EmployeesScreen()),
+            GoRoute(path: '/employees', builder: (ctx, routeState) => const EmployeesScreen()),
           ]),
           StatefulShellBranch(routes: [
-            GoRoute(path: '/assignments', builder: (_, __) => const AssignmentsScreen()),
+            GoRoute(path: '/assignments', builder: (ctx, routeState) => const AssignmentsScreen()),
           ]),
         ],
       ),
@@ -148,25 +148,25 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/assignments/:id/return',
-        builder: (_, state) => _PlaceholderScreen('İade Et'),
+        builder: (ctx, routeState) => const _PlaceholderScreen('İade Et'),
       ),
-      GoRoute(path: '/people',        builder: (_, __) => const PersonListScreen()),
+      GoRoute(path: '/people',        builder: (ctx, routeState) => const PersonListScreen()),
       GoRoute(
         path: '/person/:id',
         builder: (_, state) => PersonDetailScreen(id: state.pathParameters['id']!),
       ),
-      GoRoute(path: '/locations',    builder: (_, __) => const LocationListScreen()),
-      GoRoute(path: '/locations-old', builder: (_, __) => const LocationsScreen()),
+      GoRoute(path: '/locations',    builder: (ctx, routeState) => const LocationListScreen()),
+      GoRoute(path: '/locations-old', builder: (ctx, routeState) => const LocationsScreen()),
       GoRoute(
         path: '/location/:id',
         builder: (_, state) => LocationDetailScreen(id: state.pathParameters['id']!),
       ),
-      GoRoute(path: '/profile',      builder: (_, __) => const ProfileScreen()),
-      GoRoute(path: '/sap',          builder: (_, __) => const SapScreen()),
-      GoRoute(path: '/notifications', builder: (_, __) => const NotificationsScreen()),
-      GoRoute(path: '/audit-log',    builder: (_, __) => const AuditLogScreen()),
-      GoRoute(path: '/excel-export', builder: (_, __) => const ExcelExportScreen()),
-      GoRoute(path: '/settings',     builder: (_, __) => const SettingsScreen()),
+      GoRoute(path: '/profile',      builder: (ctx, routeState) => const ProfileScreen()),
+      GoRoute(path: '/sap',          builder: (ctx, routeState) => const SapScreen()),
+      GoRoute(path: '/notifications', builder: (ctx, routeState) => const NotificationsScreen()),
+      GoRoute(path: '/audit-log',    builder: (ctx, routeState) => const AuditLogScreen()),
+      GoRoute(path: '/excel-export', builder: (ctx, routeState) => const ExcelExportScreen()),
+      GoRoute(path: '/settings',     builder: (ctx, routeState) => const SettingsScreen()),
     ],
   );
 });

@@ -10,8 +10,8 @@ class DeviceListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final typeLabel = DeviceTypeLabels[device.type] ?? 'Bilinmiyor';
-    final statusLabel = DeviceStatusLabels[device.status] ?? 'Bilinmiyor';
+    final typeLabel = deviceTypeLabels[device.type] ?? 'Bilinmiyor';
+    final statusLabel = deviceStatusLabels[device.status] ?? 'Bilinmiyor';
     final statusColor = _statusColor(device.status);
 
     return GestureDetector(

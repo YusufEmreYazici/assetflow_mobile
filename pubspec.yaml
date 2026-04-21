@@ -1,7 +1,7 @@
 name: assetflow_mobile
 description: "AssetFlow - IT Varlik Yonetimi Mobil"
 publish_to: 'none'
-version: 1.0.0+1
+version: 2.0.0+20
 
 environment:
   sdk: ^3.11.1

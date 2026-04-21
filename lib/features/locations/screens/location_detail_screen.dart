@@ -28,7 +28,7 @@ class LocationDetailScreen extends ConsumerWidget {
             const Expanded(child: Center(child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2))),
           ],
         ),
-        error: (_, __) => Column(
+        error: (err, stack) => Column(
           children: [
             Container(
               color: AppColors.navy,

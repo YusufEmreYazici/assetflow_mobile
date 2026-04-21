@@ -192,7 +192,7 @@ class AssignmentNotifier extends StateNotifier<AssignmentListState> {
       );
 
       final conditionLabel =
-          ReturnConditionLabels[returnCondition] ?? 'Bilinmiyor';
+          returnConditionLabels[returnCondition] ?? 'Bilinmiyor';
       await NotificationService.instance.notifyAssignmentReturned(
         employeeName: assignment?.employeeName ?? 'Bilinmiyor',
         deviceName: assignment?.deviceName ?? 'Bilinmiyor',

@@ -35,7 +35,7 @@ class DashboardAView extends ConsumerWidget {
         SliverToBoxAdapter(
           child: dashAsync.when(
             loading: () => _buildContent(context, null),
-            error: (_, __) => _buildContent(context, null),
+            error: (err, stack) => _buildContent(context, null),
             data: (d) => _buildContent(context, d),
           ),
         ),

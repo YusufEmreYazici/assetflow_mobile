@@ -134,7 +134,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
                     itemCount: _filters.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 6),
+                    separatorBuilder: (context, index) => const SizedBox(width: 6),
                     itemBuilder: (_, i) {
                       final (status, label) = _filters[i];
                       final active = _filterStatus == status;

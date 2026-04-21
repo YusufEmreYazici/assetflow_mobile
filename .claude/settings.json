@@ -29,17 +29,11 @@
       "Bash(git reset --hard:*)"
     ],
     "ask": [
-      "Edit(pubspec.yaml)",
-      "Edit(lib/main.dart)",
-      "Edit(lib/app_router.dart)",
       "Edit(lib/core/utils/api_client.dart)",
       "Edit(lib/core/utils/token_manager.dart)",
       "Edit(lib/core/constants/api_constants.dart)",
-      "Edit(lib/core/theme/app_theme.dart)",
       "Edit(lib/data/services/auth_service.dart)",
-      "Edit(lib/features/auth/providers/auth_provider.dart)",
       "Edit(analysis_options.yaml)",
-      "Bash(flutter pub add:*)",
       "Bash(flutter pub remove:*)",
       "Bash(flutter pub upgrade:*)",
       "Bash(flutter build apk:*)",
@@ -49,6 +43,12 @@
       "Bash(git rebase:*)"
     ],
     "allow": [
+      "Edit(pubspec.yaml)",
+      "Edit(lib/main.dart)",
+      "Edit(lib/app_router.dart)",
+      "Edit(lib/core/theme/app_theme.dart)",
+      "Edit(lib/features/auth/providers/auth_provider.dart)",
+      "Bash(flutter pub add:*)",
       "Bash(flutter run)",
       "Bash(flutter run:*)",
       "Bash(flutter pub get)",

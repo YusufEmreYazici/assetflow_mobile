@@ -59,7 +59,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
           ],
         ),
       ),
-      error: (_, __) => Scaffold(
+      error: (err, stack) => Scaffold(
         appBar: AppBar(backgroundColor: AppColors.navy, foregroundColor: Colors.white, title: const Text('Hata')),
         body: const Center(child: Text('Personel yüklenemedi.')),
       ),
@@ -263,7 +263,7 @@ class _AssignmentsTab extends ConsumerWidget {
       loading: () => const Center(
         child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2),
       ),
-      error: (_, __) => Center(
+      error: (err, stack) => Center(
         child: Text('Zimmetler yüklenemedi.',
             style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary)),
       ),

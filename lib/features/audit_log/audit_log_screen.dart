@@ -93,7 +93,7 @@ class _AuditLogScreenState extends State<AuditLogScreen> {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
               itemCount: _filters.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 6),
+              separatorBuilder: (context, index) => const SizedBox(width: 6),
               itemBuilder: (_, i) {
                 final (action, label) = _filters[i];
                 final active = _filterAction == action;

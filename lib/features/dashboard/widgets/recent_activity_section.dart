@@ -26,7 +26,7 @@ class RecentActivitySection extends StatelessWidget {
             children: List.generate(items.length, (i) {
               final a = items[i];
               final isLast = i == items.length - 1;
-              final typeLabel = AssignmentTypeLabels[a.type] ?? 'Zimmet';
+              final typeLabel = assignmentTypeLabels[a.type] ?? 'Zimmet';
               final typeColor = a.type == 0
                   ? AppColors.success
                   : a.type == 1

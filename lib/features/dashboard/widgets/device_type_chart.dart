@@ -112,7 +112,7 @@ class _DeviceTypeChartState extends State<DeviceTypeChart> {
                     final entry = entries[i];
                     final color = _colors[i % _colors.length];
                     final label =
-                        DeviceTypeLabels[int.tryParse(entry.key)] ?? entry.key;
+                        deviceTypeLabels[int.tryParse(entry.key)] ?? entry.key;
                     final pct = total > 0
                         ? (entry.value / total * 100).toStringAsFixed(0)
                         : '0';

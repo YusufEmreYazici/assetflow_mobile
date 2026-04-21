@@ -30,7 +30,7 @@ class DeviceRow extends StatelessWidget {
         _ => ChipTone.neutral,
       };
 
-  String get _statusLabel => DeviceStatusLabels[device.status] ?? '?';
+  String get _statusLabel => deviceStatusLabels[device.status] ?? '?';
 
   @override
   Widget build(BuildContext context) {

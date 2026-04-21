@@ -229,7 +229,7 @@ class _AssignWizardScreenState extends ConsumerState<AssignWizardScreen> {
             loading: () => const Center(
               child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2),
             ),
-            error: (_, __) => Center(
+            error: (err, stack) => Center(
               child: Text('Personel yüklenemedi.',
                   style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary)),
             ),
@@ -244,7 +244,7 @@ class _AssignWizardScreenState extends ConsumerState<AssignWizardScreen> {
               return ListView.separated(
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 itemCount: filtered.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                separatorBuilder: (context, index) => const SizedBox(height: 8),
                 itemBuilder: (_, i) => PersonPickRow(
                   employee: filtered[i],
                   selected: _selectedEmployee?.id == filtered[i].id,
@@ -304,7 +304,7 @@ class _AssignWizardScreenState extends ConsumerState<AssignWizardScreen> {
             loading: () => const Center(
               child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2),
             ),
-            error: (_, __) => Center(
+            error: (err, stack) => Center(
               child: Text('Cihazlar yüklenemedi.',
                   style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary)),
             ),
@@ -329,7 +329,7 @@ class _AssignWizardScreenState extends ConsumerState<AssignWizardScreen> {
               return ListView.separated(
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 itemCount: filtered.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                separatorBuilder: (context, index) => const SizedBox(height: 8),
                 itemBuilder: (_, i) => DevicePickRow(
                   device: filtered[i],
                   selected: _selectedDevice?.id == filtered[i].id,
@@ -708,7 +708,7 @@ class _DropdownField<T> extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         DropdownButtonFormField<T>(
-          value: value,
+          initialValue: value,
           items: items,
           onChanged: onChanged,
           style: GoogleFonts.inter(fontSize: 14, color: AppColors.textPrimary),

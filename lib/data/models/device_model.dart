@@ -134,7 +134,7 @@ class Device {
   };
 }
 
-const Map<int, String> DeviceTypeLabels = {
+const Map<int, String> deviceTypeLabels = {
   0: 'Dizustu Bilgisayar',
   1: 'Masaustu Bilgisayar',
   2: 'Monitor',
@@ -146,7 +146,7 @@ const Map<int, String> DeviceTypeLabels = {
   8: 'Diger',
 };
 
-const Map<int, String> DeviceStatusLabels = {
+const Map<int, String> deviceStatusLabels = {
   0: 'Aktif',
   1: 'Depoda',
   2: 'Bakimda',

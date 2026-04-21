@@ -49,7 +49,7 @@ class LocationListScreen extends ConsumerWidget {
                   color: AppColors.navy, strokeWidth: 2,
                 ),
               ),
-              error: (_, __) => Center(
+              error: (err, stack) => Center(
                 child: Text(
                   'Lokasyonlar yüklenemedi.',
                   style: GoogleFonts.inter(

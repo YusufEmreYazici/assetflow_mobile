@@ -12,8 +12,8 @@ class DeviceGeneralTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat('dd/MM/yyyy');
-    final typeLabel = DeviceTypeLabels[device.type] ?? 'Cihaz';
-    final statusLabel = DeviceStatusLabels[device.status] ?? '?';
+    final typeLabel = deviceTypeLabels[device.type] ?? 'Cihaz';
+    final statusLabel = deviceStatusLabels[device.status] ?? '?';
 
     final bool hasPurchase = device.purchaseDate != null ||
         device.purchasePrice != null ||

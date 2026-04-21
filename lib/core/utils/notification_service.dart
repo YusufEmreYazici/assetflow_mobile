@@ -248,7 +248,7 @@ class NotificationService {
         title: '${warning.length} Cihazda Garanti Uyarisi',
         body: warning.length == 1
             ? '${warning.first.deviceName} - ${warning.first.daysRemaining} gun kaldi'
-            : '${warning.map((e) => e.deviceName).take(3).join(", ")}',
+            : warning.map((e) => e.deviceName).take(3).join(', '),
         channelId: _Channels.warranty,
         channelName: 'Garanti Bildirimleri',
         importance: Importance.defaultImportance,
