@@ -4,9 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:assetflow_mobile/core/services/barcode_scanner_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/core/widgets/bulk_action_bar.dart';
 import 'package:assetflow_mobile/core/widgets/page_header.dart';
 import 'package:assetflow_mobile/data/models/device_model.dart';
 import 'package:assetflow_mobile/features/devices/models/device_filter.dart';
+import 'package:assetflow_mobile/features/devices/providers/bulk_selection_provider.dart';
 import 'package:assetflow_mobile/features/devices/providers/device_filter_provider.dart';
 import 'package:assetflow_mobile/features/devices/providers/device_provider.dart';
 import 'package:assetflow_mobile/features/devices/widgets/advanced_filter_sheet.dart';
@@ -94,27 +96,76 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
     final filtered = _applyLocalFilters(advFiltered);
     final advFilter = ref.watch(deviceFilterProvider);
     final presets = ref.watch(filterPresetsProvider);
+    final selectionState = ref.watch(bulkSelectionProvider);
+    final inSelection = selectionState.isActive;
 
     return Scaffold(
       backgroundColor: AppColors.surfaceLight,
+      bottomNavigationBar: inSelection
+          ? BulkActionBar(filteredDeviceIds: filtered.map((d) => d.id).toList())
+          : null,
+      floatingActionButton: inSelection
+          ? null
+          : FloatingActionButton(
+              onPressed: () => context.push('/devices/new'),
+              backgroundColor: AppColors.navy,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              child: const Icon(Icons.add, color: Colors.white, size: 22),
+            ),
       body: Column(
         children: [
-          PageHeader(
-            title: 'Cihazlar',
-            subtitle: '${filtered.length} CİHAZ',
-            onBack: () => Scaffold.maybeOf(context)?.openEndDrawer(),
-            action: GestureDetector(
-              onTap: () => context.push('/devices/new'),
-              child: Container(
-                width: 36, height: 36,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.14),
-                  borderRadius: BorderRadius.circular(8),
+          // Header — changes when selection mode is active
+          inSelection
+              ? Container(
+                  color: AppColors.navy,
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).padding.top + 14,
+                    left: AppSpacing.lg,
+                    right: AppSpacing.lg,
+                    bottom: 18,
+                  ),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => ref.read(bulkSelectionProvider.notifier).exit(),
+                        child: Container(
+                          width: 36, height: 36,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.14),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Icon(Icons.close, size: 18, color: Colors.white),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          '${selectionState.count} seçili',
+                          style: GoogleFonts.inter(
+                            fontSize: 19, fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : PageHeader(
+                  title: 'Cihazlar',
+                  subtitle: '${filtered.length} CİHAZ',
+                  onBack: () => Scaffold.maybeOf(context)?.openEndDrawer(),
+                  action: GestureDetector(
+                    onTap: () => context.push('/devices/new'),
+                    child: Container(
+                      width: 36, height: 36,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.14),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(Icons.add, size: 18, color: Colors.white),
+                    ),
+                  ),
                 ),
-                child: const Icon(Icons.add, size: 18, color: Colors.white),
-              ),
-            ),
-          ),
           if (widget.returnMode)
             Container(
               width: double.infinity,
@@ -345,6 +396,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                                   );
                                 }
                                 final d = filtered[i];
+                                final isSelected = selectionState.selectedIds.contains(d.id);
                                 return Container(
                                   decoration: BoxDecoration(
                                     color: AppColors.surfaceWhite,
@@ -357,7 +409,17 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                                   child: DeviceRow(
                                     device: d,
                                     isLast: i == filtered.length - 1,
-                                    onTap: () => context.push('/devices/${d.id}'),
+                                    selectionMode: inSelection,
+                                    isSelected: isSelected,
+                                    onTap: inSelection
+                                        ? () => ref.read(bulkSelectionProvider.notifier).toggle(d.id)
+                                        : () => context.push('/devices/${d.id}'),
+                                    onLongPress: inSelection
+                                        ? null
+                                        : () {
+                                            ref.read(bulkSelectionProvider.notifier).enter();
+                                            ref.read(bulkSelectionProvider.notifier).toggle(d.id);
+                                          },
                                   ),
                                 );
                               },
@@ -367,12 +429,6 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
             ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.push('/devices/new'),
-        backgroundColor: AppColors.navy,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-        child: const Icon(Icons.add, color: Colors.white, size: 22),
       ),
     );
   }

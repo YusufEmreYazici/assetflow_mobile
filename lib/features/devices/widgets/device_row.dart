@@ -7,9 +7,20 @@ import 'package:assetflow_mobile/data/models/device_model.dart';
 class DeviceRow extends StatelessWidget {
   final Device device;
   final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
   final bool isLast;
+  final bool selectionMode;
+  final bool isSelected;
 
-  const DeviceRow({super.key, required this.device, this.onTap, this.isLast = false});
+  const DeviceRow({
+    super.key,
+    required this.device,
+    this.onTap,
+    this.onLongPress,
+    this.isLast = false,
+    this.selectionMode = false,
+    this.isSelected = false,
+  });
 
   IconData get _typeIcon => switch (device.type) {
         0 => Icons.laptop_outlined,
@@ -37,26 +48,45 @@ class DeviceRow extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
-      child: Container(
+      onLongPress: onLongPress,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        color: isSelected ? AppColors.navy.withValues(alpha: 0.07) : Colors.transparent,
         decoration: isLast
             ? null
             : const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: AppColors.surfaceDivider),
-                ),
+                border: Border(bottom: BorderSide(color: AppColors.surfaceDivider)),
               ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [
-            Container(
-              width: 40, height: 40,
-              decoration: BoxDecoration(
-                color: AppColors.surfaceLight,
-                borderRadius: BorderRadius.circular(AppRadius.md),
-              ),
-              child: Icon(_typeIcon, size: 20, color: AppColors.navy),
+            // Left: selection checkbox OR type icon
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: selectionMode
+                  ? SizedBox(
+                      key: const ValueKey('checkbox'),
+                      width: 40, height: 40,
+                      child: Icon(
+                        isSelected
+                            ? Icons.check_circle_rounded
+                            : Icons.radio_button_unchecked,
+                        size: 24,
+                        color: isSelected ? AppColors.navy : AppColors.textTertiary,
+                      ),
+                    )
+                  : Container(
+                      key: const ValueKey('icon'),
+                      width: 40, height: 40,
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceLight,
+                        borderRadius: BorderRadius.circular(AppRadius.md),
+                      ),
+                      child: Icon(_typeIcon, size: 20, color: AppColors.navy),
+                    ),
             ),
             const SizedBox(width: 12),
+            // Content
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,7 +97,8 @@ class DeviceRow extends StatelessWidget {
                         child: Text(
                           device.name,
                           style: GoogleFonts.inter(
-                            fontSize: 14, fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
                             color: AppColors.textPrimary,
                           ),
                           overflow: TextOverflow.ellipsis,
@@ -80,16 +111,15 @@ class DeviceRow extends StatelessWidget {
                   const SizedBox(height: 3),
                   Text(
                     '${device.assetCode ?? '—'} · ${device.assignedTo ?? 'Atanmamış'}',
-                    style: GoogleFonts.inter(
-                      fontSize: 11, color: AppColors.textSecondary,
-                    ),
+                    style: GoogleFonts.inter(fontSize: 11, color: AppColors.textSecondary),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
             ),
             const SizedBox(width: 8),
-            const Icon(Icons.chevron_right, size: 16, color: AppColors.textTertiary),
+            if (!selectionMode)
+              const Icon(Icons.chevron_right, size: 16, color: AppColors.textTertiary),
           ],
         ),
       ),
