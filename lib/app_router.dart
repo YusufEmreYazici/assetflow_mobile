@@ -13,8 +13,10 @@ import 'package:assetflow_mobile/features/auth/screens/reset_password_screen.dar
 import 'package:assetflow_mobile/features/dashboard/screens/dashboard_screen.dart';
 import 'package:assetflow_mobile/features/devices/screens/devices_screen.dart';
 import 'package:assetflow_mobile/features/devices/screens/device_detail_screen.dart';
+import 'package:assetflow_mobile/features/devices/screens/device_form_screen.dart';
 import 'package:assetflow_mobile/features/employees/screens/employees_screen.dart';
 import 'package:assetflow_mobile/features/assignments/screens/assignments_screen.dart';
+import 'package:assetflow_mobile/features/assignments/screens/assign_wizard_screen.dart';
 import 'package:assetflow_mobile/features/locations/screens/locations_screen.dart';
 import 'package:assetflow_mobile/features/profile/screens/profile_screen.dart';
 import 'package:assetflow_mobile/features/sap/screens/sap_screen.dart';
@@ -104,11 +106,18 @@ final routerProvider = Provider<GoRouter>((ref) {
               path: '/devices',
               builder: (_, __) => const DevicesScreen(),
               routes: [
+                GoRoute(path: 'new', builder: (_, __) => const DeviceFormScreen()),
                 GoRoute(
                   path: ':id',
                   builder: (_, state) => DeviceDetailScreen(
                     id: state.pathParameters['id']!,
                   ),
+                  routes: [
+                    GoRoute(
+                      path: 'edit',
+                      builder: (_, __) => const _PlaceholderScreen('Cihaz Düzenle'),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -123,6 +132,16 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
 
       // ── Full-page routes (pushed on top of shell) ────────────────────
+      GoRoute(
+        path: '/assignments/new',
+        builder: (_, state) => AssignWizardScreen(
+          preselectedDeviceId: state.uri.queryParameters['deviceId'],
+        ),
+      ),
+      GoRoute(
+        path: '/assignments/:id/return',
+        builder: (_, state) => _PlaceholderScreen('İade Et'),
+      ),
       GoRoute(path: '/locations',    builder: (_, __) => const LocationsScreen()),
       GoRoute(path: '/profile',      builder: (_, __) => const ProfileScreen()),
       GoRoute(path: '/sap',          builder: (_, __) => const SapScreen()),
