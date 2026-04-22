@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/page_header.dart';
+import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
 import 'package:assetflow_mobile/data/models/location_model.dart';
 import 'package:assetflow_mobile/data/services/location_service.dart';
 
@@ -29,17 +30,7 @@ class LocationListScreen extends ConsumerWidget {
               data: (l) => '${l.length} LOKASYON',
               orElse: () => '',
             ),
-            leading: GestureDetector(
-              onTap: () => Scaffold.maybeOf(context)?.openEndDrawer(),
-              child: Container(
-                width: 36, height: 36,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Icon(Icons.menu, size: 18, color: Colors.white),
-              ),
-            ),
+            onBack: goBackOrHome(context),
           ),
           Expanded(
             child: async.when(

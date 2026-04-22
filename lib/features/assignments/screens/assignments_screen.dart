@@ -146,17 +146,7 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
           PageHeader(
             title: 'Zimmetler',
             subtitle: '${state.assignments.length} ZİMMET',
-            leading: GestureDetector(
-              onTap: () => Scaffold.maybeOf(context)?.openEndDrawer(),
-              child: Container(
-                width: 36, height: 36,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Icon(Icons.menu, size: 18, color: Colors.white),
-              ),
-            ),
+            showMenu: true,
             action: GestureDetector(
               onTap: _navigateToAssign,
               child: Container(

@@ -5,8 +5,14 @@ import '../theme/app_theme.dart';
 class PageHeader extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final String? subtitle;
+
+  /// Back button on the LEFT when provided.
   final VoidCallback? onBack;
-  final Widget? leading;
+
+  /// Hamburger icon on the RIGHT when true (main tab screens).
+  final bool showMenu;
+
+  /// Extra action widget placed right of title, before hamburger.
   final Widget? action;
 
   const PageHeader({
@@ -14,34 +20,15 @@ class PageHeader extends StatelessWidget implements PreferredSizeWidget {
     required this.title,
     this.subtitle,
     this.onBack,
-    this.leading,
+    this.showMenu = false,
     this.action,
   });
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
-  Widget? _buildLeading() {
-    if (leading != null) return leading;
-    if (onBack != null) {
-      return GestureDetector(
-        onTap: onBack,
-        child: Container(
-          width: 36, height: 36,
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.10),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
-        ),
-      );
-    }
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
-    final leadingWidget = _buildLeading();
     return Container(
       color: AppColors.navy,
       padding: EdgeInsets.only(
@@ -53,10 +40,23 @@ class PageHeader extends StatelessWidget implements PreferredSizeWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (leadingWidget != null) ...[
-            leadingWidget,
+          // LEFT: back button (Grup B screens)
+          if (onBack != null) ...[
+            GestureDetector(
+              onTap: onBack,
+              child: Container(
+                width: 36, height: 36,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
+              ),
+            ),
             const SizedBox(width: 10),
           ],
+
+          // MIDDLE: title + subtitle
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,7 +82,27 @@ class PageHeader extends StatelessWidget implements PreferredSizeWidget {
               ],
             ),
           ),
+
+          // RIGHT: extra action
           ?action,
+
+          // RIGHT: hamburger (Grup A / main tab screens)
+          if (showMenu) ...[
+            if (action != null) const SizedBox(width: 8),
+            Builder(
+              builder: (ctx) => GestureDetector(
+                onTap: () => Scaffold.maybeOf(ctx)?.openEndDrawer(),
+                child: Container(
+                  width: 36, height: 36,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(Icons.menu, size: 18, color: Colors.white),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );

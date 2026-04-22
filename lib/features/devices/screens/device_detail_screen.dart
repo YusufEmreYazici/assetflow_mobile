@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
 import 'package:assetflow_mobile/core/widgets/app_tab_bar.dart';
 import 'package:assetflow_mobile/data/models/device_model.dart';
 import 'package:assetflow_mobile/data/services/device_service.dart';
@@ -92,7 +93,7 @@ class _DeviceDetailScreenState extends ConsumerState<DeviceDetailScreen> {
               bottom: 18,
             ),
             child: GestureDetector(
-              onTap: () => Navigator.pop(context),
+              onTap: goBackOrHome(context),
               child: Container(
                 width: 36, height: 36,
                 decoration: BoxDecoration(

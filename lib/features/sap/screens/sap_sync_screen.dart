@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
 import 'package:assetflow_mobile/features/sap/providers/sap_provider.dart';
 
 class SapSyncScreen extends ConsumerWidget {
@@ -29,7 +30,7 @@ class SapSyncScreen extends ConsumerWidget {
             child: Row(
               children: [
                 GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                  onTap: goBackOrHome(context),
                   child: Container(
                     width: 36,
                     height: 36,

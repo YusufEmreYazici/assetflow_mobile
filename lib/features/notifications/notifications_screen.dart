@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -140,7 +141,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             child: Row(
               children: [
                 GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                  onTap: goBackOrHome(context),
                   child: Container(
                     width: 36,
                     height: 36,

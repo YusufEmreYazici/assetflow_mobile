@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
 import 'package:assetflow_mobile/features/dashboard/providers/dashboard_variant_provider.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -35,7 +36,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             child: Row(
               children: [
                 GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                  onTap: goBackOrHome(context),
                   child: Container(
                     width: 36, height: 36,
                     decoration: BoxDecoration(

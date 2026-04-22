@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
 import 'package:assetflow_mobile/core/widgets/app_input.dart';
 import 'package:assetflow_mobile/data/models/device_model.dart';
 import 'package:assetflow_mobile/data/models/location_model.dart';
@@ -147,7 +148,7 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
     if (_step > 0) {
       setState(() => _step--);
     } else {
-      Navigator.pop(context);
+      goBackOrHome(context)();
     }
   }
 

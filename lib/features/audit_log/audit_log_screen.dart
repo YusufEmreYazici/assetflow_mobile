@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
 
 class AuditLogScreen extends StatefulWidget {
   const AuditLogScreen({super.key});
@@ -67,7 +68,7 @@ class _AuditLogScreenState extends State<AuditLogScreen> {
             child: Row(
               children: [
                 GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                  onTap: goBackOrHome(context),
                   child: Container(
                     width: 36, height: 36,
                     decoration: BoxDecoration(

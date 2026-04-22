@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/page_header.dart';
+import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
 import 'package:assetflow_mobile/data/models/employee_model.dart';
 import 'package:assetflow_mobile/data/services/employee_service.dart';
 
@@ -99,7 +100,7 @@ class _PersonListScreenState extends ConsumerState<PersonListScreen> {
           PageHeader(
             title: 'Personel',
             subtitle: '${filtered.length} PERSONEL',
-            onBack: () => Scaffold.maybeOf(context)?.openEndDrawer(),
+            onBack: goBackOrHome(context),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),

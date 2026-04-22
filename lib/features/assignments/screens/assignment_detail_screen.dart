@@ -8,6 +8,7 @@ import 'package:assetflow_mobile/core/widgets/app_chip.dart';
 import 'package:assetflow_mobile/data/models/assignment_model.dart';
 import 'package:assetflow_mobile/data/services/assignment_service.dart';
 import 'package:assetflow_mobile/features/assignments/screens/return_device_screen.dart';
+import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
 
 final _assignmentDetailProvider =
     FutureProvider.autoDispose.family<Assignment, String>((ref, id) async {
@@ -90,7 +91,7 @@ class _AssignmentDetailBody extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GestureDetector(
-                onTap: () => Navigator.pop(context),
+                onTap: goBackOrHome(context),
                 child: Container(
                   width: 36, height: 36,
                   decoration: BoxDecoration(

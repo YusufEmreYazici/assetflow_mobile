@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
 import 'package:assetflow_mobile/core/widgets/app_chip.dart';
 import 'package:assetflow_mobile/core/widgets/app_tab_bar.dart';
 import 'package:assetflow_mobile/core/widgets/kv_row.dart';
@@ -121,7 +122,7 @@ class _PersonHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GestureDetector(
-                onTap: () => Navigator.pop(context),
+                onTap: goBackOrHome(context),
                 child: Container(
                   width: 36, height: 36,
                   decoration: BoxDecoration(
