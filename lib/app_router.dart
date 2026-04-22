@@ -17,6 +17,7 @@ import 'package:assetflow_mobile/features/devices/screens/device_form_screen.dar
 import 'package:assetflow_mobile/features/employees/screens/employees_screen.dart';
 import 'package:assetflow_mobile/features/assignments/screens/assignments_screen.dart';
 import 'package:assetflow_mobile/features/assignments/screens/assign_wizard_screen.dart';
+import 'package:assetflow_mobile/features/assignments/screens/assignment_detail_screen.dart';
 import 'package:assetflow_mobile/features/locations/screens/locations_screen.dart';
 import 'package:assetflow_mobile/features/locations/screens/location_list_screen.dart';
 import 'package:assetflow_mobile/features/locations/screens/location_detail_screen.dart';
@@ -147,6 +148,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/assignments/new',
         builder: (_, state) => AssignWizardScreen(
           preselectedDeviceId: state.uri.queryParameters['deviceId'],
+        ),
+      ),
+      GoRoute(
+        path: '/assignments/:id',
+        builder: (_, state) => AssignmentDetailScreen(
+          id: state.pathParameters['id']!,
         ),
       ),
       GoRoute(
