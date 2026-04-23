@@ -49,22 +49,30 @@ class FavoritesSection extends ConsumerWidget {
         if (favorites.isEmpty)
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
             decoration: BoxDecoration(
               color: AppColors.surfaceWhite,
               borderRadius: BorderRadius.circular(AppRadius.md),
               border: Border.all(color: AppColors.surfaceDivider),
             ),
-            child: Row(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.star_border_rounded, size: 18, color: AppColors.textTertiary),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    'Henüz favori cihaz yok — liste üzerinde ★ ikonuna tıklayın',
-                    style: GoogleFonts.inter(
-                      fontSize: 12, color: AppColors.textSecondary,
-                    ),
+                const Icon(Icons.star_border_rounded, size: 28, color: AppColors.navyLight),
+                const SizedBox(height: 8),
+                Text(
+                  'Favori cihaz yok',
+                  style: GoogleFonts.inter(
+                    fontSize: 13, fontWeight: FontWeight.w500,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Sık eriştiğin cihazları ★ ile işaretleyerek buraya ekleyebilirsin.',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.inter(
+                    fontSize: 11, color: AppColors.textSecondary, height: 1.4,
                   ),
                 ),
               ],

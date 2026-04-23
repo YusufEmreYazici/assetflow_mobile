@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:assetflow_mobile/core/services/haptic_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/core/widgets/empty_state.dart';
 import 'package:assetflow_mobile/core/widgets/page_header.dart';
 import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
 import 'package:assetflow_mobile/data/models/location_model.dart';
@@ -50,14 +51,7 @@ class LocationListScreen extends ConsumerWidget {
               ),
               data: (locations) {
                 if (locations.isEmpty) {
-                  return Center(
-                    child: Text(
-                      'Henüz lokasyon eklenmemiş.',
-                      style: GoogleFonts.inter(
-                        fontSize: 13, color: AppColors.textSecondary,
-                      ),
-                    ),
-                  );
+                  return const EmptyState.noLocations();
                 }
                 return GridView.builder(
                   padding: const EdgeInsets.all(AppSpacing.lg),

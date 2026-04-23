@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
+import 'package:assetflow_mobile/core/widgets/empty_state.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -244,15 +245,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           ),
           Expanded(
             child: filtered.isEmpty
-                ? Center(
-                    child: Text(
-                      'Bildirim bulunamadı.',
-                      style: GoogleFonts.inter(
-                        fontSize: 13,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  )
+                ? const EmptyState.noNotifications()
                 : ListView.builder(
                     padding: const EdgeInsets.fromLTRB(
                       AppSpacing.lg,

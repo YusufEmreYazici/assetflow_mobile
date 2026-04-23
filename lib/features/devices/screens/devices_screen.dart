@@ -12,6 +12,7 @@ import 'package:assetflow_mobile/features/devices/models/device_filter.dart';
 import 'package:assetflow_mobile/features/devices/providers/bulk_selection_provider.dart';
 import 'package:assetflow_mobile/features/devices/providers/device_filter_provider.dart';
 import 'package:assetflow_mobile/core/widgets/connectivity_wrapper.dart';
+import 'package:assetflow_mobile/core/widgets/empty_state.dart';
 import 'package:assetflow_mobile/features/devices/providers/device_provider.dart';
 import 'package:assetflow_mobile/features/devices/widgets/advanced_filter_sheet.dart';
 import 'package:assetflow_mobile/features/devices/widgets/device_row.dart';
@@ -398,10 +399,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                   child: state.isLoading && state.devices.isEmpty
                       ? const Center(child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2))
                       : filtered.isEmpty
-                          ? Center(
-                              child: Text('Sonuç bulunamadı.',
-                                  style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary)),
-                            )
+                          ? _buildEmptyState(state)
                           : ListView.builder(
                               controller: _scrollCtrl,
                               padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
@@ -448,6 +446,28 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildEmptyState(DeviceListState state) {
+    final hasFilter = _filterStatus != null || _query.isNotEmpty || ref.read(deviceFilterProvider) != const DeviceFilter();
+    if (hasFilter) {
+      return EmptyState.filterNoResults(
+        onClearFilter: () {
+          setState(() {
+            _filterStatus = null;
+            _query = '';
+            _searchCtrl.clear();
+          });
+          ref.read(deviceFilterProvider.notifier).state = const DeviceFilter();
+        },
+      );
+    }
+    if (_query.isNotEmpty) {
+      return EmptyState.noSearchResults(query: _query);
+    }
+    return EmptyState.noDevices(
+      onAddDevice: () => context.push('/devices/new'),
     );
   }
 

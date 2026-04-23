@@ -11,6 +11,7 @@ import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/page_header.dart';
 import 'package:assetflow_mobile/data/models/assignment_model.dart';
 import 'package:assetflow_mobile/data/services/assignment_service.dart';
+import 'package:assetflow_mobile/core/widgets/empty_state.dart';
 import 'package:assetflow_mobile/features/assignments/providers/assignment_provider.dart';
 import 'package:assetflow_mobile/features/assignments/screens/assign_device_screen.dart';
 import 'package:assetflow_mobile/features/assignments/screens/return_device_screen.dart';
@@ -571,23 +572,10 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
   }
 
   Widget _buildEmpty() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.swap_horiz, size: 64, color: AppColors.textTertiary),
-          const SizedBox(height: 16),
-          Text(
-            ref.read(assignmentProvider).searchQuery.isNotEmpty
-                ? 'Sonuc bulunamadi'
-                : 'Henuz zimmet kaydı yok',
-            style: const TextStyle(
-              fontSize: 16,
-              color: AppColors.textSecondary,
-            ),
-          ),
-        ],
-      ),
-    );
+    final searchQuery = ref.read(assignmentProvider).searchQuery;
+    if (searchQuery.isNotEmpty) {
+      return EmptyState.noSearchResults(query: searchQuery);
+    }
+    return const EmptyState.noAssignments();
   }
 }
