@@ -36,7 +36,7 @@ void main() async {
         'APP_ENV',
         defaultValue: 'development',
       );
-      options.release = 'assetflow-mobile@2.2.0+24';
+      options.release = 'assetflow-mobile@2.3.0+25';
     },
     appRunner: () => runApp(const ProviderScope(child: AssetFlowApp())),
   );

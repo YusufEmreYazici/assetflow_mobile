@@ -148,7 +148,7 @@ class ProfileScreen extends ConsumerWidget {
                 _Section(
                   label: 'HAKKINDA',
                   children: [
-                    const _Row(icon: Icons.apps_outlined, label: 'AssetFlow Mobile', caption: 'v2.2.0'),
+                    const _Row(icon: Icons.apps_outlined, label: 'AssetFlow Mobile', caption: 'v2.3.0'),
                     const _Row(icon: Icons.info_outline, label: 'Lisans Bilgisi', chevron: true),
                     const _Row(icon: Icons.policy_outlined, label: 'Gizlilik Politikası', chevron: true, isLast: true),
                   ],
