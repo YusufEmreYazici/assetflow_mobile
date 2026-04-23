@@ -17,7 +17,8 @@ class AppColors {
   // ─── Text ───────────────────────────────────────────────────────────
   static const Color textPrimary   = Color(0xFF1A3A5C);
   static const Color textSecondary = Color(0xFF6B7A8C);
-  static const Color textTertiary  = Color(0xFF9CA8B8);
+  // WCAG AA için koyu yapıldı (0xFF9CA8B8 = 2.9:1, yetersiz)
+  static const Color textTertiary  = Color(0xFF7D8899);
   static const Color textOnPrimary = Colors.white;
 
   // ─── Semantic ───────────────────────────────────────────────────────
