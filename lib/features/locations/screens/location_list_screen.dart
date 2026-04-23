@@ -33,6 +33,21 @@ class LocationListScreen extends ConsumerWidget {
               orElse: () => '',
             ),
             onBack: goBackOrHome(context),
+            action: GestureDetector(
+              onTap: () async {
+                HapticService.light();
+                final result = await context.push('/location/new');
+                if (result == true) ref.invalidate(_locationListProvider);
+              },
+              child: Container(
+                width: 36, height: 36,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Icons.add, size: 20, color: Colors.white),
+              ),
+            ),
           ),
           Expanded(
             child: async.when(

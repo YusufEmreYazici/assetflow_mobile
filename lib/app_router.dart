@@ -23,6 +23,7 @@ import 'package:assetflow_mobile/features/assignments/screens/assignment_detail_
 import 'package:assetflow_mobile/features/locations/screens/locations_screen.dart';
 import 'package:assetflow_mobile/features/locations/screens/location_list_screen.dart';
 import 'package:assetflow_mobile/features/locations/screens/location_detail_screen.dart';
+import 'package:assetflow_mobile/features/locations/screens/location_form_screen.dart';
 import 'package:assetflow_mobile/features/profile/screens/profile_screen.dart';
 import 'package:assetflow_mobile/features/people/person_list_screen.dart';
 import 'package:assetflow_mobile/features/people/person_detail_screen.dart';
@@ -204,10 +205,24 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(path: '/locations-old', builder: (ctx, routeState) => const LocationsScreen()),
       GoRoute(
+        path: '/location/new',
+        pageBuilder: (_, state) => slideFromBottomPage(
+          key: state.pageKey,
+          child: const LocationFormScreen(),
+        ),
+      ),
+      GoRoute(
         path: '/location/:id',
         pageBuilder: (_, state) => slideFromRightPage(
           key: state.pageKey,
           child: LocationDetailScreen(id: state.pathParameters['id']!),
+        ),
+      ),
+      GoRoute(
+        path: '/location/:id/edit',
+        pageBuilder: (_, state) => slideFromBottomPage(
+          key: state.pageKey,
+          child: LocationFormScreen(locationId: state.pathParameters['id']),
         ),
       ),
       GoRoute(

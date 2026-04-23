@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:assetflow_mobile/core/services/haptic_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/kv_row.dart';
 import 'package:assetflow_mobile/data/models/location_model.dart';
@@ -11,13 +13,18 @@ final _locationDetailProvider =
   return LocationService().getById(id);
 });
 
-class LocationDetailScreen extends ConsumerWidget {
+class LocationDetailScreen extends ConsumerStatefulWidget {
   final String id;
   const LocationDetailScreen({super.key, required this.id});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(_locationDetailProvider(id));
+  ConsumerState<LocationDetailScreen> createState() => _LocationDetailScreenState();
+}
+
+class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
+  @override
+  Widget build(BuildContext context) {
+    final async = ref.watch(_locationDetailProvider(widget.id));
 
     return Scaffold(
       backgroundColor: AppColors.surfaceLight,
@@ -117,6 +124,48 @@ class LocationDetailScreen extends ConsumerWidget {
                   ],
                 ),
               ),
+              GestureDetector(
+                onTap: () async {
+                  HapticService.light();
+                  final result = await context.push('/location/${widget.id}/edit');
+                  if (result == true && mounted) {
+                    ref.invalidate(_locationDetailProvider(widget.id));
+                  }
+                },
+                child: Container(
+                  width: 36, height: 36,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(Icons.edit_outlined, size: 16, color: Colors.white),
+                ),
+              ),
+              const SizedBox(width: 4),
+              PopupMenuButton<String>(
+                padding: EdgeInsets.zero,
+                icon: Container(
+                  width: 36, height: 36,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(Icons.more_vert, size: 18, color: Colors.white),
+                ),
+                itemBuilder: (_) => [
+                  PopupMenuItem(
+                    value: 'delete',
+                    child: Row(children: [
+                      Icon(Icons.delete_outline, color: AppColors.error, size: 18),
+                      const SizedBox(width: 10),
+                      Text('Sil', style: TextStyle(color: AppColors.error)),
+                    ]),
+                  ),
+                ],
+                onSelected: (action) {
+                  if (action == 'delete') _confirmAndDelete(location);
+                },
+              ),
             ],
           ),
         ),
@@ -167,5 +216,70 @@ class LocationDetailScreen extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  Future<void> _confirmAndDelete(Location location) async {
+    HapticService.medium();
+
+    if (location.deviceCount > 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Bu lokasyonda ${location.deviceCount} cihaz var. '
+            'Önce cihazları başka lokasyona taşıyın.',
+          ),
+          backgroundColor: AppColors.warning,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Lokasyonu Sil?'),
+        content: Text(
+          '${location.name} silinecek. Bu işlem geri alınamaz.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('İptal'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            child: const Text('Sil'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      HapticService.heavy();
+      try {
+        await LocationService().delete(location.id);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${location.name} silindi.'),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+          Navigator.pop(context, true);
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Hata: $e'),
+              backgroundColor: AppColors.error,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      }
+    }
   }
 }
