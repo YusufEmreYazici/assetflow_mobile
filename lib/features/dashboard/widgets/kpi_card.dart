@@ -23,6 +23,8 @@ class KpiCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bg = background ?? AppColors.surfaceWhite;
+    final numericValue = int.tryParse(value);
+
     return Container(
       constraints: const BoxConstraints(minHeight: 92),
       decoration: BoxDecoration(
@@ -51,13 +53,27 @@ class KpiCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          Text(
-            value,
-            style: GoogleFonts.inter(
-              fontSize: 24, fontWeight: FontWeight.w500,
-              color: AppColors.textPrimary, letterSpacing: -0.6, height: 1.1,
+          if (numericValue != null)
+            TweenAnimationBuilder<int>(
+              tween: IntTween(begin: 0, end: numericValue),
+              duration: const Duration(milliseconds: 700),
+              curve: Curves.easeOutCubic,
+              builder: (context, animValue, _) => Text(
+                '$animValue',
+                style: GoogleFonts.inter(
+                  fontSize: 24, fontWeight: FontWeight.w500,
+                  color: AppColors.textPrimary, letterSpacing: -0.6, height: 1.1,
+                ),
+              ),
+            )
+          else
+            Text(
+              value,
+              style: GoogleFonts.inter(
+                fontSize: 24, fontWeight: FontWeight.w500,
+                color: AppColors.textPrimary, letterSpacing: -0.6, height: 1.1,
+              ),
             ),
-          ),
           if (delta != null) ...[
             const SizedBox(height: 6),
             Text(

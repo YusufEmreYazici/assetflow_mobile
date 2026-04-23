@@ -33,6 +33,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
   final _searchCtrl = TextEditingController();
   String _query = '';
   int? _filterStatus;
+  bool _fabVisible = true;
 
   static const _statusFilters = [
     (null, 'Tümü'),
@@ -64,6 +65,10 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
     if (_scrollCtrl.position.pixels >= _scrollCtrl.position.maxScrollExtent - 200) {
       ref.read(deviceProvider.notifier).loadMore();
     }
+    final scrollingDown = _scrollCtrl.position.userScrollDirection.name == 'reverse';
+    final scrollingUp = _scrollCtrl.position.userScrollDirection.name == 'forward';
+    if (scrollingDown && _fabVisible) setState(() => _fabVisible = false);
+    if (scrollingUp && !_fabVisible) setState(() => _fabVisible = true);
   }
 
   List<Device> _applyLocalFilters(List<Device> base) {
@@ -112,13 +117,21 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
           : null,
       floatingActionButton: inSelection
           ? null
-          : Tooltip(
-              message: isOnline ? '' : 'Çevrimiçi olduğunuzda yapabilirsiniz',
-              child: FloatingActionButton(
-                onPressed: isOnline ? () => context.push('/devices/new') : null,
-                backgroundColor: isOnline ? AppColors.navy : AppColors.textTertiary,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                child: const Icon(Icons.add, color: Colors.white, size: 22),
+          : AnimatedScale(
+              scale: _fabVisible ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              child: Tooltip(
+                message: isOnline ? '' : 'Çevrimiçi olduğunuzda yapabilirsiniz',
+                child: FloatingActionButton(
+                  onPressed: isOnline ? () {
+                    HapticService.medium();
+                    context.push('/devices/new');
+                  } : null,
+                  backgroundColor: isOnline ? AppColors.navy : AppColors.textTertiary,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  child: const Icon(Icons.add, color: Colors.white, size: 22),
+                ),
               ),
             ),
       body: Column(
