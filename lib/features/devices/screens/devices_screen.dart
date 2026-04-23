@@ -12,6 +12,7 @@ import 'package:assetflow_mobile/features/devices/models/device_filter.dart';
 import 'package:assetflow_mobile/features/devices/providers/bulk_selection_provider.dart';
 import 'package:assetflow_mobile/features/devices/providers/device_filter_provider.dart';
 import 'package:assetflow_mobile/core/widgets/connectivity_wrapper.dart';
+import 'package:assetflow_mobile/core/widgets/animated_list_item.dart';
 import 'package:assetflow_mobile/core/widgets/empty_state.dart';
 import 'package:assetflow_mobile/features/devices/providers/device_provider.dart';
 import 'package:assetflow_mobile/features/devices/widgets/advanced_filter_sheet.dart';
@@ -414,7 +415,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                                 }
                                 final d = filtered[i];
                                 final isSelected = selectionState.selectedIds.contains(d.id);
-                                return Container(
+                                final rowWidget = Container(
                                   decoration: BoxDecoration(
                                     color: AppColors.surfaceWhite,
                                     borderRadius: i == 0
@@ -439,6 +440,10 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                                           },
                                   ),
                                 );
+                                if (i < 10) {
+                                  return AnimatedListItem(index: i, child: rowWidget);
+                                }
+                                return rowWidget;
                               },
                             ),
                 ),

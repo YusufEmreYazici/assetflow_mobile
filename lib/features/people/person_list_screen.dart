@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:assetflow_mobile/core/services/haptic_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/core/widgets/animated_list_item.dart';
 import 'package:assetflow_mobile/core/widgets/empty_state.dart';
 import 'package:assetflow_mobile/features/people/widgets/person_list_skeleton.dart';
 import 'package:assetflow_mobile/core/widgets/page_header.dart';
@@ -160,45 +161,68 @@ class _PersonListScreenState extends ConsumerState<PersonListScreen> {
                             : const EmptyState.noEmployees()
                         : ListView(
                             padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),
-                            children: grouped.entries.expand((entry) {
-                              final letter = entry.key;
-                              final list = entry.value;
-                              return [
-                                if (letter.isNotEmpty)
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      top: 12, bottom: 4,
-                                    ),
-                                    child: Text(
-                                      letter,
-                                      style: GoogleFonts.inter(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w500,
-                                        color: AppColors.textTertiary,
-                                        letterSpacing: 0.8,
+                            children: () {
+                              int groupIndex = 0;
+                              return grouped.entries.expand((entry) {
+                                final letter = entry.key;
+                                final list = entry.value;
+                                final idx = groupIndex++;
+                                return [
+                                  if (letter.isNotEmpty)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 12, bottom: 4),
+                                      child: Text(
+                                        letter,
+                                        style: GoogleFonts.inter(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w500,
+                                          color: AppColors.textTertiary,
+                                          letterSpacing: 0.8,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: AppColors.surfaceWhite,
-                                    borderRadius: BorderRadius.circular(AppRadius.md),
-                                    border: Border.all(color: AppColors.surfaceDivider),
-                                  ),
-                                  child: Column(
-                                    children: list.asMap().entries.map((e) {
-                                      final isLast = e.key == list.length - 1;
-                                      return _PersonRow(
-                                        employee: e.value,
-                                        isLast: isLast,
-                                        onTap: () => context.push(
-                                            '/person/${e.value.id}'),
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                              ];
-                            }).toList(),
+                                  if (idx < 10)
+                                    AnimatedListItem(
+                                      index: idx,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: AppColors.surfaceWhite,
+                                          borderRadius: BorderRadius.circular(AppRadius.md),
+                                          border: Border.all(color: AppColors.surfaceDivider),
+                                        ),
+                                        child: Column(
+                                          children: list.asMap().entries.map((e) {
+                                            final isLast = e.key == list.length - 1;
+                                            return _PersonRow(
+                                              employee: e.value,
+                                              isLast: isLast,
+                                              onTap: () => context.push('/person/${e.value.id}'),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ),
+                                    )
+                                  else
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: AppColors.surfaceWhite,
+                                        borderRadius: BorderRadius.circular(AppRadius.md),
+                                        border: Border.all(color: AppColors.surfaceDivider),
+                                      ),
+                                      child: Column(
+                                        children: list.asMap().entries.map((e) {
+                                          final isLast = e.key == list.length - 1;
+                                          return _PersonRow(
+                                            employee: e.value,
+                                            isLast: isLast,
+                                            onTap: () => context.push('/person/${e.value.id}'),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ),
+                                ];
+                              }).toList();
+                            }(),
                           ),
           ),
         ],
