@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:assetflow_mobile/core/services/haptic_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
 import 'package:assetflow_mobile/core/utils/cache_manager.dart';
@@ -154,7 +155,10 @@ class ProfileScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 24),
                 GestureDetector(
-                  onTap: () => _confirmLogout(context, ref),
+                  onTap: () {
+                    HapticService.heavy();
+                    _confirmLogout(context, ref);
+                  },
                   child: Container(
                     height: 48,
                     decoration: BoxDecoration(
@@ -213,6 +217,7 @@ class ProfileScreen extends ConsumerWidget {
           ),
           TextButton(
             onPressed: () {
+              HapticService.heavy();
               Navigator.pop(ctx);
               ref.read(authProvider.notifier).logout();
             },
@@ -350,7 +355,10 @@ class _Row extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: onTap,
+      onTap: onTap == null ? null : () {
+        HapticService.light();
+        onTap!();
+      },
       child: Container(
         decoration: isLast
             ? null

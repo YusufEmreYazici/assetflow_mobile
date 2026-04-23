@@ -6,6 +6,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:assetflow_mobile/core/services/haptic_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/page_header.dart';
 import 'package:assetflow_mobile/data/models/assignment_model.dart';
@@ -288,7 +289,10 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
     final typeLabel = assignmentTypeLabels[a.type] ?? 'Kalici';
 
     return GestureDetector(
-      onTap: () => context.push('/assignments/${a.id}'),
+      onTap: () {
+        HapticService.light();
+        context.push('/assignments/${a.id}');
+      },
       child: Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: Padding(

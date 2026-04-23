@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:assetflow_mobile/core/services/haptic_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/features/devices/providers/favorites_provider.dart';
 
@@ -26,8 +26,8 @@ class FavoriteStar extends ConsumerWidget {
         size: size,
       ),
       onPressed: () {
+        HapticService.medium();
         ref.read(favoritesProvider.notifier).toggle(deviceId);
-        HapticFeedback.lightImpact();
       },
       splashRadius: 20,
       padding: EdgeInsets.zero,

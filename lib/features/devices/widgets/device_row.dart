@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:assetflow_mobile/core/services/haptic_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/app_chip.dart';
 import 'package:assetflow_mobile/core/widgets/favorite_star.dart';
@@ -49,8 +50,14 @@ class DeviceRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: onTap,
-      onLongPress: onLongPress,
+      onTap: onTap == null ? null : () {
+        HapticService.light();
+        onTap!();
+      },
+      onLongPress: onLongPress == null ? null : () {
+        HapticService.medium();
+        onLongPress!();
+      },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
         decoration: BoxDecoration(

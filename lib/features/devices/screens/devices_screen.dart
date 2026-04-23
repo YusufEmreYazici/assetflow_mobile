@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:assetflow_mobile/core/services/barcode_scanner_service.dart';
+import 'package:assetflow_mobile/core/services/haptic_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/bulk_action_bar.dart';
 import 'package:assetflow_mobile/core/widgets/page_header.dart';
@@ -303,7 +304,10 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                       final (status, label) = _statusFilters[i];
                       final active = _filterStatus == status;
                       return GestureDetector(
-                        onTap: () => setState(() => _filterStatus = status),
+                        onTap: () {
+                          HapticService.selection();
+                          setState(() => _filterStatus = status);
+                        },
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                           decoration: BoxDecoration(
@@ -333,7 +337,10 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                       itemBuilder: (_, i) {
                         final preset = presets[i];
                         return GestureDetector(
-                          onTap: () => ref.read(deviceFilterProvider.notifier).state = preset.filter,
+                          onTap: () {
+                            HapticService.selection();
+                            ref.read(deviceFilterProvider.notifier).state = preset.filter;
+                          },
                           onLongPress: () => _showPresetDeleteMenu(context, preset.id, preset.name),
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:assetflow_mobile/core/services/haptic_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/features/auth/providers/auth_provider.dart';
 
@@ -40,6 +41,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     ref.listen<AuthState>(authProvider, (_, next) {
       if (next.error != null && next.error!.isNotEmpty) {
+        HapticService.vibrate();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(next.error!),
@@ -80,7 +82,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               Align(
                 alignment: Alignment.centerRight,
                 child: GestureDetector(
-                  onTap: () => context.push('/forgot-password'),
+                  onTap: () {
+                    HapticService.light();
+                    context.push('/forgot-password');
+                  },
                   child: Text(
                     'Şifremi unuttum',
                     style: GoogleFonts.inter(
@@ -308,7 +313,12 @@ class _LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: isLoading ? null : onPressed,
+      onTap: isLoading
+          ? null
+          : () {
+              HapticService.medium();
+              onPressed();
+            },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 120),
         height: 48,
@@ -352,7 +362,10 @@ class _SsoButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onPressed,
+      onTap: () {
+        HapticService.light();
+        onPressed();
+      },
       child: Container(
         height: 44,
         decoration: BoxDecoration(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
+import '../services/haptic_service.dart';
 
 enum AppButtonVariant { primary, secondary, danger, ghost }
 
@@ -61,7 +62,19 @@ class AppButton extends StatelessWidget {
           );
 
     final button = GestureDetector(
-      onTap: (isLoading || onPressed == null) ? null : onPressed,
+      onTap: (isLoading || onPressed == null)
+          ? null
+          : () {
+              switch (variant) {
+                case AppButtonVariant.danger:
+                  HapticService.heavy();
+                case AppButtonVariant.primary:
+                  HapticService.medium();
+                default:
+                  HapticService.light();
+              }
+              onPressed!();
+            },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 120),
         height: height,
