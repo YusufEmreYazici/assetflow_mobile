@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/core/services/haptic_service.dart';
 import 'package:assetflow_mobile/core/services/offline_cache_service.dart';
 import 'package:assetflow_mobile/core/utils/api_client.dart';
 import 'package:assetflow_mobile/core/utils/notification_service.dart';
@@ -14,6 +15,7 @@ void main() async {
   GoogleFonts.config.allowRuntimeFetching = true;
   await initializeDateFormatting('tr_TR', null);
   await OfflineCacheService.init();
+  await HapticService.init();
   runApp(const ProviderScope(child: AssetFlowApp()));
 }
 
