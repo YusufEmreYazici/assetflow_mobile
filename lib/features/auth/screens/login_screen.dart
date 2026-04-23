@@ -295,7 +295,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('v2.0.0', style: GoogleFonts.inter(fontSize: 10, color: AppColors.textTertiary, letterSpacing: 0.4)),
+            Text('v2.2.0', style: GoogleFonts.inter(fontSize: 10, color: AppColors.textTertiary, letterSpacing: 0.4)),
             Text('© 2026 AssetFlow', style: GoogleFonts.inter(fontSize: 10, color: AppColors.textTertiary, letterSpacing: 0.4)),
           ],
         ),
