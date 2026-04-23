@@ -26,6 +26,8 @@ class _AppShellState extends ConsumerState<AppShell> {
         _ => BottomNavTab.more,
       };
 
+  static const _branchPaths = ['/', '/devices', '/employees', '/assignments'];
+
   void _onTabChange(BottomNavTab tab) {
     final index = switch (tab) {
       BottomNavTab.home    => 0,
@@ -34,10 +36,15 @@ class _AppShellState extends ConsumerState<AppShell> {
       BottomNavTab.more    => -1,
     };
     if (index < 0) return;
-    widget.navigationShell.goBranch(
-      index,
-      initialLocation: index == widget.navigationShell.currentIndex,
-    );
+
+    if (index == widget.navigationShell.currentIndex) {
+      // Aynı tab: branch root'a dön.
+      // goBranch(initialLocation:true) go_router 14.x'te bazen app
+      // initialLocation'ına (/) yönlendiriyor — context.go() daha güvenilir.
+      if (index < _branchPaths.length) context.go(_branchPaths[index]);
+    } else {
+      widget.navigationShell.goBranch(index);
+    }
   }
 
   void _onDrawerNav(String key) {

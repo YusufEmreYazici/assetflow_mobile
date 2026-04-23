@@ -154,7 +154,7 @@ class DashboardAppBar extends StatelessWidget {
               const SizedBox(width: 10),
               // Avatar
               GestureDetector(
-                onTap: () => context.go('/more'),
+                onTap: () => context.push('/profile'),
                 child: Container(
                   width: 42,
                   height: 42,
