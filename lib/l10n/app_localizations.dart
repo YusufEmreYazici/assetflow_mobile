@@ -356,30 +356,6 @@ abstract class AppLocalizations {
   /// **'Dil'**
   String get settingsLanguage;
 
-  /// Tema ayarı başlığı
-  ///
-  /// In tr, this message translates to:
-  /// **'Tema'**
-  String get settingsTheme;
-
-  /// Açık tema seçeneği
-  ///
-  /// In tr, this message translates to:
-  /// **'Açık Tema'**
-  String get settingsThemeLight;
-
-  /// Koyu tema seçeneği
-  ///
-  /// In tr, this message translates to:
-  /// **'Koyu Tema'**
-  String get settingsThemeDark;
-
-  /// Sistem teması seçeneği
-  ///
-  /// In tr, this message translates to:
-  /// **'Sistem'**
-  String get settingsThemeSystem;
-
   /// Türkçe dil seçeneği
   ///
   /// In tr, this message translates to:

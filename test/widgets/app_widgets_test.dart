@@ -24,7 +24,7 @@ void main() {
 
   group('AppButton', () {
     Widget wrap(Widget child) => MaterialApp(
-          theme: AppTheme.darkTheme,
+          theme: AppTheme.lightTheme,
           home: Scaffold(body: Center(child: child)),
         );
 
@@ -93,7 +93,7 @@ void main() {
           authProvider.overrideWith((_) => _FakeAuthNotifier()),
         ],
         child: MaterialApp(
-          theme: AppTheme.darkTheme,
+          theme: AppTheme.lightTheme,
           home: const LoginScreen(),
         ),
       );

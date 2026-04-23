@@ -1,4 +1,4 @@
-﻿{
+{
   "terminal.integrated.enablePersistentSessions": true,
   "terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose",
   "terminal.integrated.persistentSessionScrollback": 10000,
@@ -37,5 +37,6 @@
     "**/android/.gradle": true,
     "**/*.g.dart": true,
     "**/*.freezed.dart": true
-  }
+  },
+  "java.configuration.updateBuildConfiguration": "interactive"
 }

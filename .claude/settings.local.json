@@ -3,7 +3,16 @@
     "allow": [
       "Bash(cmd:*)",
       "Bash(flutter analyze *)",
-      "Bash(git tag *)"
+      "Bash(git tag *)",
+      "Read(//c/Workspace/Personal_Projects/ITAssetManager/**)",
+      "Bash(dotnet build *)",
+      "Bash(dotnet new *)",
+      "Bash(dotnet add *)",
+      "Bash(dotnet restore *)",
+      "Bash(dotnet sln *)",
+      "Bash(dotnet test *)",
+      "Bash(flutter gen-l10n *)",
+      "Bash(dotnet ef *)"
     ]
   }
 }

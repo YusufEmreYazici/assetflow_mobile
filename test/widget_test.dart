@@ -299,7 +299,7 @@ void main() {
         UncontrolledProviderScope(
           container: container,
           child: MaterialApp(
-            theme: AppTheme.darkTheme,
+            theme: AppTheme.lightTheme,
             home: const Scaffold(
               body: Column(
                 children: [OfflineBanner(), Text('içerik')],
@@ -325,7 +325,7 @@ void main() {
         UncontrolledProviderScope(
           container: container,
           child: MaterialApp(
-            theme: AppTheme.darkTheme,
+            theme: AppTheme.lightTheme,
             home: const Scaffold(
               body: Column(
                 children: [OfflineBanner(), Text('içerik')],

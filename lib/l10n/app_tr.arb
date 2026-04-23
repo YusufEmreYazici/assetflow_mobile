@@ -130,18 +130,6 @@
   "settingsLanguage": "Dil",
   "@settingsLanguage": { "description": "Dil ayarı başlığı" },
 
-  "settingsTheme": "Tema",
-  "@settingsTheme": { "description": "Tema ayarı başlığı" },
-
-  "settingsThemeLight": "Açık Tema",
-  "@settingsThemeLight": { "description": "Açık tema seçeneği" },
-
-  "settingsThemeDark": "Koyu Tema",
-  "@settingsThemeDark": { "description": "Koyu tema seçeneği" },
-
-  "settingsThemeSystem": "Sistem",
-  "@settingsThemeSystem": { "description": "Sistem teması seçeneği" },
-
   "languageTurkish": "Türkçe",
   "@languageTurkish": { "description": "Türkçe dil seçeneği" },
 
