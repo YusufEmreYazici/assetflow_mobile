@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/navigation/app_shell.dart';
+import 'package:assetflow_mobile/core/widgets/page_transitions.dart';
 import 'package:assetflow_mobile/features/auth/providers/auth_provider.dart';
 import 'package:assetflow_mobile/features/auth/screens/login_screen.dart';
 import 'package:assetflow_mobile/features/auth/screens/register_screen.dart';
@@ -118,16 +119,26 @@ final routerProvider = Provider<GoRouter>((ref) {
                 initialSearch: (routeState.extra as Map<String, dynamic>?)?['qrCode'] as String?,
               ),
               routes: [
-                GoRoute(path: 'new', builder: (ctx, routeState) => const DeviceFormScreen()),
+                GoRoute(
+                  path: 'new',
+                  pageBuilder: (ctx, routeState) => slideFromBottomPage(
+                    key: routeState.pageKey,
+                    child: const DeviceFormScreen(),
+                  ),
+                ),
                 GoRoute(
                   path: ':id',
-                  builder: (_, state) => DeviceDetailScreen(
-                    id: state.pathParameters['id']!,
+                  pageBuilder: (_, state) => slideFromRightPage(
+                    key: state.pageKey,
+                    child: DeviceDetailScreen(id: state.pathParameters['id']!),
                   ),
                   routes: [
                     GoRoute(
                       path: 'edit',
-                      builder: (ctx, routeState) => const _PlaceholderScreen('Cihaz Düzenle'),
+                      pageBuilder: (ctx, routeState) => slideFromBottomPage(
+                        key: routeState.pageKey,
+                        child: const _PlaceholderScreen('Cihaz Düzenle'),
+                      ),
                     ),
                   ],
                 ),
@@ -146,37 +157,80 @@ final routerProvider = Provider<GoRouter>((ref) {
       // ── Full-page routes (pushed on top of shell) ────────────────────
       GoRoute(
         path: '/assignments/new',
-        builder: (_, state) => AssignWizardScreen(
-          preselectedDeviceId: state.uri.queryParameters['deviceId'],
+        pageBuilder: (_, state) => slideFromBottomPage(
+          key: state.pageKey,
+          child: AssignWizardScreen(
+            preselectedDeviceId: state.uri.queryParameters['deviceId'],
+          ),
         ),
       ),
       GoRoute(
         path: '/assignments/:id',
-        builder: (_, state) => AssignmentDetailScreen(
-          id: state.pathParameters['id']!,
+        pageBuilder: (_, state) => slideFromRightPage(
+          key: state.pageKey,
+          child: AssignmentDetailScreen(id: state.pathParameters['id']!),
         ),
       ),
       GoRoute(
         path: '/assignments/:id/return',
-        builder: (ctx, routeState) => const _PlaceholderScreen('İade Et'),
+        pageBuilder: (ctx, routeState) => slideFromBottomPage(
+          key: routeState.pageKey,
+          child: const _PlaceholderScreen('İade Et'),
+        ),
       ),
-      GoRoute(path: '/people',        builder: (ctx, routeState) => const PersonListScreen()),
+      GoRoute(
+        path: '/people',
+        pageBuilder: (ctx, routeState) => slideFromRightPage(
+          key: routeState.pageKey,
+          child: const PersonListScreen(),
+        ),
+      ),
       GoRoute(
         path: '/person/:id',
-        builder: (_, state) => PersonDetailScreen(id: state.pathParameters['id']!),
+        pageBuilder: (_, state) => slideFromRightPage(
+          key: state.pageKey,
+          child: PersonDetailScreen(id: state.pathParameters['id']!),
+        ),
       ),
-      GoRoute(path: '/locations',    builder: (ctx, routeState) => const LocationListScreen()),
+      GoRoute(
+        path: '/locations',
+        pageBuilder: (ctx, routeState) => slideFromRightPage(
+          key: routeState.pageKey,
+          child: const LocationListScreen(),
+        ),
+      ),
       GoRoute(path: '/locations-old', builder: (ctx, routeState) => const LocationsScreen()),
       GoRoute(
         path: '/location/:id',
-        builder: (_, state) => LocationDetailScreen(id: state.pathParameters['id']!),
+        pageBuilder: (_, state) => slideFromRightPage(
+          key: state.pageKey,
+          child: LocationDetailScreen(id: state.pathParameters['id']!),
+        ),
       ),
-      GoRoute(path: '/profile',      builder: (ctx, routeState) => const ProfileScreen()),
-      GoRoute(path: '/sap',          builder: (ctx, routeState) => const SapScreen()),
-      GoRoute(path: '/notifications', builder: (ctx, routeState) => const NotificationsScreen()),
-      GoRoute(path: '/audit-log',    builder: (ctx, routeState) => const AuditLogScreen()),
+      GoRoute(
+        path: '/profile',
+        pageBuilder: (ctx, routeState) => slideFromRightPage(
+          key: routeState.pageKey,
+          child: const ProfileScreen(),
+        ),
+      ),
+      GoRoute(path: '/sap', builder: (ctx, routeState) => const SapScreen()),
+      GoRoute(
+        path: '/notifications',
+        pageBuilder: (ctx, routeState) => slideFromRightPage(
+          key: routeState.pageKey,
+          child: const NotificationsScreen(),
+        ),
+      ),
+      GoRoute(path: '/audit-log', builder: (ctx, routeState) => const AuditLogScreen()),
       GoRoute(path: '/excel-export', builder: (ctx, routeState) => const ExcelExportScreen()),
-      GoRoute(path: '/settings',     builder: (ctx, routeState) => const SettingsScreen()),
+      GoRoute(
+        path: '/settings',
+        pageBuilder: (ctx, routeState) => slideFromRightPage(
+          key: routeState.pageKey,
+          child: const SettingsScreen(),
+        ),
+      ),
     ],
   );
 });
