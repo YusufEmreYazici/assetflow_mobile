@@ -50,10 +50,9 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
           : null,
       builder: (ctx, child) => Theme(
         data: Theme.of(ctx).copyWith(
-          colorScheme: ColorScheme.light(
+          colorScheme: Theme.of(ctx).colorScheme.copyWith(
             primary: AppColors.navy,
             onPrimary: Colors.white,
-            surface: Colors.white,
           ),
         ),
         child: child!,
@@ -73,7 +72,6 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
     final name = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: Colors.white,
         title: Text('Preset Adı', style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
         content: TextField(
           controller: nameCtrl,
@@ -132,9 +130,9 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
     final brands = _uniqueSorted(allDevices.map((d) => d.brand));
 
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -362,9 +360,9 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
               left: 20, right: 20, top: 12,
               bottom: MediaQuery.of(context).padding.bottom + 12,
             ),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              border: Border(top: BorderSide(color: AppColors.surfaceDivider)),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              border: const Border(top: BorderSide(color: AppColors.surfaceDivider)),
             ),
             child: Row(
               children: [

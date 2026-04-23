@@ -69,7 +69,7 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
   Future<int?> _showStatusPicker() async {
     return showModalBottomSheet<int>(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       builder: (ctx) => SafeArea(
@@ -156,7 +156,7 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
   Future<(String, String)?> _showLocationPicker(List<dynamic> locations) async {
     return showModalBottomSheet<(String, String)>(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
@@ -212,7 +212,6 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: Colors.white,
         title: Text('Cihazları Sil', style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
         content: Text(
           '${selected.length} cihazı silmek istediğinizden emin misiniz?\nBu işlem geri alınamaz.',
@@ -261,7 +260,7 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
     final selectionNotifier = ref.read(bulkSelectionProvider.notifier);
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       builder: (ctx) => SafeArea(

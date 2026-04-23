@@ -96,4 +96,35 @@ class AppColors {
   static const Color statusInStorage   = Color(0xFF3B82F6);
   static const Color statusMaintenance = Color(0xFFF59E0B);
   static const Color statusRetired     = Color(0xFFEF4444);
+
+  // ─── Context-aware adaptive helpers ─────────────────────────────────
+  static Color cardSurface(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkSurfaceWhite
+        : surfaceWhite;
+  }
+
+  static Color pageBackground(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkSurfaceLight
+        : surfaceLight;
+  }
+
+  static Color adaptiveText(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkTextPrimary
+        : textPrimary;
+  }
+
+  static Color adaptiveTextSecondary(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkTextSecondary
+        : textSecondary;
+  }
+
+  static Color adaptiveDivider(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkSurfaceDivider
+        : surfaceDivider;
+  }
 }
