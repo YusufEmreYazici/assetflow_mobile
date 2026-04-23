@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:assetflow_mobile/core/services/haptic_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/core/theme/theme_provider.dart';
 import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
 import 'package:assetflow_mobile/features/dashboard/providers/dashboard_variant_provider.dart';
 
@@ -21,6 +22,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final variant = ref.watch(dashboardVariantProvider);
+    final themeMode = ref.watch(themeProvider);
 
     return Scaffold(
       backgroundColor: AppColors.surfaceLight,
@@ -61,6 +63,62 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             child: ListView(
               padding: const EdgeInsets.all(AppSpacing.lg),
               children: [
+                _SectionLabel('GÖRÜNÜM'),
+                const SizedBox(height: 8),
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceWhite,
+                    borderRadius: BorderRadius.circular(AppRadius.md),
+                    border: Border.all(color: AppColors.surfaceDivider),
+                  ),
+                  child: Column(
+                    children: [
+                      _VariantRow(
+                        label: 'Açık Tema',
+                        caption: 'Her zaman açık renk şema',
+                        selected: themeMode == AppThemeMode.light,
+                        onTap: () => ref.read(themeProvider.notifier).setMode(AppThemeMode.light),
+                      ),
+                      const Divider(height: 1, color: AppColors.surfaceDivider, indent: 16, endIndent: 16),
+                      _VariantRow(
+                        label: 'Koyu Tema',
+                        caption: 'Her zaman koyu renk şema',
+                        selected: themeMode == AppThemeMode.dark,
+                        onTap: () => ref.read(themeProvider.notifier).setMode(AppThemeMode.dark),
+                      ),
+                      const Divider(height: 1, color: AppColors.surfaceDivider, indent: 16, endIndent: 16),
+                      _VariantRow(
+                        label: 'Sistem',
+                        caption: 'Telefonun ayarına göre otomatik',
+                        selected: themeMode == AppThemeMode.system,
+                        isLast: true,
+                        onTap: () => ref.read(themeProvider.notifier).setMode(AppThemeMode.system),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                _SectionLabel('ERİŞİLEBİLİRLİK'),
+                const SizedBox(height: 8),
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceWhite,
+                    borderRadius: BorderRadius.circular(AppRadius.md),
+                    border: Border.all(color: AppColors.surfaceDivider),
+                  ),
+                  child: _ToggleRow(
+                    icon: Icons.vibration_outlined,
+                    label: 'Titreşim',
+                    caption: 'Dokunuşlarda hafif titreşim',
+                    value: HapticService.isEnabled,
+                    isLast: true,
+                    onChanged: (v) async {
+                      await HapticService.setEnabled(v);
+                      setState(() {});
+                    },
+                  ),
+                ),
+                const SizedBox(height: 20),
                 _SectionLabel('DASHBOARD GÖRÜNÜMÜ'),
                 const SizedBox(height: 8),
                 Container(
