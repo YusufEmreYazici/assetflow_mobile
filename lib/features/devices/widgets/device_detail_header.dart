@@ -10,12 +10,16 @@ class DeviceDetailHeader extends ConsumerWidget {
   final Device device;
   final VoidCallback? onBack;
   final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
+  final VoidCallback? onReactivate;
 
   const DeviceDetailHeader({
     super.key,
     required this.device,
     this.onBack,
     this.onEdit,
+    this.onDelete,
+    this.onReactivate,
   });
 
   ChipTone get _tone => switch (device.status) {
@@ -115,6 +119,44 @@ class DeviceDetailHeader extends ConsumerWidget {
                   child: const Icon(Icons.edit_outlined, size: 16, color: Colors.white),
                 ),
               ),
+              if (onDelete != null || onReactivate != null) ...[
+                const SizedBox(width: 4),
+                PopupMenuButton<String>(
+                  padding: EdgeInsets.zero,
+                  icon: Container(
+                    width: 36, height: 36,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(Icons.more_vert, size: 18, color: Colors.white),
+                  ),
+                  itemBuilder: (_) => [
+                    if (onReactivate != null)
+                      PopupMenuItem(
+                        value: 'reactivate',
+                        child: Row(children: [
+                          Icon(Icons.refresh, color: AppColors.success, size: 18),
+                          const SizedBox(width: 10),
+                          const Text('Yeniden Aktifleştir'),
+                        ]),
+                      ),
+                    if (onDelete != null)
+                      PopupMenuItem(
+                        value: 'delete',
+                        child: Row(children: [
+                          Icon(Icons.delete_outline, color: AppColors.error, size: 18),
+                          const SizedBox(width: 10),
+                          Text('Sil', style: TextStyle(color: AppColors.error)),
+                        ]),
+                      ),
+                  ],
+                  onSelected: (action) {
+                    if (action == 'delete') onDelete?.call();
+                    if (action == 'reactivate') onReactivate?.call();
+                  },
+                ),
+              ],
             ],
           ),
           // 3-strip info row

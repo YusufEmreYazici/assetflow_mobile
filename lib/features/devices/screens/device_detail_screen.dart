@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:assetflow_mobile/core/services/haptic_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
 import 'package:assetflow_mobile/core/widgets/app_tab_bar.dart';
@@ -171,6 +172,8 @@ class _DeviceDetailScreenState extends ConsumerState<DeviceDetailScreen> {
                 ref.invalidate(_deviceDetailProvider(widget.id));
               }
             },
+            onDelete: () => _confirmAndDelete(device),
+            onReactivate: device.status == 3 ? () => _confirmAndReactivate(device) : null,
           ),
           AppTabBar(
             tabs: _tabs,
@@ -220,6 +223,112 @@ class _DeviceDetailScreenState extends ConsumerState<DeviceDetailScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _confirmAndDelete(Device device) async {
+    HapticService.medium();
+    final hasAssignment = device.activeAssignmentId != null;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Cihazı Sil?'),
+        content: Text(
+          '${device.name} (${device.assetCode ?? device.id}) silinecek. '
+          'Bu işlem geri alınamaz.'
+          '${hasAssignment ? '\n\n⚠️ Bu cihaz şu an zimmetli. Zimmet kaydı otomatik iptal edilecek.' : ''}',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('İptal'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            child: const Text('Sil'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      HapticService.heavy();
+      try {
+        await DeviceService().delete(device.id);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${device.name} silindi.'),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+          context.pop();
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Hata: $e'),
+              backgroundColor: AppColors.error,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      }
+    }
+  }
+
+  Future<void> _confirmAndReactivate(Device device) async {
+    HapticService.medium();
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Cihazı Yeniden Aktifleştir?'),
+        content: Text(
+          '${device.name} tekrar envantere alınacak ve "Depoda" statüsüne geçecek.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('İptal'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: AppColors.success),
+            child: const Text('Aktifleştir'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      HapticService.medium();
+      try {
+        await DeviceService().updateStatus(device.id, 1); // 1 = InStorage
+        if (mounted) {
+          ref.invalidate(_deviceDetailProvider(widget.id));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${device.name} envantere alındı.'),
+              backgroundColor: AppColors.success,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Hata: $e'),
+              backgroundColor: AppColors.error,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      }
+    }
   }
 
   void _showReturnDialog(Device device) {

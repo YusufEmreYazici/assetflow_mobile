@@ -27,6 +27,7 @@ class ApiConstants {
   // Devices
   static const String devices = '/api/devices';
   static String deviceById(String id) => '/api/devices/$id';
+  static String deviceStatus(String id) => '/api/devices/$id/status';
 
   // Employees
   static const String employees = '/api/employees';

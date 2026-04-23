@@ -32,4 +32,12 @@ class DeviceService {
   Future<void> delete(String id) async {
     await _dio.delete(ApiConstants.deviceById(id));
   }
+
+  Future<Device> updateStatus(String id, int status) async {
+    final response = await _dio.patch(
+      ApiConstants.deviceStatus(id),
+      data: {'status': status},
+    );
+    return Device.fromJson(response.data as Map<String, dynamic>);
+  }
 }
