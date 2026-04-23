@@ -1,7 +1,7 @@
 # SPEC_MOBILE_007 — Kullanım Kolaylığı İyileştirmeleri (Faz 1)
 
 **Tarih:** 21-22 Nisan 2026
-**Proje:** assetflow_mobile (Flutter)
+**Proje:** 4assetflow_mobile (Flutter)
 **Tahmini Süre:** 8-12 saat (2-3 oturum)
 **Version Bump:** 2.0.0+20 → 2.1.0+21
 **Git Tag:** `v2.1.0-usability`
