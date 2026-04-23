@@ -59,6 +59,13 @@ class ApiConstants {
   // Dashboard
   static const String dashboard = '/api/dashboard';
 
+  // Notifications
+  static const String notifications = '/api/notifications';
+  static String notificationById(String id) => '/api/notifications/$id';
+  static String notificationMarkRead(String id) => '/api/notifications/$id/read';
+  static const String notificationsMarkAllRead = '/api/notifications/read-all';
+  static const String notificationsUnreadCount = '/api/notifications/unread-count';
+
   // SAP Entegrasyon
   static const String sapSyncEmployees = '/api/sap/sync/employees';
   static const String sapSyncAssets = '/api/sap/sync/assets';

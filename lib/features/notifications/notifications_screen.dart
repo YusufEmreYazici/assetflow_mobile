@@ -1,98 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
 import 'package:assetflow_mobile/core/widgets/empty_state.dart';
+import 'package:assetflow_mobile/data/models/notification_model.dart';
+import 'package:assetflow_mobile/features/notifications/providers/notification_provider.dart';
 
-class NotificationsScreen extends StatefulWidget {
+class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
 
   @override
-  State<NotificationsScreen> createState() => _NotificationsScreenState();
+  ConsumerState<NotificationsScreen> createState() => _NotificationsScreenState();
 }
 
-class _NotificationsScreenState extends State<NotificationsScreen> {
+class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   int _tabIndex = 0;
-  final Set<String> _readIds = {};
+  bool _isNavigating = false;
 
-  static const _tabs = ['Tümü', 'Okunmamış', 'Garanti', 'Sistem'];
+  static const _tabs = ['Tümü', 'Okunmamış', 'Garanti', 'Zimmet', 'Sistem'];
 
-  static final _mockNotifications = [
-    _Notif(
-      id: '1',
-      kind: _NotifKind.warning,
-      title: 'Garanti Süresi Yaklaşıyor',
-      detail: 'ThinkPad T14 cihazının garantisi 14 gün içinde sona eriyor.',
-      time: DateTime.now().subtract(const Duration(minutes: 10)),
-      category: 'warranty',
-      relatedRoute: '/devices/dev-001',
-    ),
-    _Notif(
-      id: '2',
-      kind: _NotifKind.success,
-      title: 'Zimmet Tamamlandı',
-      detail: 'Samsung S27A600N monitörü Ahmet Yılmaz\'a zimmetlendi.',
-      time: DateTime.now().subtract(const Duration(hours: 1)),
-      category: 'assignment',
-      relatedRoute: '/devices/dev-002',
-    ),
-    _Notif(
-      id: '3',
-      kind: _NotifKind.info,
-      title: 'Cihaz İade Edildi',
-      detail: 'Dell XPS 15 iyi durumda iade edildi.',
-      time: DateTime.now().subtract(const Duration(hours: 3)),
-      category: 'assignment',
-      relatedRoute: '/devices/dev-003',
-    ),
-    _Notif(
-      id: '4',
-      kind: _NotifKind.warning,
-      title: 'Garanti Süresi Doldu',
-      detail: 'HP LaserJet Pro M404n yazıcısının garantisi sona erdi.',
-      time: DateTime.now().subtract(const Duration(hours: 6)),
-      category: 'warranty',
-      relatedRoute: '/devices/dev-004',
-    ),
-    _Notif(
-      id: '5',
-      kind: _NotifKind.system,
-      title: 'Haftalık Rapor Hazır',
-      detail: '18-25 Nisan 2026 haftalık varlık raporu oluşturuldu.',
-      time: DateTime.now().subtract(const Duration(days: 1)),
-      category: 'system',
-      relatedRoute: '/settings',
-    ),
-    _Notif(
-      id: '6',
-      kind: _NotifKind.warning,
-      title: '3 Cihaz Garantisi Yaklaşıyor',
-      detail: 'Önümüzdeki 30 gün içinde 3 cihazın garantisi sona eriyor.',
-      time: DateTime.now().subtract(const Duration(days: 2)),
-      category: 'warranty',
-      relatedRoute: '/devices',
-    ),
-    _Notif(
-      id: '7',
-      kind: _NotifKind.system,
-      title: 'Sistem Bakımı',
-      detail: 'Pazar gecesi 02:00-04:00 arası planlı bakım yapılacak.',
-      time: DateTime.now().subtract(const Duration(days: 3)),
-      category: 'system',
-      relatedRoute: '/settings',
-    ),
-  ];
-
-  List<_Notif> _filtered() {
-    return _mockNotifications.where((n) {
+  List<NotificationItem> _filtered(List<NotificationItem> all) {
+    return all.where((n) {
       switch (_tabIndex) {
         case 1:
-          return !_readIds.contains(n.id);
+          return !n.isRead;
         case 2:
           return n.category == 'warranty';
         case 3:
+          return n.category == 'assignment';
+        case 4:
           return n.category == 'system';
         default:
           return true;
@@ -100,129 +39,101 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     }).toList();
   }
 
-  void _markAllRead() {
-    setState(() {
-      for (final n in _mockNotifications) {
-        _readIds.add(n.id);
-      }
-    });
-  }
+  Future<void> _handleTap(NotificationItem notif) async {
+    if (_isNavigating) return;
+    _isNavigating = true;
 
-  void _handleTap(_Notif notif) {
-    final isRead = _readIds.contains(notif.id);
-    if (!isRead) {
-      setState(() => _readIds.add(notif.id));
-      return;
-    }
-    final route = notif.relatedRoute;
-    if (route == null || !mounted) return;
     try {
-      context.push(route);
-    } catch (_) {}
+      // 1. İlk tık = okunmamışsa sadece okundu işaretle
+      if (!notif.isRead) {
+        await ref.read(notificationProvider.notifier).markAsRead(notif.id);
+        return;
+      }
+
+      // 2. Okunmuş + tekrar tık = ilgili ekrana git
+      if (!mounted) return;
+
+      if (notif.relatedEntityId == null || notif.relatedEntityId!.isEmpty) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Bu bildirime bağlı bir detay sayfası yok.'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+        return;
+      }
+
+      final entityType = notif.relatedEntityType ?? '';
+      final entityId = notif.relatedEntityId!;
+
+      String? route;
+      switch (entityType) {
+        case 'Device':
+          route = '/devices/$entityId';
+        case 'Assignment':
+          route = '/assignments/$entityId';
+        case 'Employee':
+          route = '/person/$entityId';
+        case 'Location':
+          route = '/location/$entityId';
+        default:
+          // type bazlı fallback
+          if (notif.type <= 1) {
+            // warranty → devices
+            route = '/devices';
+          } else if (notif.type == 2 || notif.type == 3) {
+            route = '/assignments';
+          }
+      }
+
+      if (route != null && mounted) {
+        context.push(route);
+      } else if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Detay sayfası bulunamadı.')),
+        );
+      }
+    } finally {
+      if (mounted) _isNavigating = false;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final filtered = _filtered();
-    final unreadCount =
-        _mockNotifications.where((n) => !_readIds.contains(n.id)).length;
+    final notifState = ref.watch(notificationProvider);
 
     return Scaffold(
       backgroundColor: AppColors.surfaceLight,
       body: Column(
         children: [
-          Container(
-            color: AppColors.navy,
-            padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top + 14,
-              left: AppSpacing.lg,
-              right: AppSpacing.lg,
-              bottom: 18,
-            ),
-            child: Row(
-              children: [
-                GestureDetector(
-                  onTap: goBackOrHome(context),
-                  child: Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.10),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(
-                      Icons.chevron_left,
-                      size: 22,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Bildirimler',
-                        style: GoogleFonts.inter(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
-                      ),
-                      if (unreadCount > 0)
-                        Text(
-                          '$unreadCount okunmamış',
-                          style: GoogleFonts.inter(
-                            fontSize: 11,
-                            color: Colors.white.withValues(alpha: 0.7),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-                if (unreadCount > 0)
-                  GestureDetector(
-                    onTap: _markAllRead,
-                    child: Text(
-                      'Tümünü Oku',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white.withValues(alpha: 0.85),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
+          // Header
+          notifState.when(
+            data: (items) => _buildHeader(items),
+            loading: () => _buildHeader([]),
+            error: (e, st) => _buildHeader([]),
           ),
+          // Tabs
           Container(
             decoration: const BoxDecoration(
               color: AppColors.surfaceWhite,
-              border: Border(
-                bottom: BorderSide(color: AppColors.surfaceDivider),
-              ),
+              border: Border(bottom: BorderSide(color: AppColors.surfaceDivider)),
             ),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
               child: Row(
                 children: _tabs.asMap().entries.map((e) {
                   final isActive = e.key == _tabIndex;
                   return GestureDetector(
                     onTap: () => setState(() => _tabIndex = e.key),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 14,
-                        horizontal: 12,
-                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
-                            color: isActive
-                                ? AppColors.navy
-                                : Colors.transparent,
+                            color: isActive ? AppColors.navy : Colors.transparent,
                             width: 2,
                           ),
                         ),
@@ -232,9 +143,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         style: GoogleFonts.inter(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
-                          color: isActive
-                              ? AppColors.navy
-                              : AppColors.textSecondary,
+                          color: isActive ? AppColors.navy : AppColors.textSecondary,
                         ),
                       ),
                     ),
@@ -243,191 +152,243 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               ),
             ),
           ),
+          // List
           Expanded(
-            child: filtered.isEmpty
-                ? const EmptyState.noNotifications()
-                : ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(
-                      AppSpacing.lg,
-                      AppSpacing.md,
-                      AppSpacing.lg,
-                      20,
+            child: notifState.when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, _) => Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.error_outline, color: AppColors.error, size: 48),
+                    const SizedBox(height: 12),
+                    Text('Bildirimler yüklenemedi', style: GoogleFonts.inter(color: AppColors.textSecondary)),
+                    const SizedBox(height: 12),
+                    ElevatedButton(
+                      onPressed: () => ref.read(notificationProvider.notifier).load(),
+                      child: const Text('Tekrar Dene'),
                     ),
+                  ],
+                ),
+              ),
+              data: (items) {
+                final filtered = _filtered(items);
+                if (filtered.isEmpty) return const EmptyState.noNotifications();
+                return RefreshIndicator(
+                  onRefresh: () => ref.read(notificationProvider.notifier).load(),
+                  color: AppColors.primary500,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 20),
                     itemCount: filtered.length,
                     itemBuilder: (context, i) => _NotifCard(
                       notif: filtered[i],
-                      isRead: _readIds.contains(filtered[i].id),
                       onTap: () => _handleTap(filtered[i]),
+                      onDelete: () => ref.read(notificationProvider.notifier).delete(filtered[i].id),
                     ),
                   ),
+                );
+              },
+            ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader(List<NotificationItem> items) {
+    final unreadCount = items.where((n) => !n.isRead).length;
+    return Container(
+      color: AppColors.navy,
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).padding.top + 14,
+        left: AppSpacing.lg,
+        right: AppSpacing.lg,
+        bottom: 18,
+      ),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: goBackOrHome(context),
+            child: Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Bildirimler',
+                  style: GoogleFonts.inter(fontSize: 17, fontWeight: FontWeight.w500, color: Colors.white),
+                ),
+                if (unreadCount > 0)
+                  Text(
+                    '$unreadCount okunmamış',
+                    style: GoogleFonts.inter(fontSize: 11, color: Colors.white.withValues(alpha: 0.7)),
+                  ),
+              ],
+            ),
+          ),
+          if (unreadCount > 0)
+            GestureDetector(
+              onTap: () => ref.read(notificationProvider.notifier).markAllAsRead(),
+              child: Text(
+                'Tümünü Oku',
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white.withValues(alpha: 0.85),
+                ),
+              ),
+            ),
         ],
       ),
     );
   }
 }
 
-enum _NotifKind { success, warning, info, system }
-
-class _Notif {
-  final String id;
-  final _NotifKind kind;
-  final String title;
-  final String detail;
-  final DateTime time;
-  final String category;
-  final String? relatedRoute;
-
-  const _Notif({
-    required this.id,
-    required this.kind,
-    required this.title,
-    required this.detail,
-    required this.time,
-    required this.category,
-    this.relatedRoute,
-  });
-}
-
 class _NotifCard extends StatelessWidget {
-  final _Notif notif;
-  final bool isRead;
+  final NotificationItem notif;
   final VoidCallback onTap;
-  const _NotifCard({
-    required this.notif,
-    required this.isRead,
-    required this.onTap,
-  });
+  final VoidCallback onDelete;
 
-  IconData get _icon => switch (notif.kind) {
-        _NotifKind.success => Icons.check_circle_outline,
-        _NotifKind.warning => Icons.warning_amber_outlined,
-        _NotifKind.info => Icons.info_outline,
-        _NotifKind.system => Icons.settings_outlined,
-      };
+  const _NotifCard({required this.notif, required this.onTap, required this.onDelete});
 
-  Color get _color => switch (notif.kind) {
-        _NotifKind.success => AppColors.success,
-        _NotifKind.warning => AppColors.warning,
-        _NotifKind.info => AppColors.info,
-        _NotifKind.system => AppColors.textSecondary,
-      };
+  IconData get _icon => switch (notif.type) {
+    0 || 1 => Icons.warning_amber_outlined,
+    2 => Icons.assignment_outlined,
+    3 => Icons.assignment_return_outlined,
+    _ => Icons.settings_outlined,
+  };
 
-  Color get _bgColor => switch (notif.kind) {
-        _NotifKind.success => AppColors.successBg,
-        _NotifKind.warning => AppColors.warningBg,
-        _NotifKind.info => AppColors.infoBg,
-        _NotifKind.system => AppColors.surfaceLight,
-      };
+  Color get _color => switch (notif.type) {
+    0 || 1 => AppColors.warning,
+    2 => AppColors.success,
+    3 => AppColors.info,
+    _ => AppColors.textSecondary,
+  };
+
+  Color get _bgColor => switch (notif.type) {
+    0 || 1 => AppColors.warningBg,
+    2 => AppColors.successBg,
+    3 => AppColors.infoBg,
+    _ => AppColors.surfaceLight,
+  };
 
   String _relativeTime() {
-    final diff = DateTime.now().difference(notif.time);
+    final diff = DateTime.now().difference(notif.createdAt);
     if (diff.inMinutes < 60) return '${diff.inMinutes} dk önce';
     if (diff.inHours < 24) return '${diff.inHours} saat önce';
     if (diff.inDays < 7) return '${diff.inDays} gün önce';
-    return DateFormat('d MMM', 'tr_TR').format(notif.time);
+    return DateFormat('d MMM', 'tr_TR').format(notif.createdAt);
   }
 
   @override
   Widget build(BuildContext context) {
-    final hasNavigation = notif.relatedRoute != null;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
+    final hasNavigation = notif.relatedEntityId != null || notif.type <= 3;
+
+    return Dismissible(
+      key: ValueKey(notif.id),
+      direction: DismissDirection.endToStart,
+      onDismissed: (_) => onDelete(),
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
         margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: isRead ? AppColors.surfaceWhite : _bgColor,
+          color: AppColors.error,
           borderRadius: BorderRadius.circular(AppRadius.md),
-          border: Border.all(
-            color: isRead
-                ? AppColors.surfaceDivider
-                : _color.withValues(alpha: 0.3),
-          ),
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: _color.withValues(alpha: isRead ? 0.08 : 0.15),
-                borderRadius: BorderRadius.circular(AppRadius.sm),
-              ),
-              child: Icon(_icon, size: 18, color: _color),
+        child: const Icon(Icons.delete_outline, color: Colors.white),
+      ),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 8),
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: notif.isRead ? AppColors.surfaceWhite : _bgColor,
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            border: Border.all(
+              color: notif.isRead ? AppColors.surfaceDivider : _color.withValues(alpha: 0.3),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          notif.title,
-                          style: GoogleFonts.inter(
-                            fontSize: 13,
-                            fontWeight:
-                                isRead ? FontWeight.w400 : FontWeight.w500,
-                            color: AppColors.textPrimary,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: _color.withValues(alpha: notif.isRead ? 0.08 : 0.15),
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                ),
+                child: Icon(_icon, size: 18, color: _color),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            notif.title,
+                            style: GoogleFonts.inter(
+                              fontSize: 13,
+                              fontWeight: notif.isRead ? FontWeight.w400 : FontWeight.w500,
+                              color: AppColors.textPrimary,
+                            ),
                           ),
                         ),
-                      ),
-                      if (!isRead)
-                        Container(
-                          width: 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            color: _color,
-                            shape: BoxShape.circle,
-                          ),
-                        )
-                      else if (hasNavigation)
-                        const Icon(
-                          Icons.chevron_right,
-                          size: 16,
-                          color: AppColors.textTertiary,
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    notif.detail,
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: AppColors.textSecondary,
-                      height: 1.4,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Text(
-                        _relativeTime(),
-                        style: GoogleFonts.inter(
-                          fontSize: 10,
-                          color: AppColors.textTertiary,
-                        ),
-                      ),
-                      if (isRead && hasNavigation) ...[
-                        const SizedBox(width: 6),
-                        Text(
-                          'Detaya git',
-                          style: GoogleFonts.inter(
-                            fontSize: 10,
-                            color: AppColors.navy,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                        if (!notif.isRead)
+                          Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(color: _color, shape: BoxShape.circle),
+                          )
+                        else if (hasNavigation)
+                          const Icon(Icons.chevron_right, size: 16, color: AppColors.textTertiary),
                       ],
-                    ],
-                  ),
-                ],
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      notif.message,
+                      style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary, height: 1.4),
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Text(
+                          _relativeTime(),
+                          style: GoogleFonts.inter(fontSize: 10, color: AppColors.textTertiary),
+                        ),
+                        if (notif.isRead && hasNavigation) ...[
+                          const SizedBox(width: 6),
+                          Text(
+                            'Detaya git',
+                            style: GoogleFonts.inter(
+                              fontSize: 10,
+                              color: AppColors.navy,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
