@@ -32,10 +32,27 @@ class AppColors {
   static const Color infoBg    = Color(0xFFEAF0F8);
 
   // ─── Dark theme tokens ──────────────────────────────────────────────
-  static const Color darkNavy         = Color(0xFF4670A8);
-  static const Color darkSurfaceLight = Color(0xFF0B1622);
-  static const Color darkSurfaceWhite = Color(0xFF152235);
-  static const Color darkTextPrimary  = Color(0xFFE5EBF0);
+  static const Color darkNavy             = Color(0xFF4670A8);
+  static const Color darkNavyDark         = Color(0xFF2B4C7A);
+  static const Color darkNavyLight        = Color(0xFF6A8FC4);
+
+  static const Color darkSurfaceLight     = Color(0xFF0B1622);
+  static const Color darkSurfaceWhite     = Color(0xFF152235);
+  static const Color darkSurfaceDivider   = Color(0xFF1F2E45);
+  static const Color darkSurfaceInputBorder = Color(0xFF293B56);
+
+  static const Color darkTextPrimary    = Color(0xFFE5EBF0);
+  static const Color darkTextSecondary  = Color(0xFF9CA8B8);
+  static const Color darkTextTertiary   = Color(0xFF6B7A8C);
+
+  static const Color darkSuccess   = Color(0xFF3FA06B);
+  static const Color darkSuccessBg = Color(0xFF1A3428);
+  static const Color darkWarning   = Color(0xFFD27048);
+  static const Color darkWarningBg = Color(0xFF3A2418);
+  static const Color darkError     = Color(0xFFE04545);
+  static const Color darkErrorBg   = Color(0xFF3A1C1C);
+  static const Color darkInfo      = Color(0xFF6A8FC4);
+  static const Color darkInfoBg    = Color(0xFF1C2A40);
 
   // ─── Legacy constants (kept during screen migration) ────────────────
   static const Color primary50  = Color(0xFFEFF6FF);
