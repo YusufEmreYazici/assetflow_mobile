@@ -15,6 +15,7 @@ import 'package:assetflow_mobile/core/widgets/connectivity_wrapper.dart';
 import 'package:assetflow_mobile/core/widgets/empty_state.dart';
 import 'package:assetflow_mobile/features/devices/providers/device_provider.dart';
 import 'package:assetflow_mobile/features/devices/widgets/advanced_filter_sheet.dart';
+import 'package:assetflow_mobile/features/devices/widgets/device_list_skeleton.dart';
 import 'package:assetflow_mobile/features/devices/widgets/device_row.dart';
 
 class DevicesScreen extends ConsumerStatefulWidget {
@@ -397,7 +398,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                 // Device list
                 Expanded(
                   child: state.isLoading && state.devices.isEmpty
-                      ? const Center(child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2))
+                      ? const SingleChildScrollView(child: DeviceListSkeleton())
                       : filtered.isEmpty
                           ? _buildEmptyState(state)
                           : ListView.builder(

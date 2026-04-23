@@ -6,6 +6,7 @@ import 'package:assetflow_mobile/core/services/barcode_scanner_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/app_header.dart';
 import 'package:assetflow_mobile/core/widgets/section_header.dart';
+import 'package:assetflow_mobile/features/dashboard/widgets/dashboard_shimmer.dart';
 import 'package:assetflow_mobile/data/models/dashboard_model.dart';
 import 'package:assetflow_mobile/features/auth/providers/auth_provider.dart';
 import 'package:assetflow_mobile/features/dashboard/providers/dashboard_provider.dart';
@@ -36,7 +37,7 @@ class DashboardAView extends ConsumerWidget {
         ),
         SliverToBoxAdapter(
           child: dashAsync.when(
-            loading: () => _buildContent(context, null),
+            loading: () => const DashboardShimmer(),
             error: (err, stack) => _buildContent(context, null),
             data: (d) => _buildContent(context, d),
           ),

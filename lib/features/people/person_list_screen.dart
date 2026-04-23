@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:assetflow_mobile/core/services/haptic_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/empty_state.dart';
+import 'package:assetflow_mobile/features/people/widgets/person_list_skeleton.dart';
 import 'package:assetflow_mobile/core/widgets/page_header.dart';
 import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
 import 'package:assetflow_mobile/data/models/employee_model.dart';
@@ -143,11 +144,7 @@ class _PersonListScreenState extends ConsumerState<PersonListScreen> {
           const SizedBox(height: 10),
           Expanded(
             child: state.isLoading
-                ? const Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.navy, strokeWidth: 2,
-                    ),
-                  )
+                ? const SingleChildScrollView(child: PersonListSkeleton())
                 : state.error != null
                     ? Center(
                         child: Text(
