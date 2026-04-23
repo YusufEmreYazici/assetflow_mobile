@@ -14,6 +14,7 @@ import 'package:assetflow_mobile/features/auth/screens/reset_password_screen.dar
 import 'package:assetflow_mobile/features/dashboard/screens/dashboard_screen.dart';
 import 'package:assetflow_mobile/features/devices/screens/devices_screen.dart';
 import 'package:assetflow_mobile/features/devices/screens/device_detail_screen.dart';
+import 'package:assetflow_mobile/data/models/device_model.dart';
 import 'package:assetflow_mobile/features/devices/screens/device_form_screen.dart';
 import 'package:assetflow_mobile/features/employees/screens/employees_screen.dart';
 import 'package:assetflow_mobile/features/assignments/screens/assignments_screen.dart';
@@ -137,7 +138,9 @@ final routerProvider = Provider<GoRouter>((ref) {
                       path: 'edit',
                       pageBuilder: (ctx, routeState) => slideFromBottomPage(
                         key: routeState.pageKey,
-                        child: const _PlaceholderScreen('Cihaz Düzenle'),
+                        child: DeviceFormScreen(
+                          device: routeState.extra as Device?,
+                        ),
                       ),
                     ),
                   ],

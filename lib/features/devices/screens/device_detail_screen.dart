@@ -163,7 +163,10 @@ class _DeviceDetailScreenState extends ConsumerState<DeviceDetailScreen> {
           DeviceDetailHeader(
             device: device,
             onEdit: () async {
-              final result = await context.push('/devices/${widget.id}/edit');
+              final result = await context.push(
+                '/devices/${widget.id}/edit',
+                extra: device,
+              );
               if (result == true) {
                 ref.invalidate(_deviceDetailProvider(widget.id));
               }
