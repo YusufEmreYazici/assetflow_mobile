@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:assetflow_mobile/core/services/haptic_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/data/models/assignment_model.dart';
 import 'package:assetflow_mobile/features/dashboard/widgets/section_header.dart';
@@ -35,7 +36,10 @@ class RecentActivitySection extends StatelessWidget {
               return Column(
                 children: [
                   ListTile(
-                    onTap: () => context.go('/assignments'),
+                    onTap: () {
+                      HapticService.light();
+                      context.push('/assignments/${a.id}');
+                    },
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 14,
                       vertical: 4,

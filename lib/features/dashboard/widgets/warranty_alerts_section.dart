@@ -34,7 +34,7 @@ class WarrantyAlertsSection extends StatelessWidget {
           ).format(item.warrantyEndDate);
 
           return GestureDetector(
-            onTap: () => context.go('/devices/${item.deviceId}'),
+            onTap: () => context.push('/devices/${item.deviceId}'),
             child: Container(
               margin: const EdgeInsets.only(bottom: 8),
               decoration: BoxDecoration(
