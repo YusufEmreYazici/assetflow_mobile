@@ -264,7 +264,10 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                       ),
                       const SizedBox(width: 8),
                       // Filter button with active count badge
-                      GestureDetector(
+                      Semantics(
+                        label: 'Filtrele',
+                        button: true,
+                        child: GestureDetector(
                         onTap: _openFilterSheet,
                         child: Container(
                           width: 42, height: 42,
@@ -303,7 +306,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                             ],
                           ),
                         ),
-                      ),
+                      )),
                     ],
                   ),
                 ),

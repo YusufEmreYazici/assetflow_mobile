@@ -19,7 +19,10 @@ class FavoriteStar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isFav = ref.watch(favoritesProvider).contains(deviceId);
-    return IconButton(
+    return Semantics(
+      label: isFav ? 'Favorilerden çıkar' : 'Favorilere ekle',
+      button: true,
+      child: IconButton(
       icon: AnimatedSwitcher(
         duration: const Duration(milliseconds: 280),
         transitionBuilder: (child, animation) {
@@ -44,6 +47,7 @@ class FavoriteStar extends ConsumerWidget {
       splashRadius: 20,
       padding: EdgeInsets.zero,
       constraints: BoxConstraints(minWidth: size + 8, minHeight: size + 8),
+    ),
     );
   }
 }

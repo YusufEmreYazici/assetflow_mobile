@@ -82,29 +82,37 @@ class AppHeader extends StatelessWidget {
                   ],
                 ),
               ),
-              Stack(
-                children: [
-                  _NavButton(
-                    onTap: onNotif,
-                    child: const Icon(Icons.notifications_outlined, size: 18, color: Colors.white),
-                  ),
-                  if (showNotifBadge)
-                    Positioned(
-                      top: 8, right: 8,
-                      child: Container(
-                        width: 8, height: 8,
-                        decoration: BoxDecoration(
-                          color: AppColors.error,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: AppColors.navy, width: 1.5),
+              Semantics(
+                label: 'Bildirimler',
+                button: true,
+                child: Stack(
+                  children: [
+                    _NavButton(
+                      onTap: onNotif,
+                      child: const Icon(Icons.notifications_outlined, size: 18, color: Colors.white),
+                    ),
+                    if (showNotifBadge)
+                      Positioned(
+                        top: 8, right: 8,
+                        child: Container(
+                          width: 8, height: 8,
+                          decoration: BoxDecoration(
+                            color: AppColors.error,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: AppColors.navy, width: 1.5),
+                          ),
                         ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
               if (onMenu != null) ...[
                 const SizedBox(width: 8),
-                _NavButton(onTap: onMenu!, child: const Icon(Icons.menu, size: 18, color: Colors.white)),
+                Semantics(
+                  label: 'Menü',
+                  button: true,
+                  child: _NavButton(onTap: onMenu!, child: const Icon(Icons.menu, size: 18, color: Colors.white)),
+                ),
               ],
             ],
           ),

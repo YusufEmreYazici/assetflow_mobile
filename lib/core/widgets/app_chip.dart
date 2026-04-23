@@ -26,7 +26,10 @@ class AppChip extends StatelessWidget {
       ChipTone.neutral => (AppColors.surfaceLight, AppColors.textSecondary),
     };
 
-    return Container(
+    return Semantics(
+      label: 'Durum: $label',
+      excludeSemantics: true,
+      child: Container(
       height: 22,
       padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
@@ -54,6 +57,7 @@ class AppChip extends StatelessWidget {
           ),
         ],
       ),
+    ),
     );
   }
 }

@@ -42,15 +42,19 @@ class PageHeader extends StatelessWidget implements PreferredSizeWidget {
         children: [
           // LEFT: back button (Grup B screens)
           if (onBack != null) ...[
-            GestureDetector(
-              onTap: onBack,
-              child: Container(
-                width: 36, height: 36,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(8),
+            Semantics(
+              label: 'Geri',
+              button: true,
+              child: GestureDetector(
+                onTap: onBack,
+                child: Container(
+                  width: 36, height: 36,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
                 ),
-                child: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
               ),
             ),
             const SizedBox(width: 10),
@@ -89,16 +93,20 @@ class PageHeader extends StatelessWidget implements PreferredSizeWidget {
           // RIGHT: hamburger (Grup A / main tab screens)
           if (showMenu) ...[
             if (action != null) const SizedBox(width: 8),
-            Builder(
-              builder: (ctx) => GestureDetector(
-                onTap: () => Scaffold.maybeOf(ctx)?.openEndDrawer(),
-                child: Container(
-                  width: 36, height: 36,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.10),
-                    borderRadius: BorderRadius.circular(8),
+            Semantics(
+              label: 'Menü',
+              button: true,
+              child: Builder(
+                builder: (ctx) => GestureDetector(
+                  onTap: () => Scaffold.maybeOf(ctx)?.openEndDrawer(),
+                  child: Container(
+                    width: 36, height: 36,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(Icons.menu, size: 18, color: Colors.white),
                   ),
-                  child: const Icon(Icons.menu, size: 18, color: Colors.white),
                 ),
               ),
             ),
