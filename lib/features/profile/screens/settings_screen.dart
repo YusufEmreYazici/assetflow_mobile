@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:assetflow_mobile/core/providers/locale_provider.dart';
 import 'package:assetflow_mobile/core/services/haptic_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/theme/theme_provider.dart';
@@ -23,6 +24,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     final variant = ref.watch(dashboardVariantProvider);
     final themeMode = ref.watch(themeProvider);
+    final locale = ref.watch(localeProvider);
 
     return Scaffold(
       backgroundColor: AppColors.surfaceLight,
@@ -197,24 +199,25 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     borderRadius: BorderRadius.circular(AppRadius.md),
                     border: Border.all(color: AppColors.surfaceDivider),
                   ),
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
+                  child: Column(
                     children: [
-                      const Icon(Icons.language, size: 20, color: AppColors.navy),
-                      const SizedBox(width: 12),
-                      Text(
-                        'Türkçe',
-                        style: GoogleFonts.inter(
-                          fontSize: 13, fontWeight: FontWeight.w500,
-                          color: AppColors.textPrimary,
-                        ),
+                      _VariantRow(
+                        label: 'Türkçe',
+                        caption: 'Türkçe arayüz',
+                        selected: locale.languageCode == 'tr',
+                        onTap: () => ref
+                            .read(localeProvider.notifier)
+                            .setLocale(const Locale('tr')),
                       ),
-                      const Spacer(),
-                      Text(
-                        'Tek dil destekleniyor',
-                        style: GoogleFonts.inter(
-                          fontSize: 11, color: AppColors.textTertiary,
-                        ),
+                      const Divider(height: 1, color: AppColors.surfaceDivider, indent: 16, endIndent: 16),
+                      _VariantRow(
+                        label: 'English',
+                        caption: 'English interface',
+                        selected: locale.languageCode == 'en',
+                        isLast: true,
+                        onTap: () => ref
+                            .read(localeProvider.notifier)
+                            .setLocale(const Locale('en')),
                       ),
                     ],
                   ),

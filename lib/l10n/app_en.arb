@@ -1,0 +1,63 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "AssetFlow",
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "confirm": "Confirm",
+  "close": "Close",
+  "loading": "Loading...",
+  "error": "Error",
+  "retry": "Retry",
+  "search": "Search",
+  "noResults": "No results found",
+
+  "loginTitle": "Sign In",
+  "emailLabel": "Email",
+  "passwordLabel": "Password",
+  "emailRequired": "Email is required",
+  "emailInvalid": "Enter a valid email address",
+  "passwordRequired": "Password is required",
+  "logout": "Sign Out",
+  "logoutConfirm": "Do you want to sign out?",
+
+  "navDashboard": "Dashboard",
+  "navDevices": "Devices",
+  "navEmployees": "Employees",
+  "navAssignments": "Assignments",
+  "navMore": "More",
+
+  "deviceAdd": "Add Device",
+  "deviceEdit": "Edit Device",
+  "deviceDelete": "Delete Device",
+  "deviceDeleteConfirm": "Are you sure you want to delete this device?",
+  "deviceNotFound": "Device not found",
+  "deviceStatusActive": "Active",
+  "deviceStatusInStorage": "In Storage",
+  "deviceStatusMaintenance": "In Maintenance",
+  "deviceStatusRetired": "Retired",
+
+  "employeeAdd": "Add Employee",
+  "employeeNotFound": "Employee not found",
+
+  "assignmentAdd": "Create Assignment",
+  "assignmentReturn": "Return",
+  "assignmentAlreadyReturned": "This assignment has already been returned",
+
+  "locationAdd": "Add Location",
+  "locationNotFound": "Location not found",
+
+  "settingsTitle": "Settings",
+  "settingsLanguage": "Language",
+  "settingsTheme": "Theme",
+  "settingsThemeLight": "Light",
+  "settingsThemeDark": "Dark",
+  "settingsThemeSystem": "System",
+  "languageTurkish": "Türkçe",
+  "languageEnglish": "English",
+
+  "cacheCleared": "Cache cleared",
+  "changePassword": "Change Password"
+}

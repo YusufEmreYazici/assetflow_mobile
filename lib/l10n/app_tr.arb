@@ -1,0 +1,156 @@
+{
+  "@@locale": "tr",
+
+  "appTitle": "AssetFlow",
+  "@appTitle": { "description": "Uygulama adı" },
+
+  "save": "Kaydet",
+  "@save": { "description": "Kaydet butonu" },
+
+  "cancel": "İptal",
+  "@cancel": { "description": "İptal butonu" },
+
+  "delete": "Sil",
+  "@delete": { "description": "Sil butonu" },
+
+  "edit": "Düzenle",
+  "@edit": { "description": "Düzenle butonu" },
+
+  "confirm": "Onayla",
+  "@confirm": { "description": "Onay butonu" },
+
+  "close": "Kapat",
+  "@close": { "description": "Kapat butonu" },
+
+  "loading": "Yükleniyor...",
+  "@loading": { "description": "Yükleniyor mesajı" },
+
+  "error": "Hata",
+  "@error": { "description": "Hata başlığı" },
+
+  "retry": "Tekrar Dene",
+  "@retry": { "description": "Tekrar dene butonu" },
+
+  "search": "Ara",
+  "@search": { "description": "Arama" },
+
+  "noResults": "Sonuç bulunamadı",
+  "@noResults": { "description": "Sonuç yok mesajı" },
+
+  "loginTitle": "Giriş Yap",
+  "@loginTitle": { "description": "Giriş ekranı başlığı" },
+
+  "emailLabel": "E-posta",
+  "@emailLabel": { "description": "E-posta alanı" },
+
+  "passwordLabel": "Şifre",
+  "@passwordLabel": { "description": "Şifre alanı" },
+
+  "emailRequired": "E-posta gerekli",
+  "@emailRequired": { "description": "E-posta validasyon hatası" },
+
+  "emailInvalid": "Geçerli bir e-posta girin",
+  "@emailInvalid": { "description": "Geçersiz e-posta hatası" },
+
+  "passwordRequired": "Şifre gerekli",
+  "@passwordRequired": { "description": "Şifre validasyon hatası" },
+
+  "logout": "Çıkış Yap",
+  "@logout": { "description": "Çıkış yap" },
+
+  "logoutConfirm": "Oturumunuzu kapatmak istiyor musunuz?",
+  "@logoutConfirm": { "description": "Çıkış onay mesajı" },
+
+  "navDashboard": "Dashboard",
+  "@navDashboard": { "description": "Dashboard nav etiketi" },
+
+  "navDevices": "Cihazlar",
+  "@navDevices": { "description": "Cihazlar nav etiketi" },
+
+  "navEmployees": "Personel",
+  "@navEmployees": { "description": "Personel nav etiketi" },
+
+  "navAssignments": "Zimmetler",
+  "@navAssignments": { "description": "Zimmetler nav etiketi" },
+
+  "navMore": "Daha Fazla",
+  "@navMore": { "description": "Daha fazla nav etiketi" },
+
+  "deviceAdd": "Cihaz Ekle",
+  "@deviceAdd": { "description": "Cihaz ekle başlığı" },
+
+  "deviceEdit": "Cihazı Düzenle",
+  "@deviceEdit": { "description": "Cihaz düzenle başlığı" },
+
+  "deviceDelete": "Cihazı Sil",
+  "@deviceDelete": { "description": "Cihaz sil başlığı" },
+
+  "deviceDeleteConfirm": "Bu cihazı silmek istediğinize emin misiniz?",
+  "@deviceDeleteConfirm": { "description": "Cihaz silme onay mesajı" },
+
+  "deviceNotFound": "Cihaz bulunamadı",
+  "@deviceNotFound": { "description": "Cihaz bulunamadı hatası" },
+
+  "deviceStatusActive": "Aktif",
+  "@deviceStatusActive": { "description": "Aktif durum" },
+
+  "deviceStatusInStorage": "Depoda",
+  "@deviceStatusInStorage": { "description": "Depoda durumu" },
+
+  "deviceStatusMaintenance": "Bakımda",
+  "@deviceStatusMaintenance": { "description": "Bakımda durumu" },
+
+  "deviceStatusRetired": "Emekli",
+  "@deviceStatusRetired": { "description": "Emekli durumu" },
+
+  "employeeAdd": "Personel Ekle",
+  "@employeeAdd": { "description": "Personel ekle başlığı" },
+
+  "employeeNotFound": "Personel bulunamadı",
+  "@employeeNotFound": { "description": "Personel bulunamadı hatası" },
+
+  "assignmentAdd": "Zimmet Oluştur",
+  "@assignmentAdd": { "description": "Zimmet oluştur başlığı" },
+
+  "assignmentReturn": "İade Et",
+  "@assignmentReturn": { "description": "İade et butonu" },
+
+  "assignmentAlreadyReturned": "Bu zimmet zaten iade edilmiş",
+  "@assignmentAlreadyReturned": { "description": "Zaten iade edilmiş hatası" },
+
+  "locationAdd": "Lokasyon Ekle",
+  "@locationAdd": { "description": "Lokasyon ekle başlığı" },
+
+  "locationNotFound": "Lokasyon bulunamadı",
+  "@locationNotFound": { "description": "Lokasyon bulunamadı hatası" },
+
+  "settingsTitle": "Ayarlar",
+  "@settingsTitle": { "description": "Ayarlar başlığı" },
+
+  "settingsLanguage": "Dil",
+  "@settingsLanguage": { "description": "Dil ayarı başlığı" },
+
+  "settingsTheme": "Tema",
+  "@settingsTheme": { "description": "Tema ayarı başlığı" },
+
+  "settingsThemeLight": "Açık Tema",
+  "@settingsThemeLight": { "description": "Açık tema seçeneği" },
+
+  "settingsThemeDark": "Koyu Tema",
+  "@settingsThemeDark": { "description": "Koyu tema seçeneği" },
+
+  "settingsThemeSystem": "Sistem",
+  "@settingsThemeSystem": { "description": "Sistem teması seçeneği" },
+
+  "languageTurkish": "Türkçe",
+  "@languageTurkish": { "description": "Türkçe dil seçeneği" },
+
+  "languageEnglish": "English",
+  "@languageEnglish": { "description": "İngilizce dil seçeneği" },
+
+  "cacheCleared": "Önbellek temizlendi",
+  "@cacheCleared": { "description": "Önbellek temizlendi mesajı" },
+
+  "changePassword": "Şifreyi Değiştir",
+  "@changePassword": { "description": "Şifre değiştir başlığı" }
+}
