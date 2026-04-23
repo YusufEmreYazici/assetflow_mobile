@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/theme/theme_provider.dart';
 import 'package:assetflow_mobile/core/providers/locale_provider.dart';
@@ -14,13 +15,31 @@ import 'package:assetflow_mobile/app_router.dart';
 import 'package:assetflow_mobile/features/auth/providers/auth_provider.dart';
 import 'package:assetflow_mobile/l10n/app_localizations.dart';
 
+// Replace with real DSN from https://sentry.io before production deploy
+const _sentryDsn = String.fromEnvironment(
+  'SENTRY_DSN',
+  defaultValue: '',
+);
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   GoogleFonts.config.allowRuntimeFetching = true;
   await initializeDateFormatting('tr_TR', null);
   await OfflineCacheService.init();
   await HapticService.init();
-  runApp(const ProviderScope(child: AssetFlowApp()));
+
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = _sentryDsn;
+      options.tracesSampleRate = 0.2;
+      options.environment = const String.fromEnvironment(
+        'APP_ENV',
+        defaultValue: 'development',
+      );
+      options.release = 'assetflow-mobile@2.2.0+24';
+    },
+    appRunner: () => runApp(const ProviderScope(child: AssetFlowApp())),
+  );
 }
 
 class AssetFlowApp extends ConsumerStatefulWidget {

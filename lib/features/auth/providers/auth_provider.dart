@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:assetflow_mobile/core/services/error_reporting_service.dart';
 import 'package:assetflow_mobile/core/utils/token_manager.dart';
 import 'package:assetflow_mobile/data/models/auth_models.dart';
 import 'package:assetflow_mobile/data/services/auth_service.dart';
@@ -93,10 +94,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
         role: response.role,
         companyId: response.companyId,
       );
+      ErrorReportingService.instance.setUser(response.email, response.email);
     } on DioException catch (e) {
       final message = _extractErrorMessage(e);
       state = state.copyWith(isLoading: false, error: message);
-    } catch (_) {
+    } catch (e, st) {
+      ErrorReportingService.instance.captureException(e, stackTrace: st);
       state = state.copyWith(
         isLoading: false,
         error: 'Beklenmeyen bir hata olustu.',
@@ -147,6 +150,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } catch (_) {
       // Ignore logout errors
     } finally {
+      ErrorReportingService.instance.clearUser();
       state = const AuthState();
     }
   }
