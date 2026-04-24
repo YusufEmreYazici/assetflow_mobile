@@ -12,6 +12,7 @@ class DeviceDetailHeader extends ConsumerWidget {
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
   final VoidCallback? onReactivate;
+  final VoidCallback? onRetire;
 
   const DeviceDetailHeader({
     super.key,
@@ -20,6 +21,7 @@ class DeviceDetailHeader extends ConsumerWidget {
     this.onEdit,
     this.onDelete,
     this.onReactivate,
+    this.onRetire,
   });
 
   ChipTone get _tone => switch (device.status) {
@@ -119,7 +121,7 @@ class DeviceDetailHeader extends ConsumerWidget {
                   child: const Icon(Icons.edit_outlined, size: 16, color: Colors.white),
                 ),
               ),
-              if (onDelete != null || onReactivate != null) ...[
+              if (onDelete != null || onReactivate != null || onRetire != null) ...[
                 const SizedBox(width: 4),
                 PopupMenuButton<String>(
                   padding: EdgeInsets.zero,
@@ -141,6 +143,15 @@ class DeviceDetailHeader extends ConsumerWidget {
                           const Text('Yeniden Aktifleştir'),
                         ]),
                       ),
+                    if (onRetire != null)
+                      PopupMenuItem(
+                        value: 'retire',
+                        child: Row(children: [
+                          Icon(Icons.do_not_disturb_alt_outlined, color: AppColors.textSecondary, size: 18),
+                          const SizedBox(width: 10),
+                          const Text('Emekli Et'),
+                        ]),
+                      ),
                     if (onDelete != null)
                       PopupMenuItem(
                         value: 'delete',
@@ -154,6 +165,7 @@ class DeviceDetailHeader extends ConsumerWidget {
                   onSelected: (action) {
                     if (action == 'delete') onDelete?.call();
                     if (action == 'reactivate') onReactivate?.call();
+                    if (action == 'retire') onRetire?.call();
                   },
                 ),
               ],

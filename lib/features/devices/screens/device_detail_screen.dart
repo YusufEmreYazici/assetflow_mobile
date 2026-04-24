@@ -8,6 +8,7 @@ import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
 import 'package:assetflow_mobile/core/widgets/app_tab_bar.dart';
 import 'package:assetflow_mobile/data/models/device_model.dart';
 import 'package:assetflow_mobile/data/services/device_service.dart';
+import 'package:assetflow_mobile/features/assignments/providers/assignment_provider.dart';
 import 'package:assetflow_mobile/features/devices/widgets/device_detail_header.dart';
 import 'package:assetflow_mobile/features/devices/widgets/device_general_tab.dart';
 import 'package:assetflow_mobile/features/devices/widgets/device_hardware_tab.dart';
@@ -174,6 +175,7 @@ class _DeviceDetailScreenState extends ConsumerState<DeviceDetailScreen> {
             },
             onDelete: () => _confirmAndDelete(device),
             onReactivate: device.status == 3 ? () => _confirmAndReactivate(device) : null,
+            onRetire: device.status != 3 ? () => _confirmAndRetire(device) : null,
           ),
           AppTabBar(
             tabs: _tabs,
@@ -331,6 +333,59 @@ class _DeviceDetailScreenState extends ConsumerState<DeviceDetailScreen> {
     }
   }
 
+  Future<void> _confirmAndRetire(Device device) async {
+    HapticService.medium();
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Cihazı Emekli Et?'),
+        content: Text(
+          '${device.name} emekliye alınacak ve artık zimmetlenemeyecek.'
+          '${device.activeAssignmentId != null ? '\n\n⚠️ Aktif zimmet otomatik olarak iade edilecek.' : ''}',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('İptal'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            child: const Text('Emekli Et'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      HapticService.heavy();
+      try {
+        await DeviceService().updateStatus(device.id, 3); // 3 = Retired
+        if (mounted) {
+          ref.invalidate(_deviceDetailProvider(widget.id));
+          ref.invalidate(assignmentProvider);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${device.name} emekliye alındı.'),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Hata: $e'),
+              backgroundColor: AppColors.error,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      }
+    }
+  }
+
   void _showReturnDialog(Device device) {
     showModalBottomSheet(
       context: context,
@@ -388,11 +443,15 @@ class _DeviceDetailScreenState extends ConsumerState<DeviceDetailScreen> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       Navigator.pop(ctx);
-                      context.push(
+                      final result = await context.push<bool>(
                         '/assignments/${device.activeAssignmentId}/return',
                       );
+                      if (result == true && mounted) {
+                        ref.invalidate(_deviceDetailProvider(widget.id));
+                        ref.invalidate(assignmentProvider);
+                      }
                     },
                     child: Container(
                       height: 44,

@@ -20,6 +20,9 @@ import 'package:assetflow_mobile/features/employees/screens/employees_screen.dar
 import 'package:assetflow_mobile/features/assignments/screens/assignments_screen.dart';
 import 'package:assetflow_mobile/features/assignments/screens/assign_wizard_screen.dart';
 import 'package:assetflow_mobile/features/assignments/screens/assignment_detail_screen.dart';
+import 'package:assetflow_mobile/features/assignments/screens/return_device_screen.dart';
+import 'package:assetflow_mobile/data/models/assignment_model.dart';
+import 'package:assetflow_mobile/data/services/assignment_service.dart';
 import 'package:assetflow_mobile/features/locations/screens/locations_screen.dart';
 import 'package:assetflow_mobile/features/locations/screens/location_list_screen.dart';
 import 'package:assetflow_mobile/features/locations/screens/location_detail_screen.dart';
@@ -33,39 +36,51 @@ import 'package:assetflow_mobile/features/audit_log/audit_log_screen.dart';
 import 'package:assetflow_mobile/features/profile/screens/settings_screen.dart';
 import 'package:assetflow_mobile/features/export/excel_export_screen.dart';
 
-class _PlaceholderScreen extends StatelessWidget {
-  final String title;
-  const _PlaceholderScreen(this.title);
+// Provider + loader for return flow (fetches Assignment by ID then renders ReturnDeviceScreen)
+final _assignmentForReturnProvider =
+    FutureProvider.autoDispose.family<Assignment, String>(
+  (ref, id) async => AssignmentService().getById(id),
+);
+
+class _ReturnAssignmentLoader extends ConsumerWidget {
+  final String assignmentId;
+  const _ReturnAssignmentLoader({required this.assignmentId});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.surfaceLight,
-      appBar: AppBar(
-        backgroundColor: AppColors.navy,
-        foregroundColor: Colors.white,
-        title: Text(title, style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white)),
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.construction_outlined, size: 48, color: AppColors.textTertiary),
-            const SizedBox(height: 12),
-            Text(
-              '$title yakında aktif olacak.',
-              style: GoogleFonts.inter(fontSize: 14, color: AppColors.textSecondary),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final async = ref.watch(_assignmentForReturnProvider(assignmentId));
+    return async.when(
+      loading: () => Scaffold(
+        backgroundColor: AppColors.surfaceLight,
+        appBar: AppBar(
+          backgroundColor: AppColors.navy,
+          foregroundColor: Colors.white,
+          title: Text(
+            'İade Et',
+            style: GoogleFonts.inter(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
             ),
-          ],
+          ),
+          leading: IconButton(
+            icon: const Icon(Icons.chevron_left, color: Colors.white),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2),
         ),
       ),
+      error: (e, _) => Scaffold(
+        backgroundColor: AppColors.surfaceLight,
+        body: Center(child: Text('Yüklenemedi: $e')),
+      ),
+      data: (assignment) => ReturnDeviceScreen(assignment: assignment),
     );
   }
 }
+
 
 final routerProvider = Provider<GoRouter>((ref) {
   final refreshNotifier = ValueNotifier(0);
@@ -179,7 +194,9 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/assignments/:id/return',
         pageBuilder: (ctx, routeState) => slideFromBottomPage(
           key: routeState.pageKey,
-          child: const _PlaceholderScreen('İade Et'),
+          child: _ReturnAssignmentLoader(
+            assignmentId: routeState.pathParameters['id']!,
+          ),
         ),
       ),
       GoRoute(
