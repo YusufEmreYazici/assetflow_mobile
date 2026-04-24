@@ -1,8 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:assetflow_mobile/core/services/haptic_service.dart';
+import 'package:assetflow_mobile/core/utils/api_exception.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/kv_row.dart';
 import 'package:assetflow_mobile/data/models/location_model.dart';
@@ -270,15 +272,17 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
           Navigator.pop(context, true);
         }
       } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Hata: $e'),
-              backgroundColor: AppColors.error,
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
-        }
+        if (!mounted) return;
+        final apiEx = e is DioException && e.error is ApiException
+            ? e.error as ApiException
+            : null;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(apiEx?.message ?? 'Lokasyon silinemedi.'),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       }
     }
   }

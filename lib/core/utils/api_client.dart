@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:assetflow_mobile/core/constants/api_constants.dart';
+import 'package:assetflow_mobile/core/utils/api_exception.dart';
 import 'package:assetflow_mobile/core/utils/token_manager.dart';
 
 class ApiClient {
@@ -88,6 +89,56 @@ class ApiClient {
             );
             return;
           }
+        }
+        // Structured error handling for 400/409/422
+        final statusCode = error.response?.statusCode;
+        if (statusCode == 400) {
+          final data = error.response?.data;
+          handler.reject(
+            DioException(
+              requestOptions: error.requestOptions,
+              error: ApiException(
+                statusCode: 400,
+                message: (data is Map ? data['error'] ?? data['message'] : null) as String? ??
+                    'İstek geçersiz.',
+                details: data is Map ? data['details'] : null,
+              ),
+              response: error.response,
+              type: DioExceptionType.badResponse,
+            ),
+          );
+          return;
+        }
+        if (statusCode == 409) {
+          final data = error.response?.data;
+          handler.reject(
+            DioException(
+              requestOptions: error.requestOptions,
+              error: ApiException(
+                statusCode: 409,
+                message: (data is Map ? data['error'] ?? data['message'] : null) as String? ??
+                    'Bu kayıt başka biri tarafından değiştirildi. Sayfayı yenileyip tekrar deneyin.',
+                details: data is Map ? data['details'] : null,
+                isConflict: true,
+              ),
+              response: error.response,
+              type: DioExceptionType.badResponse,
+            ),
+          );
+          return;
+        }
+        if (statusCode == 422) {
+          final data = error.response?.data;
+          final errors = (data is Map ? data['errors'] : null) as Map<String, dynamic>? ?? {};
+          handler.reject(
+            DioException(
+              requestOptions: error.requestOptions,
+              error: ValidationException(errors),
+              response: error.response,
+              type: DioExceptionType.badResponse,
+            ),
+          );
+          return;
         }
         handler.next(error);
       },

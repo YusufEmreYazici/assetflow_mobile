@@ -1,8 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:assetflow_mobile/core/services/haptic_service.dart';
+import 'package:assetflow_mobile/core/utils/api_exception.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
 import 'package:assetflow_mobile/core/widgets/app_tab_bar.dart';
@@ -268,15 +270,28 @@ class _DeviceDetailScreenState extends ConsumerState<DeviceDetailScreen> {
           context.pop();
         }
       } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Hata: $e'),
-              backgroundColor: AppColors.error,
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
-        }
+        if (!mounted) return;
+        final apiEx = e is DioException && e.error is ApiException
+            ? e.error as ApiException
+            : null;
+        final activeAssignmentId = apiEx?.details is Map
+            ? (apiEx!.details as Map)['activeAssignmentId']?.toString()
+            : null;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(apiEx?.message ?? 'Cihaz silinemedi.'),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+            action: activeAssignmentId != null
+                ? SnackBarAction(
+                    label: 'İade Sayfası',
+                    textColor: Colors.white,
+                    onPressed: () =>
+                        context.push('/assignments/$activeAssignmentId/return'),
+                  )
+                : null,
+          ),
+        );
       }
     }
   }

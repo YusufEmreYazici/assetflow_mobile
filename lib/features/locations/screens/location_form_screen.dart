@@ -1,5 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/core/utils/api_exception.dart';
 import 'package:assetflow_mobile/core/widgets/app_text_field.dart';
 import 'package:assetflow_mobile/core/widgets/app_button.dart';
 import 'package:assetflow_mobile/data/services/location_service.dart';
@@ -90,11 +92,20 @@ class _LocationFormScreenState extends State<LocationFormScreen> {
         ));
         Navigator.pop(context, true);
       }
-    } catch (_) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Islem basarisiz'), backgroundColor: AppColors.error),
-        );
+    } catch (e) {
+      if (!mounted) return;
+      final apiEx = e is DioException && e.error is ApiException
+          ? e.error as ApiException
+          : null;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(apiEx?.message ?? 'İşlem başarısız.'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      if (apiEx?.isConflict == true) {
+        Navigator.pop(context, true);
+        return;
       }
     }
     if (mounted) setState(() => _loading = false);

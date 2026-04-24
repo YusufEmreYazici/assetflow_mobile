@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/core/utils/api_exception.dart';
 import 'package:assetflow_mobile/core/widgets/page_header.dart';
 import 'package:assetflow_mobile/features/employees/providers/employee_provider.dart';
 import 'package:assetflow_mobile/features/employees/screens/employee_form_screen.dart';
@@ -58,11 +60,23 @@ class _EmployeesScreenState extends ConsumerState<EmployeesScreen> {
           TextButton(
             onPressed: () async {
               Navigator.pop(ctx);
-              final success = await ref.read(employeeProvider.notifier).deleteEmployee(id);
-              if (mounted) {
+              try {
+                await ref.read(employeeProvider.notifier).deleteEmployee(id);
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('$name silindi.'),
+                    backgroundColor: AppColors.success,
+                    behavior: SnackBarBehavior.floating,
+                  ));
+                }
+              } catch (e) {
+                if (!mounted) return;
+                final apiEx = e is DioException && e.error is ApiException
+                    ? e.error as ApiException
+                    : null;
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text(success ? 'Personel silindi' : 'Hata olustu'),
-                  backgroundColor: success ? AppColors.success : AppColors.error,
+                  content: Text(apiEx?.message ?? 'Personel silinemedi.'),
+                  backgroundColor: AppColors.error,
                   behavior: SnackBarBehavior.floating,
                 ));
               }

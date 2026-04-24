@@ -1,8 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/core/utils/api_exception.dart';
 import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
 import 'package:assetflow_mobile/core/widgets/app_input.dart';
 import 'package:assetflow_mobile/data/models/device_model.dart';
@@ -201,14 +203,20 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
         Navigator.pop(context, true);
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Hata: $e'),
-            backgroundColor: AppColors.error,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
+      if (!mounted) return;
+      final apiEx = e is DioException && e.error is ApiException
+          ? e.error as ApiException
+          : null;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(apiEx?.message ?? 'İşlem başarısız.'),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      if (apiEx?.isConflict == true) {
+        Navigator.pop(context, true);
+        return;
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);

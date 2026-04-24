@@ -123,16 +123,11 @@ class EmployeeNotifier extends StateNotifier<EmployeeListState> {
     }
   }
 
-  Future<bool> deleteEmployee(String id) async {
-    try {
-      await _service.delete(id);
-      state = state.copyWith(
-        employees: state.employees.where((e) => e.id != id).toList(),
-      );
-      return true;
-    } catch (_) {
-      return false;
-    }
+  Future<void> deleteEmployee(String id) async {
+    await _service.delete(id);
+    state = state.copyWith(
+      employees: state.employees.where((e) => e.id != id).toList(),
+    );
   }
 
   Future<void> refresh() => loadEmployees(reset: true);
