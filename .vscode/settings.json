@@ -38,5 +38,6 @@
     "**/*.g.dart": true,
     "**/*.freezed.dart": true
   },
-  "java.configuration.updateBuildConfiguration": "interactive"
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "cmake.ignoreCMakeListsMissing": true
 }

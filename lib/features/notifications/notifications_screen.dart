@@ -1,3 +1,4 @@
+import 'dart:async' show unawaited;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -44,23 +45,22 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     _isNavigating = true;
 
     try {
-      // 1. İlk tık = okunmamışsa sadece okundu işaretle
+      // Okunmamışsa arka planda okundu işaretle (navigasyonu bekletme)
       if (!notif.isRead) {
-        await ref.read(notificationProvider.notifier).markAsRead(notif.id);
-        return;
+        unawaited(ref.read(notificationProvider.notifier).markAsRead(notif.id));
       }
 
-      // 2. Okunmuş + tekrar tık = ilgili ekrana git
       if (!mounted) return;
 
       if (notif.relatedEntityId == null || notif.relatedEntityId!.isEmpty) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Bu bildirime bağlı bir detay sayfası yok.'),
-              duration: Duration(seconds: 2),
-            ),
-          );
+        // İlgili entity yoksa tip bazlı genel ekrana yönlendir
+        final fallbackRoute = switch (notif.type) {
+          0 || 1 => '/devices',
+          2 || 3 => '/assignments',
+          _ => null,
+        };
+        if (fallbackRoute != null && mounted) {
+          context.push(fallbackRoute);
         }
         return;
       }
@@ -68,32 +68,16 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       final entityType = notif.relatedEntityType ?? '';
       final entityId = notif.relatedEntityId!;
 
-      String? route;
-      switch (entityType) {
-        case 'Device':
-          route = '/devices/$entityId';
-        case 'Assignment':
-          route = '/assignments/$entityId';
-        case 'Employee':
-          route = '/person/$entityId';
-        case 'Location':
-          route = '/location/$entityId';
-        default:
-          // type bazlı fallback
-          if (notif.type <= 1) {
-            // warranty → devices
-            route = '/devices';
-          } else if (notif.type == 2 || notif.type == 3) {
-            route = '/assignments';
-          }
-      }
+      final route = switch (entityType) {
+        'Device'     => '/devices/$entityId',
+        'Assignment' => '/assignments/$entityId',
+        'Employee'   => '/person/$entityId',
+        'Location'   => '/location/$entityId',
+        _ => null,
+      };
 
       if (route != null && mounted) {
         context.push(route);
-      } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Detay sayfası bulunamadı.')),
-        );
       }
     } finally {
       if (mounted) _isNavigating = false;
@@ -292,7 +276,7 @@ class _NotifCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasNavigation = notif.relatedEntityId != null || notif.type <= 3;
+    final hasNavigation = notif.relatedEntityId != null || notif.type <= 3;  // type<=3 = warranty/assignment → has a list to navigate to
 
     return Dismissible(
       key: ValueKey(notif.id),

@@ -66,6 +66,15 @@ class ApiConstants {
   static const String notificationsMarkAllRead = '/api/notifications/read-all';
   static const String notificationsUnreadCount = '/api/notifications/unread-count';
 
+  // Users / Profile
+  static const String userMe = '/api/users/me';
+  static const String userMeAvatar = '/api/users/me/avatar';
+  static const String userMeChangePassword = '/api/users/me/change-password';
+  static String userAvatar(String id) => '/api/users/$id/avatar';
+
+  // Audit Logs (generic)
+  static const String auditLogs = '/api/audit-logs';
+
   // SAP Entegrasyon
   static const String sapSyncEmployees = '/api/sap/sync/employees';
   static const String sapSyncAssets = '/api/sap/sync/assets';

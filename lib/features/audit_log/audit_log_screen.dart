@@ -1,48 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
+import 'package:assetflow_mobile/data/models/audit_log_model.dart';
+import 'package:assetflow_mobile/features/audit_log/providers/audit_log_provider.dart';
 
-class AuditLogScreen extends StatefulWidget {
+class AuditLogScreen extends ConsumerStatefulWidget {
   const AuditLogScreen({super.key});
 
   @override
-  State<AuditLogScreen> createState() => _AuditLogScreenState();
+  ConsumerState<AuditLogScreen> createState() => _AuditLogScreenState();
 }
 
-class _AuditLogScreenState extends State<AuditLogScreen> {
-  String? _filterAction;
+class _AuditLogScreenState extends ConsumerState<AuditLogScreen> {
+  final _scrollController = ScrollController();
 
-  static const _filters = [
+  static const _actionFilters = [
     (null, 'Tümü'),
     ('Create', 'Oluşturma'),
     ('Update', 'Güncelleme'),
     ('Delete', 'Silme'),
+    ('Assign', 'Zimmet'),
+    ('Return', 'İade'),
   ];
 
-  static final _mockLogs = [
-    _Log(id: '1', action: 'Update', entity: 'Cihaz', user: 'admin@assetflow.io', desc: 'ThinkPad T14 durumu güncellendi', time: DateTime.now().subtract(const Duration(minutes: 5))),
-    _Log(id: '2', action: 'Create', entity: 'Zimmet', user: 'it@assetflow.io', desc: 'Samsung S27A600N zimmetlendi → Ahmet Yılmaz', time: DateTime.now().subtract(const Duration(hours: 1))),
-    _Log(id: '3', action: 'Update', entity: 'Personel', user: 'hr@assetflow.io', desc: 'Mehmet Öztürk departmanı güncellendi', time: DateTime.now().subtract(const Duration(hours: 2))),
-    _Log(id: '4', action: 'Create', entity: 'Cihaz', user: 'admin@assetflow.io', desc: 'HP LaserJet Pro M404n eklendi', time: DateTime.now().subtract(const Duration(hours: 5))),
-    _Log(id: '5', action: 'Delete', entity: 'Lokasyon', user: 'admin@assetflow.io', desc: 'Eski İzmir Ofisi lokasyonu silindi', time: DateTime.now().subtract(const Duration(hours: 8))),
-    _Log(id: '6', action: 'Update', entity: 'Cihaz', user: 'it@assetflow.io', desc: 'Dell XPS 15 seri numarası güncellendi', time: DateTime.now().subtract(const Duration(days: 1))),
-    _Log(id: '7', action: 'Create', entity: 'Personel', user: 'hr@assetflow.io', desc: 'Yeni personel Fatma Kaya eklendi', time: DateTime.now().subtract(const Duration(days: 1))),
-    _Log(id: '8', action: 'Update', entity: 'Zimmet', user: 'it@assetflow.io', desc: 'Lenovo X1 Carbon iade alındı', time: DateTime.now().subtract(const Duration(days: 2))),
-    _Log(id: '9', action: 'Create', entity: 'Lokasyon', user: 'admin@assetflow.io', desc: 'Aliağa Rafineri lokasyonu eklendi', time: DateTime.now().subtract(const Duration(days: 3))),
-    _Log(id: '10', action: 'Delete', entity: 'Cihaz', user: 'admin@assetflow.io', desc: 'Eski HP Compaq silindi', time: DateTime.now().subtract(const Duration(days: 4))),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(auditLogProvider.notifier).load(reset: true);
+    });
+    _scrollController.addListener(_onScroll);
+  }
 
-  List<_Log> _filtered() => _filterAction == null
-      ? _mockLogs
-      : _mockLogs.where((l) => l.action == _filterAction).toList();
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
-  Map<String, List<_Log>> _grouped(List<_Log> logs) {
-    final dateFormat = DateFormat('d MMMM yyyy', 'tr_TR');
-    final Map<String, List<_Log>> result = {};
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      ref.read(auditLogProvider.notifier).load();
+    }
+  }
+
+  Map<String, List<AuditLog>> _grouped(List<AuditLog> logs) {
+    final fmt = DateFormat('d MMMM yyyy', 'tr_TR');
+    final result = <String, List<AuditLog>>{};
     for (final log in logs) {
-      final key = dateFormat.format(log.time);
+      final key = fmt.format(log.timestamp.toLocal());
       (result[key] ??= []).add(log);
     }
     return result;
@@ -50,13 +60,15 @@ class _AuditLogScreenState extends State<AuditLogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final filtered = _filtered();
-    final grouped = _grouped(filtered);
+    final state = ref.watch(auditLogProvider);
+    final notifier = ref.read(auditLogProvider.notifier);
+    final grouped = _grouped(state.logs);
 
     return Scaffold(
       backgroundColor: AppColors.surfaceLight,
       body: Column(
         children: [
+          // Header
           Container(
             color: AppColors.navy,
             padding: EdgeInsets.only(
@@ -79,27 +91,38 @@ class _AuditLogScreenState extends State<AuditLogScreen> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                Text(
-                  'Audit Log',
-                  style: GoogleFonts.inter(
-                    fontSize: 17, fontWeight: FontWeight.w500, color: Colors.white,
+                Expanded(
+                  child: Text(
+                    'Audit Log',
+                    style: GoogleFonts.inter(
+                      fontSize: 17, fontWeight: FontWeight.w500, color: Colors.white,
+                    ),
                   ),
                 ),
+                if (state.isLoading)
+                  const SizedBox(
+                    width: 18, height: 18,
+                    child: CircularProgressIndicator(
+                      color: Colors.white, strokeWidth: 2,
+                    ),
+                  ),
               ],
             ),
           ),
+
+          // Action filter chips
           SizedBox(
             height: 46,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-              itemCount: _filters.length,
-              separatorBuilder: (context, index) => const SizedBox(width: 6),
+              itemCount: _actionFilters.length,
+              separatorBuilder: (context2, i) => const SizedBox(width: 6),
               itemBuilder: (_, i) {
-                final (action, label) = _filters[i];
-                final active = _filterAction == action;
+                final (action, label) = _actionFilters[i];
+                final active = state.filterAction == action;
                 return GestureDetector(
-                  onTap: () => setState(() => _filterAction = action),
+                  onTap: () => notifier.setFilterAction(action),
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
@@ -121,46 +144,112 @@ class _AuditLogScreenState extends State<AuditLogScreen> {
               },
             ),
           ),
-          Expanded(
-            child: filtered.isEmpty
-                ? Center(
+
+          // Error banner
+          if (state.error != null)
+            Container(
+              margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: AppColors.error.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.error_outline, size: 16, color: AppColors.error),
+                  const SizedBox(width: 8),
+                  Expanded(
                     child: Text(
-                      'Kayıt bulunamadı.',
-                      style: GoogleFonts.inter(
-                        fontSize: 13, color: AppColors.textSecondary,
-                      ),
+                      'Yüklenemedi. Tekrar deneyin.',
+                      style: GoogleFonts.inter(fontSize: 12, color: AppColors.error),
                     ),
-                  )
-                : ListView(
-                    padding: const EdgeInsets.fromLTRB(
-                      AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 20,
-                    ),
-                    children: grouped.entries.expand((e) => [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8, top: 8),
-                        child: Text(
-                          e.key,
-                          style: GoogleFonts.inter(
-                            fontSize: 11, fontWeight: FontWeight.w500,
-                            color: AppColors.textTertiary, letterSpacing: 0.5,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.surfaceWhite,
-                          borderRadius: BorderRadius.circular(AppRadius.md),
-                          border: Border.all(color: AppColors.surfaceDivider),
-                        ),
-                        child: Column(
-                          children: e.value.asMap().entries.map((entry) {
-                            final isLast = entry.key == e.value.length - 1;
-                            return _LogRow(log: entry.value, isLast: isLast);
-                          }).toList(),
-                        ),
-                      ),
-                    ]).toList(),
                   ),
+                  GestureDetector(
+                    onTap: () => notifier.load(reset: true),
+                    child: const Icon(Icons.refresh, size: 16, color: AppColors.error),
+                  ),
+                ],
+              ),
+            ),
+
+          // List
+          Expanded(
+            child: state.isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2),
+                  )
+                : state.logs.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.history, size: 48, color: AppColors.textTertiary),
+                            const SizedBox(height: 12),
+                            Text(
+                              'Kayıt bulunamadı.',
+                              style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary),
+                            ),
+                          ],
+                        ),
+                      )
+                    : RefreshIndicator(
+                        color: AppColors.navy,
+                        onRefresh: () => notifier.load(reset: true),
+                        child: ListView(
+                          controller: _scrollController,
+                          padding: const EdgeInsets.fromLTRB(
+                            AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 20,
+                          ),
+                          children: [
+                            ...grouped.entries.expand((e) => [
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 8, top: 8),
+                                child: Text(
+                                  e.key,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 11, fontWeight: FontWeight.w500,
+                                    color: AppColors.textTertiary, letterSpacing: 0.5,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.surfaceWhite,
+                                  borderRadius: BorderRadius.circular(AppRadius.md),
+                                  border: Border.all(color: AppColors.surfaceDivider),
+                                ),
+                                child: Column(
+                                  children: e.value.asMap().entries.map((entry) {
+                                    final isLast = entry.key == e.value.length - 1;
+                                    return _LogRow(log: entry.value, isLast: isLast);
+                                  }).toList(),
+                                ),
+                              ),
+                            ]),
+                            if (state.isLoadingMore)
+                              const Padding(
+                                padding: EdgeInsets.all(16),
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    color: AppColors.navy, strokeWidth: 2,
+                                  ),
+                                ),
+                              ),
+                            if (!state.hasMore && state.logs.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                child: Center(
+                                  child: Text(
+                                    'Tüm kayıtlar yüklendi (${state.logs.length})',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 11, color: AppColors.textTertiary,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
           ),
         ],
       ),
@@ -168,40 +257,35 @@ class _AuditLogScreenState extends State<AuditLogScreen> {
   }
 }
 
-class _Log {
-  final String id;
-  final String action;
-  final String entity;
-  final String user;
-  final String desc;
-  final DateTime time;
-  const _Log({
-    required this.id,
-    required this.action,
-    required this.entity,
-    required this.user,
-    required this.desc,
-    required this.time,
-  });
-}
-
 class _LogRow extends StatelessWidget {
-  final _Log log;
+  final AuditLog log;
   final bool isLast;
   const _LogRow({required this.log, required this.isLast});
 
-  Color get _actionColor => switch (log.action) {
-        'Create' => AppColors.success,
-        'Update' => AppColors.info,
-        'Delete' => AppColors.error,
+  Color get _actionColor => switch (log.action.toLowerCase()) {
+        'create' => AppColors.success,
+        'update' => AppColors.info,
+        'delete' => AppColors.error,
+        'assign' => const Color(0xFF7C3AED),
+        'return' => const Color(0xFFF59E0B),
         _ => AppColors.textTertiary,
       };
 
+  String get _actionLabel => switch (log.action.toLowerCase()) {
+        'create' => 'OLUŞTURMA',
+        'update' => 'GÜNCELLEME',
+        'delete' => 'SİLME',
+        'assign' => 'ZİMMET',
+        'return' => 'İADE',
+        _ => log.action.toUpperCase(),
+      };
+
   String get _relTime {
-    final diff = DateTime.now().difference(log.time);
+    final diff = DateTime.now().difference(log.timestamp.toLocal());
     if (diff.inMinutes < 60) return '${diff.inMinutes} dk önce';
     if (diff.inHours < 24) return '${diff.inHours} sa önce';
-    return '${diff.inDays} gün önce';
+    if (diff.inDays < 7) return '${diff.inDays} gün önce';
+    return DateFormat('dd.MM.yyyy', 'tr_TR').format(log.timestamp.toLocal());
   }
 
   @override
@@ -218,11 +302,8 @@ class _LogRow extends StatelessWidget {
         children: [
           Container(
             width: 8, height: 8,
-            margin: const EdgeInsets.only(top: 4),
-            decoration: BoxDecoration(
-              color: _actionColor,
-              shape: BoxShape.circle,
-            ),
+            margin: const EdgeInsets.only(top: 5),
+            decoration: BoxDecoration(color: _actionColor, shape: BoxShape.circle),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -238,16 +319,16 @@ class _LogRow extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
-                        log.action.toUpperCase(),
+                        _actionLabel,
                         style: GoogleFonts.inter(
-                          fontSize: 9, fontWeight: FontWeight.w500,
+                          fontSize: 9, fontWeight: FontWeight.w600,
                           color: _actionColor, letterSpacing: 0.5,
                         ),
                       ),
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      log.entity,
+                      log.entityName,
                       style: GoogleFonts.inter(
                         fontSize: 11, fontWeight: FontWeight.w500,
                         color: AppColors.textSecondary,
@@ -257,17 +338,15 @@ class _LogRow extends StatelessWidget {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  log.desc,
-                  style: GoogleFonts.inter(
-                    fontSize: 13, color: AppColors.textPrimary,
-                  ),
+                  log.entityId,
+                  style: GoogleFonts.inter(fontSize: 12, color: AppColors.textPrimary),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  '${log.user} · $_relTime',
-                  style: GoogleFonts.inter(
-                    fontSize: 10, color: AppColors.textTertiary,
-                  ),
+                  '${log.userEmail ?? 'Sistem'} · $_relTime',
+                  style: GoogleFonts.inter(fontSize: 10, color: AppColors.textTertiary),
                 ),
               ],
             ),

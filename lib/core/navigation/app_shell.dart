@@ -59,6 +59,8 @@ class _AppShellState extends ConsumerState<AppShell> {
         context.go('/assignments');
       case 'locations':
         context.push('/locations');
+      case 'reports':
+        context.push('/reports');
       case 'audit':
         context.push('/audit-log');
       case 'export':
@@ -71,6 +73,12 @@ class _AppShellState extends ConsumerState<AppShell> {
         context.push('/settings');
       case 'profile':
         context.push('/profile');
+      case 'consumables':
+        context.push('/consumables');
+      case 'software-licenses':
+        context.push('/software-licenses');
+      case 'subscriptions':
+        context.push('/subscriptions');
       default:
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

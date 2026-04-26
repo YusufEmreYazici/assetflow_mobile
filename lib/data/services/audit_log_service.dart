@@ -20,4 +20,25 @@ class AuditLogService {
       AuditLog.fromJson,
     );
   }
+
+  Future<PagedResult<AuditLog>> getAll({
+    int page = 1,
+    int pageSize = 20,
+    String? entityName,
+    String? action,
+  }) async {
+    final response = await _dio.get(
+      ApiConstants.auditLogs,
+      queryParameters: {
+        'page': page,
+        'pageSize': pageSize,
+        if (entityName != null && entityName.isNotEmpty) 'entityName': entityName,
+        if (action != null && action.isNotEmpty) 'action': action,
+      },
+    );
+    return PagedResult.fromJson(
+      response.data as Map<String, dynamic>,
+      AuditLog.fromJson,
+    );
+  }
 }

@@ -33,8 +33,15 @@ import 'package:assetflow_mobile/features/people/person_detail_screen.dart';
 import 'package:assetflow_mobile/features/sap/screens/sap_screen.dart';
 import 'package:assetflow_mobile/features/notifications/notifications_screen.dart';
 import 'package:assetflow_mobile/features/audit_log/audit_log_screen.dart';
+import 'package:assetflow_mobile/features/reports/reports_screen.dart';
 import 'package:assetflow_mobile/features/profile/screens/settings_screen.dart';
 import 'package:assetflow_mobile/features/export/excel_export_screen.dart';
+import 'package:assetflow_mobile/features/consumables/screens/consumables_screen.dart';
+import 'package:assetflow_mobile/features/consumables/screens/consumable_detail_screen.dart';
+import 'package:assetflow_mobile/features/software_licenses/screens/software_licenses_screen.dart';
+import 'package:assetflow_mobile/features/software_licenses/screens/software_license_detail_screen.dart';
+import 'package:assetflow_mobile/features/subscriptions/screens/subscriptions_screen.dart';
+import 'package:assetflow_mobile/features/subscriptions/screens/subscription_detail_screen.dart';
 
 // Provider + loader for return flow (fetches Assignment by ID then renders ReturnDeviceScreen)
 final _assignmentForReturnProvider =
@@ -258,7 +265,56 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(path: '/audit-log', builder: (ctx, routeState) => const AuditLogScreen()),
+      GoRoute(path: '/reports', builder: (ctx, routeState) => const ReportsScreen()),
       GoRoute(path: '/excel-export', builder: (ctx, routeState) => const ExcelExportScreen()),
+
+      // ── Consumables ─────────────────────────────────────────────────────
+      GoRoute(
+        path: '/consumables',
+        pageBuilder: (_, state) => slideFromRightPage(
+          key: state.pageKey,
+          child: const ConsumablesScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/consumables/:id',
+        pageBuilder: (_, state) => slideFromRightPage(
+          key: state.pageKey,
+          child: ConsumableDetailScreen(id: state.pathParameters['id']!),
+        ),
+      ),
+
+      // ── Software Licenses ────────────────────────────────────────────────
+      GoRoute(
+        path: '/software-licenses',
+        pageBuilder: (_, state) => slideFromRightPage(
+          key: state.pageKey,
+          child: const SoftwareLicensesScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/software-licenses/:id',
+        pageBuilder: (_, state) => slideFromRightPage(
+          key: state.pageKey,
+          child: SoftwareLicenseDetailScreen(id: state.pathParameters['id']!),
+        ),
+      ),
+
+      // ── Subscriptions ────────────────────────────────────────────────────
+      GoRoute(
+        path: '/subscriptions',
+        pageBuilder: (_, state) => slideFromRightPage(
+          key: state.pageKey,
+          child: const SubscriptionsScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/subscriptions/:id',
+        pageBuilder: (_, state) => slideFromRightPage(
+          key: state.pageKey,
+          child: SubscriptionDetailScreen(id: state.pathParameters['id']!),
+        ),
+      ),
       GoRoute(
         path: '/settings',
         pageBuilder: (ctx, routeState) => slideFromRightPage(

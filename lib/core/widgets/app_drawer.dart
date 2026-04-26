@@ -32,7 +32,13 @@ final kDrawerSections = [
     const DrawerItem(key: 'assign',    label: 'Zimmetler',      icon: Icons.assignment_outlined),
     const DrawerItem(key: 'locations', label: 'Lokasyonlar',    icon: Icons.location_on_outlined),
   ]),
+  DrawerSection(title: 'VARLIKLAR', items: [
+    const DrawerItem(key: 'consumables',      label: 'Sarf Malzemeleri',  icon: Icons.inventory_2_outlined),
+    const DrawerItem(key: 'software-licenses',label: 'Yazılım Lisansları',icon: Icons.security_outlined),
+    const DrawerItem(key: 'subscriptions',    label: 'Abonelikler',       icon: Icons.subscriptions_outlined),
+  ]),
   DrawerSection(title: 'RAPORLAR', items: [
+    const DrawerItem(key: 'reports',   label: 'Raporlar',        icon: Icons.bar_chart_outlined),
     const DrawerItem(key: 'audit',     label: 'Audit Log',       icon: Icons.history),
     const DrawerItem(key: 'export',    label: 'Excel Export',    icon: Icons.download_outlined),
   ]),
