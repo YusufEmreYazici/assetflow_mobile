@@ -1,10 +1,10 @@
 class LoginRequest {
-  final String email;
+  final String identifier;
   final String password;
 
-  LoginRequest({required this.email, required this.password});
+  LoginRequest({required this.identifier, required this.password});
 
-  Map<String, dynamic> toJson() => {'email': email, 'password': password};
+  Map<String, dynamic> toJson() => {'identifier': identifier, 'password': password};
 }
 
 class RegisterRequest {
@@ -39,6 +39,9 @@ class AuthResponse {
   final String fullName;
   final String role;
   final String companyId;
+  final String? tenantSlug;
+  final String? tenantName;
+  final String? redirectTo;
 
   AuthResponse({
     required this.token,
@@ -48,6 +51,9 @@ class AuthResponse {
     required this.fullName,
     required this.role,
     required this.companyId,
+    this.tenantSlug,
+    this.tenantName,
+    this.redirectTo,
   });
 
   factory AuthResponse.fromJson(Map<String, dynamic> json) {
@@ -59,16 +65,9 @@ class AuthResponse {
       fullName: json['fullName'] as String,
       role: json['role'] as String,
       companyId: json['companyId'].toString(),
+      tenantSlug: json['tenantSlug'] as String?,
+      tenantName: json['tenantName'] as String?,
+      redirectTo: json['redirectTo'] as String?,
     );
   }
-
-  Map<String, dynamic> toJson() => {
-    'token': token,
-    'refreshToken': refreshToken,
-    'tokenExpiresAt': tokenExpiresAt.toIso8601String(),
-    'email': email,
-    'fullName': fullName,
-    'role': role,
-    'companyId': companyId,
-  };
 }

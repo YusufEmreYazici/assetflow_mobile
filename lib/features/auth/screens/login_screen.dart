@@ -67,7 +67,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               const SizedBox(height: 48),
 
               // Email field
-              _buildLabel('KURUMSAL E-POSTA'),
+              _buildLabel('E-POSTA VEYA SİCİL NUMARASI'),
               const SizedBox(height: 8),
               _buildEmailField(),
               const SizedBox(height: 18),
@@ -217,13 +217,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       keyboardType: TextInputType.emailAddress,
       style: GoogleFonts.inter(fontSize: 14, color: AppColors.textPrimary),
       validator: (v) {
-        if (v == null || v.trim().isEmpty) return 'E-posta gerekli';
-        if (!v.contains('@')) return 'Geçerli bir e-posta girin';
+        if (v == null || v.trim().isEmpty) return 'E-posta veya sicil numarası gerekli';
         return null;
       },
       decoration: _inputDeco(
-        hint: 'ad.soyad@sirket.com.tr',
-        prefix: const Icon(Icons.mail_outline, size: 18, color: AppColors.textTertiary),
+        hint: 'ad.soyad@sirket.com.tr veya 12345',
+        prefix: const Icon(Icons.person_outline, size: 18, color: AppColors.textTertiary),
       ),
     );
   }
