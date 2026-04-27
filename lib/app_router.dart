@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/navigation/app_shell.dart';
 import 'package:assetflow_mobile/core/widgets/page_transitions.dart';
+import 'package:assetflow_mobile/core/widgets/animated_logo_loading.dart';
 import 'package:assetflow_mobile/features/auth/providers/auth_provider.dart';
 import 'package:assetflow_mobile/features/auth/screens/login_screen.dart';
 import 'package:assetflow_mobile/features/auth/screens/register_screen.dart';
@@ -57,27 +57,8 @@ class _ReturnAssignmentLoader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final async = ref.watch(_assignmentForReturnProvider(assignmentId));
     return async.when(
-      loading: () => Scaffold(
-        backgroundColor: AppColors.surfaceLight,
-        appBar: AppBar(
-          backgroundColor: AppColors.navy,
-          foregroundColor: Colors.white,
-          title: Text(
-            'İade Et',
-            style: GoogleFonts.inter(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: Colors.white,
-            ),
-          ),
-          leading: IconButton(
-            icon: const Icon(Icons.chevron_left, color: Colors.white),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ),
-        body: const Center(
-          child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2),
-        ),
+      loading: () => const Scaffold(
+        body: AnimatedLogoLoading(message: 'Yükleniyor...'),
       ),
       error: (e, _) => Scaffold(
         backgroundColor: AppColors.surfaceLight,
