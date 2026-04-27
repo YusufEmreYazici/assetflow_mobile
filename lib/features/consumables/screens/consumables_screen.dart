@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/core/widgets/empty_state.dart';
+import 'package:assetflow_mobile/core/widgets/page_header.dart';
 import 'package:assetflow_mobile/data/models/consumable_model.dart';
 import 'package:assetflow_mobile/features/consumables/providers/consumable_provider.dart';
 
@@ -29,54 +31,39 @@ class _ConsumablesScreenState extends ConsumerState<ConsumablesScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.surfaceLight,
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(context, state.result?.totalCount ?? 0),
-            _buildSearchBar(),
-            if (state.error != null)
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Text(state.error!, style: const TextStyle(color: AppColors.error)),
-              ),
-            Expanded(
-              child: state.isLoading && items.isEmpty
-                  ? const Center(child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2))
-                  : items.isEmpty
-                      ? _buildEmpty()
-                      : RefreshIndicator(
-                          color: AppColors.navy,
-                          onRefresh: () => ref.read(consumableListProvider.notifier).load(reset: true),
-                          child: ListView.builder(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                            itemCount: items.length,
-                            itemBuilder: (ctx, i) => _ConsumableRow(item: items[i]),
-                          ),
-                        ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context, int count) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
-      color: AppColors.navy,
-      child: Row(
+      body: Column(
         children: [
+          PageHeader(
+            title: 'Sarf Malzemeleri',
+            subtitle: state.result?.totalCount != null && state.result!.totalCount > 0
+                ? '${state.result!.totalCount} malzeme'
+                : null,
+            onBack: () => context.pop(),
+          ),
+          _buildSearchBar(),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Sarf Malzemeleri',
-                    style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white)),
-                if (count > 0)
-                  Text('$count malzeme',
-                      style: GoogleFonts.inter(fontSize: 12, color: Colors.white70)),
-              ],
-            ),
+            child: state.isLoading && items.isEmpty
+                ? const Center(
+                    child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2),
+                  )
+                : state.error != null && items.isEmpty
+                    ? _buildErrorState(state.error!)
+                    : items.isEmpty
+                        ? const EmptyState(
+                            icon: Icons.inventory_2_outlined,
+                            title: 'Sarf malzeme bulunamadı',
+                            description: 'Henüz kayıtlı sarf malzeme yok.',
+                          )
+                        : RefreshIndicator(
+                            color: AppColors.navy,
+                            onRefresh: () =>
+                                ref.read(consumableListProvider.notifier).load(reset: true),
+                            child: ListView.builder(
+                              padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+                              itemCount: items.length,
+                              itemBuilder: (ctx, i) => _ConsumableRow(item: items[i]),
+                            ),
+                          ),
           ),
         ],
       ),
@@ -84,45 +71,66 @@ class _ConsumablesScreenState extends ConsumerState<ConsumablesScreen> {
   }
 
   Widget _buildSearchBar() {
-    return Container(
-      color: AppColors.navy,
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
       child: TextField(
         controller: _searchCtrl,
-        style: GoogleFonts.inter(color: Colors.white),
+        style: GoogleFonts.inter(fontSize: 13, color: AppColors.textPrimary),
         decoration: InputDecoration(
           hintText: 'Malzeme ara...',
-          hintStyle: GoogleFonts.inter(color: Colors.white54),
-          prefixIcon: const Icon(Icons.search, color: Colors.white54),
+          hintStyle: GoogleFonts.inter(fontSize: 13, color: AppColors.textTertiary),
+          prefixIcon: const Icon(Icons.search, size: 18, color: AppColors.textTertiary),
           suffixIcon: _searchCtrl.text.isNotEmpty
               ? IconButton(
-                  icon: const Icon(Icons.clear, color: Colors.white54),
+                  icon: const Icon(Icons.clear, size: 16, color: AppColors.textTertiary),
                   onPressed: () {
                     _searchCtrl.clear();
+                    setState(() {});
                     ref.read(consumableListProvider.notifier).setSearch('');
                   },
                 )
               : null,
           filled: true,
-          fillColor: Colors.white12,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+          fillColor: AppColors.surfaceWhite,
           contentPadding: const EdgeInsets.symmetric(vertical: 10),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            borderSide: const BorderSide(color: AppColors.surfaceInputBorder),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            borderSide: const BorderSide(color: AppColors.navy, width: 2),
+          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
         ),
-        onChanged: (v) => ref.read(consumableListProvider.notifier).setSearch(v),
+        onChanged: (v) {
+          setState(() {});
+          ref.read(consumableListProvider.notifier).setSearch(v);
+        },
       ),
     );
   }
 
-  Widget _buildEmpty() {
+  Widget _buildErrorState(String error) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.inventory_2_outlined, size: 64, color: AppColors.textTertiary),
-          const SizedBox(height: 12),
-          Text('Sarf malzeme bulunamadı',
-              style: GoogleFonts.inter(fontSize: 16, color: AppColors.textSecondary)),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.wifi_off_rounded, size: 48, color: AppColors.textTertiary),
+            const SizedBox(height: 12),
+            Text(error,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: AppColors.textSecondary, fontSize: 14)),
+            const SizedBox(height: 16),
+            TextButton.icon(
+              onPressed: () => ref.read(consumableListProvider.notifier).load(reset: true),
+              icon: const Icon(Icons.refresh, size: 16),
+              label: const Text('Tekrar Dene'),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -136,7 +144,12 @@ class _ConsumableRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 0,
+      color: AppColors.surfaceWhite,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        side: const BorderSide(color: AppColors.surfaceInputBorder),
+      ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: Container(
@@ -153,8 +166,10 @@ class _ConsumableRow extends StatelessWidget {
         ),
         title: Text(item.name,
             style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600)),
-        subtitle: Text('${item.category} · ${item.storageLocation ?? item.locationName ?? '—'}',
-            style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary)),
+        subtitle: Text(
+          '${item.category} · ${item.storageLocation ?? item.locationName ?? '—'}',
+          style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary),
+        ),
         trailing: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -167,14 +182,16 @@ class _ConsumableRow extends StatelessWidget {
               ),
               child: Text(
                 '${item.currentStock} ${item.unit}',
-                style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white),
+                style: GoogleFonts.inter(
+                    fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white),
               ),
             ),
             if (item.isLowStock)
               Padding(
                 padding: const EdgeInsets.only(top: 2),
                 child: Text('Düşük!',
-                    style: GoogleFonts.inter(fontSize: 10, color: AppColors.warning, fontWeight: FontWeight.w600)),
+                    style: GoogleFonts.inter(
+                        fontSize: 10, color: AppColors.warning, fontWeight: FontWeight.w600)),
               ),
           ],
         ),
