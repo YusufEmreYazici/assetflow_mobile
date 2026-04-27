@@ -23,7 +23,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   int _tabIndex = 0;
   bool _isNavigating = false;
 
-  static const _tabs = ['Tümü', 'Okunmamış', 'Garanti', 'Zimmet', 'Sistem'];
+  static const _tabs = ['Tümü', 'Okunmamış', 'Garanti', 'Zimmet', 'Bakım', 'Güvenlik', 'Sistem'];
 
   List<NotificationItem> _filtered(List<NotificationItem> all) {
     return all.where((n) {
@@ -35,6 +35,10 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         case 3:
           return n.category == 'assignment';
         case 4:
+          return n.category == 'maintenance';
+        case 5:
+          return n.category == 'security';
+        case 6:
           return n.category == 'system';
         default:
           return true;
@@ -56,8 +60,11 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       if (notif.relatedEntityId == null || notif.relatedEntityId!.isEmpty) {
         // No specific entity — navigate to the relevant list screen (shell route → use go())
         final fallbackRoute = switch (notif.type) {
-          0 || 1 => '/devices',
-          2 || 3 => '/assignments',
+          0 || 1 || 9 => '/devices',
+          2 || 3 || 8 => '/assignments',
+          5 => '/software-licenses',
+          6 => '/subscriptions',
+          7 => '/consumables',
           _ => null,
         };
         if (fallbackRoute != null && mounted) {
@@ -331,6 +338,12 @@ class _NotifCard extends StatelessWidget {
     0 || 1 => Icons.warning_amber_outlined,
     2 => Icons.assignment_outlined,
     3 => Icons.assignment_return_outlined,
+    5 || 6 => Icons.autorenew_outlined,
+    7 => Icons.inventory_2_outlined,
+    8 => Icons.access_time_filled_outlined,
+    9 => Icons.inventory_2_outlined,
+    10 => Icons.build_outlined,
+    11 => Icons.security_outlined,
     _ => Icons.settings_outlined,
   };
 
@@ -338,6 +351,12 @@ class _NotifCard extends StatelessWidget {
     0 || 1 => AppColors.warning,
     2 => AppColors.success,
     3 => AppColors.info,
+    5 || 6 => AppColors.warning,
+    7 => AppColors.error,
+    8 => AppColors.info,
+    9 => AppColors.warning,
+    10 => AppColors.warning,
+    11 => AppColors.error,
     _ => AppColors.textSecondary,
   };
 
@@ -345,6 +364,10 @@ class _NotifCard extends StatelessWidget {
     0 || 1 => AppColors.warningBg,
     2 => AppColors.successBg,
     3 => AppColors.infoBg,
+    5 || 6 => AppColors.warningBg,
+    7 || 11 => AppColors.errorBg,
+    8 => AppColors.infoBg,
+    9 || 10 => AppColors.warningBg,
     _ => AppColors.surfaceLight,
   };
 

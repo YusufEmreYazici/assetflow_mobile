@@ -31,6 +31,13 @@ class NotificationItem {
       'DeviceAssigned': 2,
       'DeviceUnassigned': 3,
       'System': 4,
+      'LicenseRenewalDue': 5,
+      'SubscriptionRenewalDue': 6,
+      'LowStock': 7,
+      'AssignmentLongTerm': 8,
+      'DeviceIdle': 9,
+      'MaintenanceDue': 10,
+      'SecurityAlert': 11,
     };
     return map[v?.toString() ?? ''] ?? 0;
   }
@@ -72,12 +79,21 @@ class NotificationItem {
         2: 'Zimmet',
         3: 'İade',
         4: 'Sistem',
+        5: 'Lisans Yenileme',
+        6: 'Abonelik Yenileme',
+        7: 'Düşük Stok',
+        8: 'Uzun Süreli Zimmet',
+        9: 'Atıl Cihaz',
+        10: 'Bakım Hatırlatması',
+        11: 'Güvenlik Uyarısı',
       }[type] ??
       'Bildirim';
 
   String get category => switch (type) {
     0 || 1 => 'warranty',
-    2 || 3 => 'assignment',
+    2 || 3 || 8 => 'assignment',
+    10 => 'maintenance',
+    11 => 'security',
     _ => 'system',
   };
 }
