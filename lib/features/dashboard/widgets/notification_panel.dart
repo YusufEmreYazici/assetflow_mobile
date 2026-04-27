@@ -227,7 +227,11 @@ class _NotificationPanelState extends State<NotificationPanel> {
                         onTap: () => _markRead(id, () {
                           final router = GoRouter.of(context);
                           Navigator.pop(context);
-                          router.go('/devices/${item.deviceId}');
+                          try {
+                            router.push('/devices/${item.deviceId}');
+                          } catch (e) {
+                            debugPrint('Panel warranty nav error: $e');
+                          }
                         }),
                       );
                     }),

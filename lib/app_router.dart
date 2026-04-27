@@ -147,35 +147,6 @@ final routerProvider = Provider<GoRouter>((ref) {
                       (routeState.extra as Map<String, dynamic>?)?['qrCode']
                           as String?,
                 ),
-                routes: [
-                  GoRoute(
-                    path: 'new',
-                    pageBuilder: (ctx, routeState) => slideFromBottomPage(
-                      key: routeState.pageKey,
-                      child: const DeviceFormScreen(),
-                    ),
-                  ),
-                  GoRoute(
-                    path: ':id',
-                    pageBuilder: (_, state) => slideFromRightPage(
-                      key: state.pageKey,
-                      child: DeviceDetailScreen(
-                        id: state.pathParameters['id']!,
-                      ),
-                    ),
-                    routes: [
-                      GoRoute(
-                        path: 'edit',
-                        pageBuilder: (ctx, routeState) => slideFromBottomPage(
-                          key: routeState.pageKey,
-                          child: DeviceFormScreen(
-                            device: routeState.extra as Device?,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
               ),
             ],
           ),
@@ -199,6 +170,29 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
 
       // ── Full-page routes (pushed on top of shell) ────────────────────
+      GoRoute(
+        path: '/devices/new',
+        pageBuilder: (ctx, routeState) => slideFromBottomPage(
+          key: routeState.pageKey,
+          child: const DeviceFormScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/devices/:id',
+        pageBuilder: (_, state) => slideFromRightPage(
+          key: state.pageKey,
+          child: DeviceDetailScreen(id: state.pathParameters['id']!),
+        ),
+        routes: [
+          GoRoute(
+            path: 'edit',
+            pageBuilder: (ctx, routeState) => slideFromBottomPage(
+              key: routeState.pageKey,
+              child: DeviceFormScreen(device: routeState.extra as Device?),
+            ),
+          ),
+        ],
+      ),
       GoRoute(
         path: '/assignments/new',
         pageBuilder: (_, state) => slideFromBottomPage(

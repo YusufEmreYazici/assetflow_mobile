@@ -47,7 +47,6 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     _isNavigating = true;
 
     try {
-      // Okunmamışsa arka planda okundu işaretle (navigasyonu bekletme)
       if (!notif.isRead) {
         unawaited(ref.read(notificationProvider.notifier).markAsRead(notif.id));
       }
@@ -55,14 +54,14 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       if (!mounted) return;
 
       if (notif.relatedEntityId == null || notif.relatedEntityId!.isEmpty) {
-        // İlgili entity yoksa tip bazlı genel ekrana yönlendir
+        // No specific entity — navigate to the relevant list screen (shell route → use go())
         final fallbackRoute = switch (notif.type) {
           0 || 1 => '/devices',
           2 || 3 => '/assignments',
           _ => null,
         };
         if (fallbackRoute != null && mounted) {
-          context.push(fallbackRoute);
+          context.go(fallbackRoute);
         }
         return;
       }
@@ -75,11 +74,32 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         'Assignment' => '/assignments/$entityId',
         'Employee' => '/person/$entityId',
         'Location' => '/location/$entityId',
+        'SoftwareLicense' => '/software-licenses/$entityId',
+        'Subscription' => '/subscriptions/$entityId',
+        'Consumable' || 'ConsumableAsset' => '/consumables/$entityId',
         _ => null,
       };
 
-      if (route != null && mounted) {
-        context.push(route);
+      if (route == null) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Bu bildirim için detay sayfası mevcut değil')),
+          );
+        }
+        return;
+      }
+
+      if (mounted) {
+        try {
+          context.push(route);
+        } catch (e) {
+          debugPrint('Notification nav error: $e');
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Sayfa açılamadı')),
+            );
+          }
+        }
       }
     } finally {
       if (mounted) _isNavigating = false;
