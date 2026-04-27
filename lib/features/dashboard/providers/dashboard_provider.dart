@@ -25,7 +25,9 @@ final dashboardProvider = FutureProvider.autoDispose<DashboardData>((
       ttl: const Duration(minutes: 30),
     );
     final warrantyKey = 'sys_warranty_${SeenNotificationStore.todayKey()}';
-    final alreadySent = await SeenNotificationStore.instance.isSeen(warrantyKey);
+    final alreadySent = await SeenNotificationStore.instance.isSeen(
+      warrantyKey,
+    );
     if (!alreadySent && data.upcomingWarrantyExpirations.isNotEmpty) {
       await NotificationService.instance.checkWarrantyAlerts(
         data.upcomingWarrantyExpirations,

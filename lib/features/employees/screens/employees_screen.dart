@@ -56,29 +56,36 @@ class _EmployeesScreenState extends ConsumerState<EmployeesScreen> {
         title: const Text('Personeli Sil'),
         content: Text('"$name" personelini silmek istediginize emin misiniz?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Iptal')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Iptal'),
+          ),
           TextButton(
             onPressed: () async {
               Navigator.pop(ctx);
               try {
                 await ref.read(employeeProvider.notifier).deleteEmployee(id);
                 if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('$name silindi.'),
-                    backgroundColor: AppColors.success,
-                    behavior: SnackBarBehavior.floating,
-                  ));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('$name silindi.'),
+                      backgroundColor: AppColors.success,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
                 }
               } catch (e) {
                 if (!mounted) return;
                 final apiEx = e is DioException && e.error is ApiException
                     ? e.error as ApiException
                     : null;
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text(apiEx?.message ?? 'Personel silinemedi.'),
-                  backgroundColor: AppColors.error,
-                  behavior: SnackBarBehavior.floating,
-                ));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(apiEx?.message ?? 'Personel silinemedi.'),
+                    backgroundColor: AppColors.error,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
               }
             },
             child: const Text('Sil', style: TextStyle(color: AppColors.error)),
@@ -103,7 +110,8 @@ class _EmployeesScreenState extends ConsumerState<EmployeesScreen> {
             action: GestureDetector(
               onTap: () => _navigateToForm(),
               child: Container(
-                width: 36, height: 36,
+                width: 36,
+                height: 36,
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.14),
                   borderRadius: BorderRadius.circular(8),
@@ -114,160 +122,216 @@ class _EmployeesScreenState extends ConsumerState<EmployeesScreen> {
           ),
           Expanded(
             child: state.isLoading
-          ? _buildShimmer()
-          : state.error != null
-              ? _buildError(state.error!)
-              : state.employees.isEmpty
-                  ? _buildEmpty()
-                  : RefreshIndicator(
-                      color: AppColors.primary500,
-                      backgroundColor: AppColors.dark800,
-                      onRefresh: () => ref.read(employeeProvider.notifier).refresh(),
-                      child: ListView.builder(
-                        controller: _scrollController,
-                        padding: const EdgeInsets.all(16),
-                        itemCount: state.employees.length + (state.isLoadingMore ? 1 : 0),
-                        itemBuilder: (context, index) {
-                          if (index == state.employees.length) {
-                            return const Padding(
-                              padding: EdgeInsets.all(16),
-                              child: Center(child: CircularProgressIndicator(color: AppColors.primary500)),
-                            );
-                          }
-                          final emp = state.employees[index];
-                          return Dismissible(
-                            key: ValueKey(emp.id),
-                            direction: DismissDirection.endToStart,
-                            background: Container(
-                              alignment: Alignment.centerRight,
-                              padding: const EdgeInsets.only(right: 20),
-                              margin: const EdgeInsets.only(bottom: 8),
-                              decoration: BoxDecoration(
-                                color: AppColors.error,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Icon(Icons.delete, color: Colors.white),
-                            ),
-                            confirmDismiss: (_) async {
-                              _confirmDelete(emp.id, emp.fullName);
-                              return false;
-                            },
-                            child: Card(
-                              margin: const EdgeInsets.only(bottom: 8),
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(12),
-                                onTap: () => _navigateToForm(employeeId: emp.id),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(14),
-                                  child: Row(
-                                    children: [
-                                      CircleAvatar(
-                                        backgroundColor: AppColors.primary600.withValues(alpha: 0.15),
-                                        child: Text(
-                                          emp.fullName.isNotEmpty ? emp.fullName[0].toUpperCase() : '?',
-                                          style: const TextStyle(
-                                            color: AppColors.primary400,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Expanded(
-                                                  child: Text(
-                                                    emp.fullName,
-                                                    style: const TextStyle(
-                                                      fontWeight: FontWeight.w600,
-                                                      color: AppColors.textPrimary,
-                                                    ),
-                                                  ),
-                                                ),
-                                                if (emp.registrationNumber != null)
-                                                  Container(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                                    decoration: BoxDecoration(
-                                                      color: AppColors.primary600.withValues(alpha: 0.15),
-                                                      borderRadius: BorderRadius.circular(4),
-                                                    ),
-                                                    child: Text(
-                                                      emp.registrationNumber!,
-                                                      style: const TextStyle(
-                                                        fontSize: 11,
-                                                        fontFamily: 'monospace',
-                                                        color: AppColors.primary400,
-                                                      ),
-                                                    ),
-                                                  ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Row(
-                                              children: [
-                                                if (emp.department != null) ...[
-                                                  Icon(Icons.business, size: 12, color: AppColors.textTertiary),
-                                                  const SizedBox(width: 4),
-                                                  Text(
-                                                    emp.department!,
-                                                    style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                ],
-                                                if (emp.title != null)
-                                                  Expanded(
-                                                    child: Text(
-                                                      emp.title!,
-                                                      style: const TextStyle(fontSize: 12, color: AppColors.textTertiary),
-                                                      overflow: TextOverflow.ellipsis,
-                                                    ),
-                                                  ),
-                                              ],
-                                            ),
-                                            if (emp.phone != null) ...[
-                                              const SizedBox(height: 2),
-                                              Row(
-                                                children: [
-                                                  Icon(Icons.phone, size: 12, color: AppColors.textTertiary),
-                                                  const SizedBox(width: 4),
-                                                  Text(emp.phone!, style: const TextStyle(fontSize: 11, color: AppColors.textTertiary)),
-                                                ],
-                                              ),
-                                            ],
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                        decoration: BoxDecoration(
-                                          color: emp.assignedDeviceCount > 0
-                                              ? AppColors.info.withValues(alpha: 0.15)
-                                              : AppColors.surfaceLight,
-                                          borderRadius: BorderRadius.circular(8),
-                                        ),
-                                        child: Text(
-                                          '${emp.assignedDeviceCount}',
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.bold,
-                                            color: emp.assignedDeviceCount > 0
-                                                ? AppColors.info
-                                                : AppColors.textTertiary,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                ? _buildShimmer()
+                : state.error != null
+                ? _buildError(state.error!)
+                : state.employees.isEmpty
+                ? _buildEmpty()
+                : RefreshIndicator(
+                    color: AppColors.primary500,
+                    backgroundColor: AppColors.dark800,
+                    onRefresh: () =>
+                        ref.read(employeeProvider.notifier).refresh(),
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.all(16),
+                      itemCount:
+                          state.employees.length +
+                          (state.isLoadingMore ? 1 : 0),
+                      itemBuilder: (context, index) {
+                        if (index == state.employees.length) {
+                          return const Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.primary500,
                               ),
                             ),
                           );
-                        },
-                      ),
+                        }
+                        final emp = state.employees[index];
+                        return Dismissible(
+                          key: ValueKey(emp.id),
+                          direction: DismissDirection.endToStart,
+                          background: Container(
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.only(right: 20),
+                            margin: const EdgeInsets.only(bottom: 8),
+                            decoration: BoxDecoration(
+                              color: AppColors.error,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                            ),
+                          ),
+                          confirmDismiss: (_) async {
+                            _confirmDelete(emp.id, emp.fullName);
+                            return false;
+                          },
+                          child: Card(
+                            margin: const EdgeInsets.only(bottom: 8),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(12),
+                              onTap: () => _navigateToForm(employeeId: emp.id),
+                              child: Padding(
+                                padding: const EdgeInsets.all(14),
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundColor: AppColors.primary600
+                                          .withValues(alpha: 0.15),
+                                      child: Text(
+                                        emp.fullName.isNotEmpty
+                                            ? emp.fullName[0].toUpperCase()
+                                            : '?',
+                                        style: const TextStyle(
+                                          color: AppColors.primary400,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  emp.fullName,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    color:
+                                                        AppColors.textPrimary,
+                                                  ),
+                                                ),
+                                              ),
+                                              if (emp.registrationNumber !=
+                                                  null)
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 6,
+                                                        vertical: 2,
+                                                      ),
+                                                  decoration: BoxDecoration(
+                                                    color: AppColors.primary600
+                                                        .withValues(
+                                                          alpha: 0.15,
+                                                        ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          4,
+                                                        ),
+                                                  ),
+                                                  child: Text(
+                                                    emp.registrationNumber!,
+                                                    style: const TextStyle(
+                                                      fontSize: 11,
+                                                      fontFamily: 'monospace',
+                                                      color:
+                                                          AppColors.primary400,
+                                                    ),
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Row(
+                                            children: [
+                                              if (emp.department != null) ...[
+                                                Icon(
+                                                  Icons.business,
+                                                  size: 12,
+                                                  color: AppColors.textTertiary,
+                                                ),
+                                                const SizedBox(width: 4),
+                                                Text(
+                                                  emp.department!,
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color:
+                                                        AppColors.textSecondary,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 8),
+                                              ],
+                                              if (emp.title != null)
+                                                Expanded(
+                                                  child: Text(
+                                                    emp.title!,
+                                                    style: const TextStyle(
+                                                      fontSize: 12,
+                                                      color: AppColors
+                                                          .textTertiary,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
+                                          if (emp.phone != null) ...[
+                                            const SizedBox(height: 2),
+                                            Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.phone,
+                                                  size: 12,
+                                                  color: AppColors.textTertiary,
+                                                ),
+                                                const SizedBox(width: 4),
+                                                Text(
+                                                  emp.phone!,
+                                                  style: const TextStyle(
+                                                    fontSize: 11,
+                                                    color:
+                                                        AppColors.textTertiary,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: emp.assignedDeviceCount > 0
+                                            ? AppColors.info.withValues(
+                                                alpha: 0.15,
+                                              )
+                                            : AppColors.surfaceLight,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        '${emp.assignedDeviceCount}',
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold,
+                                          color: emp.assignedDeviceCount > 0
+                                              ? AppColors.info
+                                              : AppColors.textTertiary,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
+                  ),
           ),
         ],
       ),
@@ -290,7 +354,10 @@ class _EmployeesScreenState extends ConsumerState<EmployeesScreen> {
         itemBuilder: (context, index) => Container(
           margin: const EdgeInsets.only(bottom: 8),
           height: 80,
-          decoration: BoxDecoration(color: AppColors.dark800, borderRadius: BorderRadius.circular(12)),
+          decoration: BoxDecoration(
+            color: AppColors.dark800,
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       ),
     );
@@ -322,7 +389,10 @@ class _EmployeesScreenState extends ConsumerState<EmployeesScreen> {
         children: [
           Icon(Icons.people_outline, size: 64, color: AppColors.textTertiary),
           const SizedBox(height: 16),
-          const Text('Henuz personel eklenmemis', style: TextStyle(fontSize: 16, color: AppColors.textSecondary)),
+          const Text(
+            'Henuz personel eklenmemis',
+            style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
+          ),
         ],
       ),
     );

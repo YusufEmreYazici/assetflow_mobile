@@ -5,7 +5,9 @@ import 'package:assetflow_mobile/data/services/consumable_service.dart';
 
 // ── Service provider ──────────────────────────────────────────────────────────
 
-final consumableServiceProvider = Provider<ConsumableService>((_) => ConsumableService());
+final consumableServiceProvider = Provider<ConsumableService>(
+  (_) => ConsumableService(),
+);
 
 // ── List state ────────────────────────────────────────────────────────────────
 
@@ -31,14 +33,13 @@ class ConsumableListState {
     String? search,
     int? page,
     bool clearError = false,
-  }) =>
-      ConsumableListState(
-        result: result ?? this.result,
-        isLoading: isLoading ?? this.isLoading,
-        error: clearError ? null : (error ?? this.error),
-        search: search ?? this.search,
-        page: page ?? this.page,
-      );
+  }) => ConsumableListState(
+    result: result ?? this.result,
+    isLoading: isLoading ?? this.isLoading,
+    error: clearError ? null : (error ?? this.error),
+    search: search ?? this.search,
+    page: page ?? this.page,
+  );
 }
 
 class ConsumableListNotifier extends StateNotifier<ConsumableListState> {
@@ -69,11 +70,16 @@ class ConsumableListNotifier extends StateNotifier<ConsumableListState> {
 }
 
 final consumableListProvider =
-    StateNotifierProvider.autoDispose<ConsumableListNotifier, ConsumableListState>((ref) {
-  final notifier = ConsumableListNotifier(ref.read(consumableServiceProvider));
-  notifier.load();
-  return notifier;
-});
+    StateNotifierProvider.autoDispose<
+      ConsumableListNotifier,
+      ConsumableListState
+    >((ref) {
+      final notifier = ConsumableListNotifier(
+        ref.read(consumableServiceProvider),
+      );
+      notifier.load();
+      return notifier;
+    });
 
 // ── Detail state ──────────────────────────────────────────────────────────────
 
@@ -103,29 +109,35 @@ class ConsumableDetailState {
     String? successMessage,
     bool clearError = false,
     bool clearSuccess = false,
-  }) =>
-      ConsumableDetailState(
-        consumable: consumable ?? this.consumable,
-        movements: movements ?? this.movements,
-        isLoading: isLoading ?? this.isLoading,
-        isMutating: isMutating ?? this.isMutating,
-        error: clearError ? null : (error ?? this.error),
-        successMessage: clearSuccess ? null : (successMessage ?? this.successMessage),
-      );
+  }) => ConsumableDetailState(
+    consumable: consumable ?? this.consumable,
+    movements: movements ?? this.movements,
+    isLoading: isLoading ?? this.isLoading,
+    isMutating: isMutating ?? this.isMutating,
+    error: clearError ? null : (error ?? this.error),
+    successMessage: clearSuccess
+        ? null
+        : (successMessage ?? this.successMessage),
+  );
 }
 
 class ConsumableDetailNotifier extends StateNotifier<ConsumableDetailState> {
   final ConsumableService _service;
   final String id;
 
-  ConsumableDetailNotifier(this._service, this.id) : super(const ConsumableDetailState());
+  ConsumableDetailNotifier(this._service, this.id)
+    : super(const ConsumableDetailState());
 
   Future<void> load() async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final consumable = await _service.getById(id);
       final movements = await _service.getMovementHistory(id);
-      state = state.copyWith(isLoading: false, consumable: consumable, movements: movements);
+      state = state.copyWith(
+        isLoading: false,
+        consumable: consumable,
+        movements: movements,
+      );
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
     }
@@ -136,10 +148,16 @@ class ConsumableDetailNotifier extends StateNotifier<ConsumableDetailState> {
     try {
       await _service.stockIn(id, quantity: quantity, reason: reason);
       await load();
-      state = state.copyWith(isMutating: false, successMessage: 'Stok girişi kaydedildi');
+      state = state.copyWith(
+        isMutating: false,
+        successMessage: 'Stok girişi kaydedildi',
+      );
       return true;
     } catch (e) {
-      state = state.copyWith(isMutating: false, error: 'İşlem başarısız: ${e.toString()}');
+      state = state.copyWith(
+        isMutating: false,
+        error: 'İşlem başarısız: ${e.toString()}',
+      );
       return false;
     }
   }
@@ -149,10 +167,16 @@ class ConsumableDetailNotifier extends StateNotifier<ConsumableDetailState> {
     try {
       await _service.stockOut(id, quantity: quantity, reason: reason);
       await load();
-      state = state.copyWith(isMutating: false, successMessage: 'Stok çıkışı kaydedildi');
+      state = state.copyWith(
+        isMutating: false,
+        successMessage: 'Stok çıkışı kaydedildi',
+      );
       return true;
     } catch (e) {
-      state = state.copyWith(isMutating: false, error: 'İşlem başarısız: ${e.toString()}');
+      state = state.copyWith(
+        isMutating: false,
+        error: 'İşlem başarısız: ${e.toString()}',
+      );
       return false;
     }
   }
@@ -164,7 +188,10 @@ class ConsumableDetailNotifier extends StateNotifier<ConsumableDetailState> {
 
 final consumableDetailProvider = StateNotifierProvider.autoDispose
     .family<ConsumableDetailNotifier, ConsumableDetailState, String>((ref, id) {
-  final notifier = ConsumableDetailNotifier(ref.read(consumableServiceProvider), id);
-  notifier.load();
-  return notifier;
-});
+      final notifier = ConsumableDetailNotifier(
+        ref.read(consumableServiceProvider),
+        id,
+      );
+      notifier.load();
+      return notifier;
+    });

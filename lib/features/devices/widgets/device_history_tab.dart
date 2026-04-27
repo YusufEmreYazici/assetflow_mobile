@@ -20,7 +20,10 @@ class DeviceHistoryTab extends ConsumerWidget {
       error: (err, stack) => Center(
         child: Text(
           'Geçmiş yüklenemedi.',
-          style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary),
+          style: GoogleFonts.inter(
+            fontSize: 13,
+            color: AppColors.textSecondary,
+          ),
         ),
       ),
       data: (result) {
@@ -29,8 +32,11 @@ class DeviceHistoryTab extends ConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.history_outlined,
-                    size: 48, color: AppColors.textTertiary),
+                const Icon(
+                  Icons.history_outlined,
+                  size: 48,
+                  color: AppColors.textTertiary,
+                ),
                 const SizedBox(height: 12),
                 Text(
                   'Değişiklik geçmişi bulunamadı',
@@ -104,9 +110,9 @@ class DeviceHistoryTab extends ConsumerWidget {
   }
 
   Color _dotColor(String action) => switch (action) {
-        'Create' => AppColors.success,
-        'Update' => AppColors.info,
-        'Delete' => AppColors.error,
-        _ => AppColors.textTertiary,
-      };
+    'Create' => AppColors.success,
+    'Update' => AppColors.info,
+    'Delete' => AppColors.error,
+    _ => AppColors.textTertiary,
+  };
 }

@@ -26,14 +26,15 @@ class ProfileState {
     String? successMessage,
     bool clearError = false,
     bool clearSuccess = false,
-  }) =>
-      ProfileState(
-        profile: profile ?? this.profile,
-        isLoading: isLoading ?? this.isLoading,
-        isSaving: isSaving ?? this.isSaving,
-        error: clearError ? null : (error ?? this.error),
-        successMessage: clearSuccess ? null : (successMessage ?? this.successMessage),
-      );
+  }) => ProfileState(
+    profile: profile ?? this.profile,
+    isLoading: isLoading ?? this.isLoading,
+    isSaving: isSaving ?? this.isSaving,
+    error: clearError ? null : (error ?? this.error),
+    successMessage: clearSuccess
+        ? null
+        : (successMessage ?? this.successMessage),
+  );
 }
 
 class ProfileNotifier extends StateNotifier<ProfileState> {
@@ -52,7 +53,11 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
   }
 
   Future<bool> updateProfile(UpdateProfileRequest request) async {
-    state = state.copyWith(isSaving: true, clearError: true, clearSuccess: true);
+    state = state.copyWith(
+      isSaving: true,
+      clearError: true,
+      clearSuccess: true,
+    );
     try {
       final updated = await _service.updateMe(request);
       state = state.copyWith(
@@ -68,13 +73,23 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
   }
 
   Future<bool> changePassword(String current, String newPass) async {
-    state = state.copyWith(isSaving: true, clearError: true, clearSuccess: true);
+    state = state.copyWith(
+      isSaving: true,
+      clearError: true,
+      clearSuccess: true,
+    );
     try {
       await _service.changePassword(current, newPass);
-      state = state.copyWith(isSaving: false, successMessage: 'Şifre değiştirildi.');
+      state = state.copyWith(
+        isSaving: false,
+        successMessage: 'Şifre değiştirildi.',
+      );
       return true;
     } catch (e) {
-      state = state.copyWith(isSaving: false, error: 'Şifre değiştirilemedi. Mevcut şifrenizi kontrol edin.');
+      state = state.copyWith(
+        isSaving: false,
+        error: 'Şifre değiştirilemedi. Mevcut şifrenizi kontrol edin.',
+      );
       return false;
     }
   }
@@ -102,8 +117,12 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
   }
 }
 
-final profileServiceProvider = Provider<ProfileService>((_) => ProfileService());
+final profileServiceProvider = Provider<ProfileService>(
+  (_) => ProfileService(),
+);
 
-final profileProvider = StateNotifierProvider<ProfileNotifier, ProfileState>((ref) {
+final profileProvider = StateNotifierProvider<ProfileNotifier, ProfileState>((
+  ref,
+) {
   return ProfileNotifier(ref.read(profileServiceProvider));
 });

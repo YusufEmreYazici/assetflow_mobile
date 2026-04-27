@@ -18,8 +18,7 @@ class DeviceHardwareTab extends StatelessWidget {
       device.biosVersion != null ||
       device.motherboardInfo != null;
 
-  bool get _hasNetwork =>
-      device.ipAddress != null || device.macAddress != null;
+  bool get _hasNetwork => device.ipAddress != null || device.macAddress != null;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +27,11 @@ class DeviceHardwareTab extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.memory_outlined, size: 48, color: AppColors.textTertiary),
+            const Icon(
+              Icons.memory_outlined,
+              size: 48,
+              color: AppColors.textTertiary,
+            ),
             const SizedBox(height: 12),
             Text(
               'Donanım bilgisi girilmemiş',
@@ -44,7 +47,10 @@ class DeviceHardwareTab extends StatelessWidget {
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(
-        AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 100,
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.lg,
+        100,
       ),
       children: [
         if (_hasHardware)
@@ -64,11 +70,7 @@ class DeviceHardwareTab extends StatelessWidget {
               if (device.gpuInfo != null)
                 KvRow(label: 'Ekran Kartı', value: device.gpuInfo!),
               if (device.biosVersion != null)
-                KvRow(
-                  label: 'BIOS',
-                  value: device.biosVersion!,
-                  mono: true,
-                ),
+                KvRow(label: 'BIOS', value: device.biosVersion!, mono: true),
               if (device.motherboardInfo != null)
                 KvRow(
                   label: 'Anakart',
@@ -83,11 +85,7 @@ class DeviceHardwareTab extends StatelessWidget {
             label: 'AĞ',
             children: [
               if (device.ipAddress != null)
-                KvRow(
-                  label: 'IP Adresi',
-                  value: device.ipAddress!,
-                  mono: true,
-                ),
+                KvRow(label: 'IP Adresi', value: device.ipAddress!, mono: true),
               if (device.macAddress != null)
                 KvRow(
                   label: 'MAC Adresi',

@@ -66,7 +66,12 @@ class _ScanOverlayPainter extends CustomPainter {
       darkPaint,
     );
     canvas.drawRect(
-      Rect.fromLTWH(window.right, window.top, size.width - window.right, _windowSize),
+      Rect.fromLTWH(
+        window.right,
+        window.top,
+        size.width - window.right,
+        _windowSize,
+      ),
       darkPaint,
     );
 
@@ -78,17 +83,49 @@ class _ScanOverlayPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     // Top-left
-    canvas.drawLine(Offset(window.left, window.top + _cornerLen), Offset(window.left, window.top), cornerPaint);
-    canvas.drawLine(Offset(window.left, window.top), Offset(window.left + _cornerLen, window.top), cornerPaint);
+    canvas.drawLine(
+      Offset(window.left, window.top + _cornerLen),
+      Offset(window.left, window.top),
+      cornerPaint,
+    );
+    canvas.drawLine(
+      Offset(window.left, window.top),
+      Offset(window.left + _cornerLen, window.top),
+      cornerPaint,
+    );
     // Top-right
-    canvas.drawLine(Offset(window.right - _cornerLen, window.top), Offset(window.right, window.top), cornerPaint);
-    canvas.drawLine(Offset(window.right, window.top), Offset(window.right, window.top + _cornerLen), cornerPaint);
+    canvas.drawLine(
+      Offset(window.right - _cornerLen, window.top),
+      Offset(window.right, window.top),
+      cornerPaint,
+    );
+    canvas.drawLine(
+      Offset(window.right, window.top),
+      Offset(window.right, window.top + _cornerLen),
+      cornerPaint,
+    );
     // Bottom-left
-    canvas.drawLine(Offset(window.left, window.bottom - _cornerLen), Offset(window.left, window.bottom), cornerPaint);
-    canvas.drawLine(Offset(window.left, window.bottom), Offset(window.left + _cornerLen, window.bottom), cornerPaint);
+    canvas.drawLine(
+      Offset(window.left, window.bottom - _cornerLen),
+      Offset(window.left, window.bottom),
+      cornerPaint,
+    );
+    canvas.drawLine(
+      Offset(window.left, window.bottom),
+      Offset(window.left + _cornerLen, window.bottom),
+      cornerPaint,
+    );
     // Bottom-right
-    canvas.drawLine(Offset(window.right - _cornerLen, window.bottom), Offset(window.right, window.bottom), cornerPaint);
-    canvas.drawLine(Offset(window.right, window.bottom), Offset(window.right, window.bottom - _cornerLen), cornerPaint);
+    canvas.drawLine(
+      Offset(window.right - _cornerLen, window.bottom),
+      Offset(window.right, window.bottom),
+      cornerPaint,
+    );
+    canvas.drawLine(
+      Offset(window.right, window.bottom),
+      Offset(window.right, window.bottom - _cornerLen),
+      cornerPaint,
+    );
 
     // Animated scan line with gradient fade at edges
     final scanY = window.top + scanProgress * _windowSize;
@@ -103,7 +140,11 @@ class _ScanOverlayPainter extends CustomPainter {
     final scanPaint = Paint()
       ..shader = scanShader
       ..strokeWidth = 2.5;
-    canvas.drawLine(Offset(window.left, scanY), Offset(window.right, scanY), scanPaint);
+    canvas.drawLine(
+      Offset(window.left, scanY),
+      Offset(window.right, scanY),
+      scanPaint,
+    );
   }
 
   @override

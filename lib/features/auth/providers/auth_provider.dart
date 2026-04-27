@@ -49,12 +49,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
   final AuthService _authService;
   final TokenManager _tokenManager;
 
-  AuthNotifier({
-    AuthService? authService,
-    TokenManager? tokenManager,
-  })  : _authService = authService ?? AuthService(),
-        _tokenManager = tokenManager ?? TokenManager.instance,
-        super(const AuthState());
+  AuthNotifier({AuthService? authService, TokenManager? tokenManager})
+    : _authService = authService ?? AuthService(),
+      _tokenManager = tokenManager ?? TokenManager.instance,
+      super(const AuthState());
 
   Future<void> checkAuth() async {
     state = state.copyWith(isLoading: true);

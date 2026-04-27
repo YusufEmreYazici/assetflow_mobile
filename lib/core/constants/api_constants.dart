@@ -45,16 +45,24 @@ class ApiConstants {
   static String locationById(String id) => '/api/locations/$id';
 
   // Assignment Forms
-  static String assignmentForms(String assignmentId) => '/api/assignment-forms/assignment/$assignmentId';
-  static String assignmentFormsLatest(String assignmentId) => '/api/assignment-forms/assignment/$assignmentId/latest';
-  static String assignmentFormsGenerateAssignment(String assignmentId) => '/api/assignment-forms/assignment/$assignmentId/generate-assignment-form';
-  static String assignmentFormsGenerateReturn(String assignmentId) => '/api/assignment-forms/assignment/$assignmentId/generate-return-form';
-  static String formDownload(String formId) => '/api/assignment-forms/$formId/download';
-  static String formDownloadSigned(String formId) => '/api/assignment-forms/$formId/download-signed';
-  static String formUploadSigned(String formId) => '/api/assignment-forms/$formId/upload-signed';
+  static String assignmentForms(String assignmentId) =>
+      '/api/assignment-forms/assignment/$assignmentId';
+  static String assignmentFormsLatest(String assignmentId) =>
+      '/api/assignment-forms/assignment/$assignmentId/latest';
+  static String assignmentFormsGenerateAssignment(String assignmentId) =>
+      '/api/assignment-forms/assignment/$assignmentId/generate-assignment-form';
+  static String assignmentFormsGenerateReturn(String assignmentId) =>
+      '/api/assignment-forms/assignment/$assignmentId/generate-return-form';
+  static String formDownload(String formId) =>
+      '/api/assignment-forms/$formId/download';
+  static String formDownloadSigned(String formId) =>
+      '/api/assignment-forms/$formId/download-signed';
+  static String formUploadSigned(String formId) =>
+      '/api/assignment-forms/$formId/upload-signed';
 
   // Audit Logs
-  static String auditLogsForDevice(String deviceId) => '/api/audit-logs/device/$deviceId';
+  static String auditLogsForDevice(String deviceId) =>
+      '/api/audit-logs/device/$deviceId';
 
   // Dashboard
   static const String dashboard = '/api/dashboard';
@@ -62,9 +70,11 @@ class ApiConstants {
   // Notifications
   static const String notifications = '/api/notifications';
   static String notificationById(String id) => '/api/notifications/$id';
-  static String notificationMarkRead(String id) => '/api/notifications/$id/read';
+  static String notificationMarkRead(String id) =>
+      '/api/notifications/$id/read';
   static const String notificationsMarkAllRead = '/api/notifications/read-all';
-  static const String notificationsUnreadCount = '/api/notifications/unread-count';
+  static const String notificationsUnreadCount =
+      '/api/notifications/unread-count';
 
   // Users / Profile
   static const String userMe = '/api/users/me';

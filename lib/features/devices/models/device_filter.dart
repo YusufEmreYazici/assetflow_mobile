@@ -103,9 +103,15 @@ class DeviceFilter {
       statuses: statuses ?? this.statuses,
       locations: locations ?? this.locations,
       brands: brands ?? this.brands,
-      assigneeQuery: clearAssigneeQuery ? null : (assigneeQuery ?? this.assigneeQuery),
-      purchaseDateRange: clearPurchaseDateRange ? null : (purchaseDateRange ?? this.purchaseDateRange),
-      warrantyEndRange: clearWarrantyEndRange ? null : (warrantyEndRange ?? this.warrantyEndRange),
+      assigneeQuery: clearAssigneeQuery
+          ? null
+          : (assigneeQuery ?? this.assigneeQuery),
+      purchaseDateRange: clearPurchaseDateRange
+          ? null
+          : (purchaseDateRange ?? this.purchaseDateRange),
+      warrantyEndRange: clearWarrantyEndRange
+          ? null
+          : (warrantyEndRange ?? this.warrantyEndRange),
       onlyFavorites: onlyFavorites ?? this.onlyFavorites,
     );
   }
@@ -113,10 +119,14 @@ class DeviceFilter {
   bool matches(Device d, {Set<String> favorites = const {}}) {
     if (types.isNotEmpty && !types.contains(d.type)) return false;
     if (statuses.isNotEmpty && !statuses.contains(d.status)) return false;
-    if (locations.isNotEmpty && !locations.contains(d.locationName)) return false;
+    if (locations.isNotEmpty && !locations.contains(d.locationName))
+      return false;
     if (brands.isNotEmpty && !brands.contains(d.brand)) return false;
     if (assigneeQuery != null && assigneeQuery!.isNotEmpty) {
-      if (!(d.assignedTo ?? '').toLowerCase().contains(assigneeQuery!.toLowerCase())) return false;
+      if (!(d.assignedTo ?? '').toLowerCase().contains(
+        assigneeQuery!.toLowerCase(),
+      ))
+        return false;
     }
     if (purchaseDateRange != null) {
       if (d.purchaseDate == null) return false;

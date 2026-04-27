@@ -13,7 +13,9 @@ import 'package:assetflow_mobile/data/services/device_service.dart';
 import 'package:assetflow_mobile/data/services/location_service.dart';
 import 'package:assetflow_mobile/features/assignments/widgets/step_indicator.dart';
 
-final _locationsProvider = FutureProvider.autoDispose<List<Location>>((ref) async {
+final _locationsProvider = FutureProvider.autoDispose<List<Location>>((
+  ref,
+) async {
   final result = await LocationService().getAll(page: 1, pageSize: 100);
   return result.items;
 });
@@ -32,29 +34,100 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
   static const _steps = ['Temel', 'Donanım', 'Alım', 'Lokasyon'];
 
   static const Map<int, Set<String>> _hardwareFieldsByType = {
-    0: {'cpu', 'ram', 'storage', 'gpu', 'hostname', 'os', 'mac', 'ip', 'bios', 'motherboard'},
-    1: {'cpu', 'ram', 'storage', 'gpu', 'hostname', 'os', 'mac', 'ip', 'bios', 'motherboard'},
+    0: {
+      'cpu',
+      'ram',
+      'storage',
+      'gpu',
+      'hostname',
+      'os',
+      'mac',
+      'ip',
+      'bios',
+      'motherboard',
+    },
+    1: {
+      'cpu',
+      'ram',
+      'storage',
+      'gpu',
+      'hostname',
+      'os',
+      'mac',
+      'ip',
+      'bios',
+      'motherboard',
+    },
     2: {},
     3: {'hostname', 'mac', 'ip'},
     4: {'cpu', 'ram', 'storage', 'os', 'mac', 'ip'},
     5: {'cpu', 'ram', 'storage', 'os', 'mac', 'ip'},
-    6: {'cpu', 'ram', 'storage', 'gpu', 'hostname', 'os', 'mac', 'ip', 'bios', 'motherboard'},
+    6: {
+      'cpu',
+      'ram',
+      'storage',
+      'gpu',
+      'hostname',
+      'os',
+      'mac',
+      'ip',
+      'bios',
+      'motherboard',
+    },
     7: {'hostname', 'os', 'mac', 'ip'},
-    8: {'cpu', 'ram', 'storage', 'gpu', 'hostname', 'os', 'mac', 'ip', 'bios', 'motherboard'},
+    8: {
+      'cpu',
+      'ram',
+      'storage',
+      'gpu',
+      'hostname',
+      'os',
+      'mac',
+      'ip',
+      'bios',
+      'motherboard',
+    },
   };
 
-  static const _ramOptions = ['2 GB', '4 GB', '8 GB', '16 GB', '32 GB', '64 GB', '128 GB'];
+  static const _ramOptions = [
+    '2 GB',
+    '4 GB',
+    '8 GB',
+    '16 GB',
+    '32 GB',
+    '64 GB',
+    '128 GB',
+  ];
   static const _storageOptions = [
-    '128 GB SSD', '256 GB SSD', '512 GB SSD', '1 TB SSD', '2 TB SSD',
-    '500 GB HDD', '1 TB HDD', '2 TB HDD',
+    '128 GB SSD',
+    '256 GB SSD',
+    '512 GB SSD',
+    '1 TB SSD',
+    '2 TB SSD',
+    '500 GB HDD',
+    '1 TB HDD',
+    '2 TB HDD',
   ];
   static const _osOptions = [
-    'Windows 10', 'Windows 11', 'macOS', 'Ubuntu', 'Debian', 'CentOS',
-    'Rocky Linux', 'Android', 'iOS', 'Diğer',
+    'Windows 10',
+    'Windows 11',
+    'macOS',
+    'Ubuntu',
+    'Debian',
+    'CentOS',
+    'Rocky Linux',
+    'Android',
+    'iOS',
+    'Diğer',
   ];
   static const _warrantyOptions = [
-    (3, '3 Ay'), (6, '6 Ay'), (12, '1 Yıl'), (24, '2 Yıl'),
-    (36, '3 Yıl'), (48, '4 Yıl'), (60, '5 Yıl'),
+    (3, '3 Ay'),
+    (6, '6 Ay'),
+    (12, '1 Yıl'),
+    (24, '2 Yıl'),
+    (36, '3 Yıl'),
+    (48, '4 Yıl'),
+    (60, '5 Yıl'),
   ];
 
   int _step = 0;
@@ -123,10 +196,24 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
   @override
   void dispose() {
     for (final c in [
-      _nameCtrl, _brandCtrl, _modelCtrl, _serialCtrl, _assetCodeCtrl,
-      _cpuCtrl, _ramCtrl, _storageCtrl, _gpuCtrl, _hostNameCtrl, _osCtrl,
-      _macCtrl, _ipCtrl, _biosCtrl, _motherboardCtrl, _supplierCtrl,
-      _invoiceCtrl, _notesCtrl,
+      _nameCtrl,
+      _brandCtrl,
+      _modelCtrl,
+      _serialCtrl,
+      _assetCodeCtrl,
+      _cpuCtrl,
+      _ramCtrl,
+      _storageCtrl,
+      _gpuCtrl,
+      _hostNameCtrl,
+      _osCtrl,
+      _macCtrl,
+      _ipCtrl,
+      _biosCtrl,
+      _motherboardCtrl,
+      _supplierCtrl,
+      _invoiceCtrl,
+      _notesCtrl,
     ]) {
       c.dispose();
     }
@@ -163,22 +250,38 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
         'status': _selectedStatus,
         if (_brandCtrl.text.trim().isNotEmpty) 'brand': _brandCtrl.text.trim(),
         if (_modelCtrl.text.trim().isNotEmpty) 'model': _modelCtrl.text.trim(),
-        if (_serialCtrl.text.trim().isNotEmpty) 'serialNumber': _serialCtrl.text.trim(),
-        if (_assetCodeCtrl.text.trim().isNotEmpty) 'assetCode': _assetCodeCtrl.text.trim(),
-        if (_showField('cpu') && _cpuCtrl.text.trim().isNotEmpty) 'cpuInfo': _cpuCtrl.text.trim(),
-        if (_showField('ram') && _ramCtrl.text.trim().isNotEmpty) 'ramInfo': _ramCtrl.text.trim(),
-        if (_showField('storage') && _storageCtrl.text.trim().isNotEmpty) 'storageInfo': _storageCtrl.text.trim(),
-        if (_showField('gpu') && _gpuCtrl.text.trim().isNotEmpty) 'gpuInfo': _gpuCtrl.text.trim(),
-        if (_showField('hostname') && _hostNameCtrl.text.trim().isNotEmpty) 'hostName': _hostNameCtrl.text.trim(),
-        if (_showField('os') && _osCtrl.text.trim().isNotEmpty) 'osInfo': _osCtrl.text.trim(),
-        if (_showField('mac') && _macCtrl.text.trim().isNotEmpty) 'macAddress': _macCtrl.text.trim(),
-        if (_showField('ip') && _ipCtrl.text.trim().isNotEmpty) 'ipAddress': _ipCtrl.text.trim(),
-        if (_showField('bios') && _biosCtrl.text.trim().isNotEmpty) 'biosVersion': _biosCtrl.text.trim(),
-        if (_showField('motherboard') && _motherboardCtrl.text.trim().isNotEmpty) 'motherboardInfo': _motherboardCtrl.text.trim(),
-        if (_purchaseDate != null) 'purchaseDate': _purchaseDate!.toIso8601String(),
+        if (_serialCtrl.text.trim().isNotEmpty)
+          'serialNumber': _serialCtrl.text.trim(),
+        if (_assetCodeCtrl.text.trim().isNotEmpty)
+          'assetCode': _assetCodeCtrl.text.trim(),
+        if (_showField('cpu') && _cpuCtrl.text.trim().isNotEmpty)
+          'cpuInfo': _cpuCtrl.text.trim(),
+        if (_showField('ram') && _ramCtrl.text.trim().isNotEmpty)
+          'ramInfo': _ramCtrl.text.trim(),
+        if (_showField('storage') && _storageCtrl.text.trim().isNotEmpty)
+          'storageInfo': _storageCtrl.text.trim(),
+        if (_showField('gpu') && _gpuCtrl.text.trim().isNotEmpty)
+          'gpuInfo': _gpuCtrl.text.trim(),
+        if (_showField('hostname') && _hostNameCtrl.text.trim().isNotEmpty)
+          'hostName': _hostNameCtrl.text.trim(),
+        if (_showField('os') && _osCtrl.text.trim().isNotEmpty)
+          'osInfo': _osCtrl.text.trim(),
+        if (_showField('mac') && _macCtrl.text.trim().isNotEmpty)
+          'macAddress': _macCtrl.text.trim(),
+        if (_showField('ip') && _ipCtrl.text.trim().isNotEmpty)
+          'ipAddress': _ipCtrl.text.trim(),
+        if (_showField('bios') && _biosCtrl.text.trim().isNotEmpty)
+          'biosVersion': _biosCtrl.text.trim(),
+        if (_showField('motherboard') &&
+            _motherboardCtrl.text.trim().isNotEmpty)
+          'motherboardInfo': _motherboardCtrl.text.trim(),
+        if (_purchaseDate != null)
+          'purchaseDate': _purchaseDate!.toIso8601String(),
         if (_purchasePrice != null) 'purchasePrice': _purchasePrice,
-        if (_supplierCtrl.text.trim().isNotEmpty) 'supplier': _supplierCtrl.text.trim(),
-        if (_selectedWarrantyMonths != null) 'warrantyDurationMonths': _selectedWarrantyMonths,
+        if (_supplierCtrl.text.trim().isNotEmpty)
+          'supplier': _supplierCtrl.text.trim(),
+        if (_selectedWarrantyMonths != null)
+          'warrantyDurationMonths': _selectedWarrantyMonths,
         if (_selectedLocationId != null) 'locationId': _selectedLocationId,
         if (_notesCtrl.text.trim().isNotEmpty) 'notes': _notesCtrl.text.trim(),
       };
@@ -229,17 +332,16 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
       backgroundColor: AppColors.surfaceLight,
       body: Column(
         children: [
-          _Header(
-            isEditing: widget.isEditing,
-            onBack: _back,
-            step: _step,
-          ),
+          _Header(isEditing: widget.isEditing, onBack: _back, step: _step),
           StepIndicator(steps: _steps, currentStep: _step),
           const Divider(height: 1, color: AppColors.surfaceDivider),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(
-                AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 100,
+                AppSpacing.lg,
+                AppSpacing.lg,
+                AppSpacing.lg,
+                100,
               ),
               child: _buildCurrentStep(),
             ),
@@ -265,7 +367,6 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
     };
   }
 
-
   Widget _buildTemelStep() {
     return Form(
       key: _step0Key,
@@ -278,7 +379,9 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
             label: 'CİHAZ TİPİ',
             value: _selectedType,
             items: deviceTypeLabels.entries
-                .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value)))
+                .map(
+                  (e) => DropdownMenuItem(value: e.key, child: Text(e.value)),
+                )
                 .toList(),
             onChanged: (v) => setState(() => _selectedType = v ?? 0),
           ),
@@ -328,8 +431,11 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
           padding: const EdgeInsets.all(40),
           child: Column(
             children: [
-              const Icon(Icons.memory_outlined,
-                  size: 48, color: AppColors.textTertiary),
+              const Icon(
+                Icons.memory_outlined,
+                size: 48,
+                color: AppColors.textTertiary,
+              ),
               const SizedBox(height: 12),
               Text(
                 'Bu cihaz tipi için\ndonanım bilgisi gerekmez',
@@ -352,7 +458,11 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
         _StepLabel('DONANIM BİLGİLERİ'),
         const SizedBox(height: 16),
         if (_showField('cpu')) ...[
-          AppInput(label: 'İŞLEMCİ', hint: 'Örn: Intel Core i7-1260P', controller: _cpuCtrl),
+          AppInput(
+            label: 'İŞLEMCİ',
+            hint: 'Örn: Intel Core i7-1260P',
+            controller: _cpuCtrl,
+          ),
           const SizedBox(height: 14),
         ],
         if (_showField('ram')) ...[
@@ -361,7 +471,9 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
             value: _ramOptions.contains(_ramCtrl.text) ? _ramCtrl.text : null,
             items: [
               const DropdownMenuItem(value: null, child: Text('Seçiniz')),
-              ..._ramOptions.map((o) => DropdownMenuItem(value: o, child: Text(o))),
+              ..._ramOptions.map(
+                (o) => DropdownMenuItem(value: o, child: Text(o)),
+              ),
             ],
             onChanged: (v) => setState(() => _ramCtrl.text = v ?? ''),
           ),
@@ -370,17 +482,25 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
         if (_showField('storage')) ...[
           _DropdownField(
             label: 'DEPOLAMA',
-            value: _storageOptions.contains(_storageCtrl.text) ? _storageCtrl.text : null,
+            value: _storageOptions.contains(_storageCtrl.text)
+                ? _storageCtrl.text
+                : null,
             items: [
               const DropdownMenuItem(value: null, child: Text('Seçiniz')),
-              ..._storageOptions.map((o) => DropdownMenuItem(value: o, child: Text(o))),
+              ..._storageOptions.map(
+                (o) => DropdownMenuItem(value: o, child: Text(o)),
+              ),
             ],
             onChanged: (v) => setState(() => _storageCtrl.text = v ?? ''),
           ),
           const SizedBox(height: 14),
         ],
         if (_showField('gpu')) ...[
-          AppInput(label: 'EKRAN KARTI', hint: 'Örn: NVIDIA RTX 3060', controller: _gpuCtrl),
+          AppInput(
+            label: 'EKRAN KARTI',
+            hint: 'Örn: NVIDIA RTX 3060',
+            controller: _gpuCtrl,
+          ),
           const SizedBox(height: 14),
         ],
         if (_showField('hostname')) ...[
@@ -397,7 +517,9 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
             value: _osOptions.contains(_osCtrl.text) ? _osCtrl.text : null,
             items: [
               const DropdownMenuItem(value: null, child: Text('Seçiniz')),
-              ..._osOptions.map((o) => DropdownMenuItem(value: o, child: Text(o))),
+              ..._osOptions.map(
+                (o) => DropdownMenuItem(value: o, child: Text(o)),
+              ),
             ],
             onChanged: (v) => setState(() => _osCtrl.text = v ?? ''),
           ),
@@ -410,8 +532,9 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
             controller: _macCtrl,
             validator: (v) {
               if (v == null || v.trim().isEmpty) return null;
-              return RegExp(r'^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$')
-                      .hasMatch(v.trim())
+              return RegExp(
+                    r'^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$',
+                  ).hasMatch(v.trim())
                   ? null
                   : 'Geçerli bir MAC adresi giriniz';
             },
@@ -428,11 +551,19 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
           const SizedBox(height: 14),
         ],
         if (_showField('bios')) ...[
-          AppInput(label: 'BIOS VERSİYONU', hint: 'Örn: F.30', controller: _biosCtrl),
+          AppInput(
+            label: 'BIOS VERSİYONU',
+            hint: 'Örn: F.30',
+            controller: _biosCtrl,
+          ),
           const SizedBox(height: 14),
         ],
         if (_showField('motherboard')) ...[
-          AppInput(label: 'ANAKART', hint: 'Anakart modeli', controller: _motherboardCtrl),
+          AppInput(
+            label: 'ANAKART',
+            hint: 'Anakart modeli',
+            controller: _motherboardCtrl,
+          ),
         ],
       ],
     );
@@ -459,8 +590,11 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
                       ? dateFormat.format(_purchaseDate!)
                       : '',
                 ),
-                suffixIcon: const Icon(Icons.calendar_today_outlined,
-                    size: 16, color: AppColors.textTertiary),
+                suffixIcon: const Icon(
+                  Icons.calendar_today_outlined,
+                  size: 16,
+                  color: AppColors.textTertiary,
+                ),
               ),
             ),
           ),
@@ -470,11 +604,10 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
             hint: 'Örn: 15000',
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             controller: TextEditingController(
-              text: _purchasePrice != null
-                  ? _purchasePrice.toString()
-                  : '',
+              text: _purchasePrice != null ? _purchasePrice.toString() : '',
             ),
-            onChanged: (v) => _purchasePrice = double.tryParse(v.replaceAll(',', '.')),
+            onChanged: (v) =>
+                _purchasePrice = double.tryParse(v.replaceAll(',', '.')),
             validator: (v) {
               if (v == null || v.trim().isEmpty) return null;
               return double.tryParse(v.trim().replaceAll(',', '.')) == null
@@ -500,8 +633,9 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
             value: _selectedWarrantyMonths,
             items: [
               const DropdownMenuItem(value: null, child: Text('Garanti yok')),
-              ..._warrantyOptions.map((o) =>
-                  DropdownMenuItem(value: o.$1, child: Text(o.$2))),
+              ..._warrantyOptions.map(
+                (o) => DropdownMenuItem(value: o.$1, child: Text(o.$2)),
+              ),
             ],
             onChanged: (v) => setState(() => _selectedWarrantyMonths = v),
           ),
@@ -532,14 +666,16 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
             child: Padding(
               padding: EdgeInsets.all(16),
               child: CircularProgressIndicator(
-                color: AppColors.navy, strokeWidth: 2,
+                color: AppColors.navy,
+                strokeWidth: 2,
               ),
             ),
           ),
           error: (err, stack) => Text(
             'Lokasyonlar yüklenemedi.',
             style: GoogleFonts.inter(
-              fontSize: 13, color: AppColors.textSecondary,
+              fontSize: 13,
+              color: AppColors.textSecondary,
             ),
           ),
           data: (locations) => _DropdownField<String>(
@@ -547,10 +683,9 @@ class _DeviceFormScreenState extends ConsumerState<DeviceFormScreen> {
             value: _selectedLocationId,
             items: [
               const DropdownMenuItem(value: null, child: Text('Seçiniz')),
-              ...locations.map((l) => DropdownMenuItem(
-                    value: l.id,
-                    child: Text(l.name),
-                  )),
+              ...locations.map(
+                (l) => DropdownMenuItem(value: l.id, child: Text(l.name)),
+              ),
             ],
             onChanged: (v) => setState(() => _selectedLocationId = v),
           ),
@@ -602,12 +737,17 @@ class _Header extends StatelessWidget {
           GestureDetector(
             onTap: onBack,
             child: Container(
-              width: 36, height: 36,
+              width: 36,
+              height: 36,
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.10),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
+              child: const Icon(
+                Icons.chevron_left,
+                size: 22,
+                color: Colors.white,
+              ),
             ),
           ),
           const SizedBox(width: 12),
@@ -660,11 +800,7 @@ class _BottomBar extends StatelessWidget {
         children: [
           if (step > 0) ...[
             Expanded(
-              child: _Btn(
-                label: 'Geri',
-                secondary: true,
-                onTap: onBack,
-              ),
+              child: _Btn(label: 'Geri', secondary: true, onTap: onBack),
             ),
             const SizedBox(width: 12),
           ],
@@ -702,10 +838,12 @@ class _Btn extends StatelessWidget {
     final bg = success
         ? AppColors.success
         : secondary
-            ? AppColors.surfaceWhite
-            : AppColors.navy;
+        ? AppColors.surfaceWhite
+        : AppColors.navy;
     final fg = secondary ? AppColors.navy : Colors.white;
-    final border = secondary ? AppColors.surfaceInputBorder : Colors.transparent;
+    final border = secondary
+        ? AppColors.surfaceInputBorder
+        : Colors.transparent;
 
     return GestureDetector(
       onTap: isLoading ? null : onTap,
@@ -719,9 +857,11 @@ class _Btn extends StatelessWidget {
         alignment: Alignment.center,
         child: isLoading
             ? const SizedBox(
-                width: 20, height: 20,
+                width: 20,
+                height: 20,
                 child: CircularProgressIndicator(
-                  color: Colors.white, strokeWidth: 2,
+                  color: Colors.white,
+                  strokeWidth: 2,
                 ),
               )
             : Text(
@@ -787,14 +927,14 @@ class _DropdownField<T> extends StatelessWidget {
           initialValue: value,
           items: items,
           onChanged: onChanged,
-          style: GoogleFonts.inter(
-            fontSize: 14,
-            color: AppColors.textPrimary,
-          ),
+          style: GoogleFonts.inter(fontSize: 14, color: AppColors.textPrimary),
           decoration: InputDecoration(
             filled: true,
             fillColor: AppColors.surfaceWhite,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.md),
               borderSide: const BorderSide(color: AppColors.surfaceInputBorder),

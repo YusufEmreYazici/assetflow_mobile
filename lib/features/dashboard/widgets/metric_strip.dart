@@ -32,23 +32,30 @@ class MetricStrip extends StatelessWidget {
             Text(
               label.toUpperCase(),
               style: GoogleFonts.inter(
-                fontSize: 9, fontWeight: FontWeight.w500,
-                color: AppColors.textSecondary, letterSpacing: 1,
+                fontSize: 9,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textSecondary,
+                letterSpacing: 1,
               ),
             ),
             const SizedBox(height: 4),
             Text(
               value,
               style: GoogleFonts.inter(
-                fontSize: 20, fontWeight: FontWeight.w500,
-                color: AppColors.textPrimary, letterSpacing: -0.4,
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textPrimary,
+                letterSpacing: -0.4,
               ),
             ),
             if (trend != null) ...[
               const SizedBox(height: 2),
               Text(
                 trend!,
-                style: GoogleFonts.inter(fontSize: 10, color: AppColors.textTertiary),
+                style: GoogleFonts.inter(
+                  fontSize: 10,
+                  color: AppColors.textTertiary,
+                ),
               ),
             ],
           ],

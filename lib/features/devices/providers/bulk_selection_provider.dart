@@ -4,10 +4,7 @@ class BulkSelectionState {
   final bool isActive;
   final Set<String> selectedIds;
 
-  const BulkSelectionState({
-    required this.isActive,
-    required this.selectedIds,
-  });
+  const BulkSelectionState({required this.isActive, required this.selectedIds});
 
   int get count => selectedIds.length;
   bool get isEmpty => selectedIds.isEmpty;
@@ -22,7 +19,7 @@ class BulkSelectionState {
 
 class BulkSelectionNotifier extends StateNotifier<BulkSelectionState> {
   BulkSelectionNotifier()
-      : super(const BulkSelectionState(isActive: false, selectedIds: {}));
+    : super(const BulkSelectionState(isActive: false, selectedIds: {}));
 
   void enter() => state = state.copyWith(isActive: true);
 
@@ -48,7 +45,10 @@ class BulkSelectionNotifier extends StateNotifier<BulkSelectionState> {
   }
 }
 
-final bulkSelectionProvider = StateNotifierProvider.autoDispose<
-    BulkSelectionNotifier, BulkSelectionState>((ref) {
-  return BulkSelectionNotifier();
-});
+final bulkSelectionProvider =
+    StateNotifierProvider.autoDispose<
+      BulkSelectionNotifier,
+      BulkSelectionState
+    >((ref) {
+      return BulkSelectionNotifier();
+    });

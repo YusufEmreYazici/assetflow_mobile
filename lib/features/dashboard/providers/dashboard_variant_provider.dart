@@ -25,5 +25,5 @@ class DashboardVariantNotifier extends StateNotifier<DashboardVariant> {
 
 final dashboardVariantProvider =
     StateNotifierProvider<DashboardVariantNotifier, DashboardVariant>(
-  (ref) => DashboardVariantNotifier(),
-);
+      (ref) => DashboardVariantNotifier(),
+    );

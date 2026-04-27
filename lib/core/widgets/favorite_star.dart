@@ -23,31 +23,31 @@ class FavoriteStar extends ConsumerWidget {
       label: isFav ? 'Favorilerden çıkar' : 'Favorilere ekle',
       button: true,
       child: IconButton(
-      icon: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 280),
-        transitionBuilder: (child, animation) {
-          return ScaleTransition(
-            scale: Tween<double>(begin: 0.5, end: 1.0).animate(
-              CurvedAnimation(parent: animation, curve: Curves.elasticOut),
-            ),
-            child: FadeTransition(opacity: animation, child: child),
-          );
-        },
-        child: Icon(
-          isFav ? Icons.star_rounded : Icons.star_border_rounded,
-          key: ValueKey(isFav),
-          color: isFav ? AppColors.warning : inactiveColor,
-          size: size,
+        icon: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 280),
+          transitionBuilder: (child, animation) {
+            return ScaleTransition(
+              scale: Tween<double>(begin: 0.5, end: 1.0).animate(
+                CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+              ),
+              child: FadeTransition(opacity: animation, child: child),
+            );
+          },
+          child: Icon(
+            isFav ? Icons.star_rounded : Icons.star_border_rounded,
+            key: ValueKey(isFav),
+            color: isFav ? AppColors.warning : inactiveColor,
+            size: size,
+          ),
         ),
+        onPressed: () {
+          HapticService.medium();
+          ref.read(favoritesProvider.notifier).toggle(deviceId);
+        },
+        splashRadius: 20,
+        padding: EdgeInsets.zero,
+        constraints: BoxConstraints(minWidth: size + 8, minHeight: size + 8),
       ),
-      onPressed: () {
-        HapticService.medium();
-        ref.read(favoritesProvider.notifier).toggle(deviceId);
-      },
-      splashRadius: 20,
-      padding: EdgeInsets.zero,
-      constraints: BoxConstraints(minWidth: size + 8, minHeight: size + 8),
-    ),
     );
   }
 }

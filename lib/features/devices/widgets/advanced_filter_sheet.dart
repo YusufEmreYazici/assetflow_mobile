@@ -12,7 +12,8 @@ class AdvancedFilterSheet extends ConsumerStatefulWidget {
   const AdvancedFilterSheet({super.key});
 
   @override
-  ConsumerState<AdvancedFilterSheet> createState() => _AdvancedFilterSheetState();
+  ConsumerState<AdvancedFilterSheet> createState() =>
+      _AdvancedFilterSheetState();
 }
 
 class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
@@ -34,13 +35,19 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
   }
 
   List<String> _uniqueSorted(Iterable<String?> values) {
-    final set = values.where((v) => v != null && v.isNotEmpty).cast<String>().toSet().toList();
+    final set = values
+        .where((v) => v != null && v.isNotEmpty)
+        .cast<String>()
+        .toSet()
+        .toList();
     set.sort();
     return set;
   }
 
   Future<void> _pickDateRange({required bool isPurchase}) async {
-    final current = isPurchase ? _filter.purchaseDateRange : _filter.warrantyEndRange;
+    final current = isPurchase
+        ? _filter.purchaseDateRange
+        : _filter.warrantyEndRange;
     final result = await showDateRangePicker(
       context: context,
       firstDate: DateTime(2010),
@@ -61,8 +68,18 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
     if (result != null) {
       setState(() {
         _filter = isPurchase
-            ? _filter.copyWith(purchaseDateRange: DateRange(start: result.start, end: result.end))
-            : _filter.copyWith(warrantyEndRange: DateRange(start: result.start, end: result.end));
+            ? _filter.copyWith(
+                purchaseDateRange: DateRange(
+                  start: result.start,
+                  end: result.end,
+                ),
+              )
+            : _filter.copyWith(
+                warrantyEndRange: DateRange(
+                  start: result.start,
+                  end: result.end,
+                ),
+              );
       });
     }
   }
@@ -72,14 +89,19 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
     final name = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Preset Adı', style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
+        title: Text(
+          'Preset Adı',
+          style: GoogleFonts.inter(fontWeight: FontWeight.w600),
+        ),
         content: TextField(
           controller: nameCtrl,
           autofocus: true,
           decoration: InputDecoration(
             hintText: 'örn. Mersin Laptopları',
             hintStyle: GoogleFonts.inter(color: AppColors.textTertiary),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AppRadius.md),
+            ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.md),
               borderSide: const BorderSide(color: AppColors.navy, width: 2),
@@ -90,13 +112,20 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text('İptal', style: GoogleFonts.inter(color: AppColors.textSecondary)),
+            child: Text(
+              'İptal',
+              style: GoogleFonts.inter(color: AppColors.textSecondary),
+            ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, nameCtrl.text.trim()),
-            child: Text('Kaydet', style: GoogleFonts.inter(
-              color: AppColors.navy, fontWeight: FontWeight.w600,
-            )),
+            child: Text(
+              'Kaydet',
+              style: GoogleFonts.inter(
+                color: AppColors.navy,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ],
       ),
@@ -116,7 +145,9 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
 
   void _applyFilter() {
     final withAssignee = _filter.copyWith(
-      assigneeQuery: _assigneeCtrl.text.trim().isEmpty ? null : _assigneeCtrl.text.trim(),
+      assigneeQuery: _assigneeCtrl.text.trim().isEmpty
+          ? null
+          : _assigneeCtrl.text.trim(),
       clearAssigneeQuery: _assigneeCtrl.text.trim().isEmpty,
     );
     ref.read(deviceFilterProvider.notifier).state = withAssignee;
@@ -143,7 +174,8 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
             child: Column(
               children: [
                 Container(
-                  width: 36, height: 4,
+                  width: 36,
+                  height: 4,
                   decoration: BoxDecoration(
                     color: AppColors.surfaceDivider,
                     borderRadius: BorderRadius.circular(2),
@@ -152,9 +184,14 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
                 const SizedBox(height: 14),
                 Row(
                   children: [
-                    Text('Filtre', style: GoogleFonts.inter(
-                      fontSize: 17, fontWeight: FontWeight.w600, color: AppColors.textPrimary,
-                    )),
+                    Text(
+                      'Filtre',
+                      style: GoogleFonts.inter(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
                     const Spacer(),
                     TextButton(
                       onPressed: () {
@@ -168,9 +205,14 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
                         minimumSize: Size.zero,
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
-                      child: Text('Sıfırla', style: GoogleFonts.inter(
-                        fontSize: 13, color: AppColors.error, fontWeight: FontWeight.w500,
-                      )),
+                      child: Text(
+                        'Sıfırla',
+                        style: GoogleFonts.inter(
+                          fontSize: 13,
+                          color: AppColors.error,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -187,7 +229,8 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
                 _SectionTitle('CİHAZ TİPİ'),
                 const SizedBox(height: 8),
                 Wrap(
-                  spacing: 6, runSpacing: 6,
+                  spacing: 6,
+                  runSpacing: 6,
                   children: deviceTypeLabels.entries.map((e) {
                     final selected = _filter.types.contains(e.key);
                     return _FilterChip(
@@ -206,7 +249,8 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
                 _SectionTitle('DURUM'),
                 const SizedBox(height: 8),
                 Wrap(
-                  spacing: 6, runSpacing: 6,
+                  spacing: 6,
+                  runSpacing: 6,
                   children: deviceStatusLabels.entries.map((e) {
                     final selected = _filter.statuses.contains(e.key);
                     return _FilterChip(
@@ -215,7 +259,9 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
                       onTap: () {
                         final list = [..._filter.statuses];
                         selected ? list.remove(e.key) : list.add(e.key);
-                        setState(() => _filter = _filter.copyWith(statuses: list));
+                        setState(
+                          () => _filter = _filter.copyWith(statuses: list),
+                        );
                       },
                     );
                   }).toList(),
@@ -226,7 +272,8 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
                   _SectionTitle('LOKASYON'),
                   const SizedBox(height: 8),
                   Wrap(
-                    spacing: 6, runSpacing: 6,
+                    spacing: 6,
+                    runSpacing: 6,
                     children: locations.map((loc) {
                       final selected = _filter.locations.contains(loc);
                       return _FilterChip(
@@ -235,7 +282,9 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
                         onTap: () {
                           final list = [..._filter.locations];
                           selected ? list.remove(loc) : list.add(loc);
-                          setState(() => _filter = _filter.copyWith(locations: list));
+                          setState(
+                            () => _filter = _filter.copyWith(locations: list),
+                          );
                         },
                       );
                     }).toList(),
@@ -247,7 +296,8 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
                   _SectionTitle('MARKA'),
                   const SizedBox(height: 8),
                   Wrap(
-                    spacing: 6, runSpacing: 6,
+                    spacing: 6,
+                    runSpacing: 6,
                     children: brands.map((brand) {
                       final selected = _filter.brands.contains(brand);
                       return _FilterChip(
@@ -256,7 +306,9 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
                         onTap: () {
                           final list = [..._filter.brands];
                           selected ? list.remove(brand) : list.add(brand);
-                          setState(() => _filter = _filter.copyWith(brands: list));
+                          setState(
+                            () => _filter = _filter.copyWith(brands: list),
+                          );
                         },
                       );
                     }).toList(),
@@ -268,24 +320,40 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
                 const SizedBox(height: 8),
                 TextField(
                   controller: _assigneeCtrl,
-                  style: GoogleFonts.inter(fontSize: 13, color: AppColors.textPrimary),
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    color: AppColors.textPrimary,
+                  ),
                   decoration: InputDecoration(
                     hintText: 'Personel adı ara…',
-                    hintStyle: GoogleFonts.inter(fontSize: 13, color: AppColors.textTertiary),
+                    hintStyle: GoogleFonts.inter(
+                      fontSize: 13,
+                      color: AppColors.textTertiary,
+                    ),
                     filled: true,
                     fillColor: AppColors.surfaceLight,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppRadius.md),
-                      borderSide: const BorderSide(color: AppColors.surfaceInputBorder),
+                      borderSide: const BorderSide(
+                        color: AppColors.surfaceInputBorder,
+                      ),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppRadius.md),
-                      borderSide: const BorderSide(color: AppColors.surfaceInputBorder),
+                      borderSide: const BorderSide(
+                        color: AppColors.surfaceInputBorder,
+                      ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppRadius.md),
-                      borderSide: const BorderSide(color: AppColors.navy, width: 2),
+                      borderSide: const BorderSide(
+                        color: AppColors.navy,
+                        width: 2,
+                      ),
                     ),
                   ),
                 ),
@@ -297,7 +365,11 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
                   range: _filter.purchaseDateRange,
                   dateFormat: _dateFormat,
                   onTap: () => _pickDateRange(isPurchase: true),
-                  onClear: () => setState(() => _filter = _filter.copyWith(clearPurchaseDateRange: true)),
+                  onClear: () => setState(
+                    () => _filter = _filter.copyWith(
+                      clearPurchaseDateRange: true,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 16),
 
@@ -307,35 +379,54 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
                   range: _filter.warrantyEndRange,
                   dateFormat: _dateFormat,
                   onTap: () => _pickDateRange(isPurchase: false),
-                  onClear: () => setState(() => _filter = _filter.copyWith(clearWarrantyEndRange: true)),
+                  onClear: () => setState(
+                    () =>
+                        _filter = _filter.copyWith(clearWarrantyEndRange: true),
+                  ),
                 ),
                 const SizedBox(height: 4),
                 // 90-day shortcut
                 GestureDetector(
                   onTap: () {
                     final now = DateTime.now();
-                    setState(() => _filter = _filter.copyWith(
-                      warrantyEndRange: DateRange(
-                        start: now,
-                        end: now.add(const Duration(days: 90)),
+                    setState(
+                      () => _filter = _filter.copyWith(
+                        warrantyEndRange: DateRange(
+                          start: now,
+                          end: now.add(const Duration(days: 90)),
+                        ),
                       ),
-                    ));
+                    );
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.warningBg,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.warning.withValues(alpha: 0.5)),
+                      border: Border.all(
+                        color: AppColors.warning.withValues(alpha: 0.5),
+                      ),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.warning_amber_outlined, size: 13, color: AppColors.warning),
+                        const Icon(
+                          Icons.warning_amber_outlined,
+                          size: 13,
+                          color: AppColors.warning,
+                        ),
                         const SizedBox(width: 4),
-                        Text('90 gün içinde bitenler', style: GoogleFonts.inter(
-                          fontSize: 11, fontWeight: FontWeight.w500, color: AppColors.warning,
-                        )),
+                        Text(
+                          '90 gün içinde bitenler',
+                          style: GoogleFonts.inter(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.warning,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -347,7 +438,9 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
                 _SwitchRow(
                   label: 'Sadece Favoriler',
                   value: _filter.onlyFavorites,
-                  onChanged: (v) => setState(() => _filter = _filter.copyWith(onlyFavorites: v)),
+                  onChanged: (v) => setState(
+                    () => _filter = _filter.copyWith(onlyFavorites: v),
+                  ),
                 ),
                 const SizedBox(height: 20),
               ],
@@ -357,12 +450,16 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
           // Bottom bar
           Container(
             padding: EdgeInsets.only(
-              left: 20, right: 20, top: 12,
+              left: 20,
+              right: 20,
+              top: 12,
               bottom: MediaQuery.of(context).padding.bottom + 12,
             ),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface,
-              border: const Border(top: BorderSide(color: AppColors.surfaceDivider)),
+              border: const Border(
+                top: BorderSide(color: AppColors.surfaceDivider),
+              ),
             ),
             child: Row(
               children: [
@@ -377,9 +474,13 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
                         borderRadius: BorderRadius.circular(AppRadius.md),
                       ),
                     ),
-                    child: Text('Preset Kaydet', style: GoogleFonts.inter(
-                      fontSize: 13, fontWeight: FontWeight.w500,
-                    )),
+                    child: Text(
+                      'Preset Kaydet',
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -395,18 +496,29 @@ class _AdvancedFilterSheetState extends ConsumerState<AdvancedFilterSheet> {
                         borderRadius: BorderRadius.circular(AppRadius.md),
                       ),
                     ),
-                    child: Builder(builder: (context) {
-                      final count = _filter.copyWith(
-                        assigneeQuery: _assigneeCtrl.text.trim().isEmpty
-                            ? null
-                            : _assigneeCtrl.text.trim(),
-                        clearAssigneeQuery: _assigneeCtrl.text.trim().isEmpty,
-                      ).activeCount;
-                      return Text(
-                        count > 0 ? 'Filtre Uygula ($count)' : 'Filtre Uygula',
-                        style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600),
-                      );
-                    }),
+                    child: Builder(
+                      builder: (context) {
+                        final count = _filter
+                            .copyWith(
+                              assigneeQuery: _assigneeCtrl.text.trim().isEmpty
+                                  ? null
+                                  : _assigneeCtrl.text.trim(),
+                              clearAssigneeQuery: _assigneeCtrl.text
+                                  .trim()
+                                  .isEmpty,
+                            )
+                            .activeCount;
+                        return Text(
+                          count > 0
+                              ? 'Filtre Uygula ($count)'
+                              : 'Filtre Uygula',
+                          style: GoogleFonts.inter(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ],
@@ -426,12 +538,15 @@ class _SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(text, style: GoogleFonts.inter(
-      fontSize: 10,
-      fontWeight: FontWeight.w600,
-      color: AppColors.textTertiary,
-      letterSpacing: 0.8,
-    ));
+    return Text(
+      text,
+      style: GoogleFonts.inter(
+        fontSize: 10,
+        fontWeight: FontWeight.w600,
+        color: AppColors.textTertiary,
+        letterSpacing: 0.8,
+      ),
+    );
   }
 }
 
@@ -495,7 +610,9 @@ class _DateRangeRow extends StatelessWidget {
           color: range != null ? AppColors.infoBg : AppColors.surfaceLight,
           borderRadius: BorderRadius.circular(AppRadius.md),
           border: Border.all(
-            color: range != null ? AppColors.navy : AppColors.surfaceInputBorder,
+            color: range != null
+                ? AppColors.navy
+                : AppColors.surfaceInputBorder,
           ),
         ),
         child: Row(
@@ -513,14 +630,20 @@ class _DateRangeRow extends StatelessWidget {
                     : 'Tarih aralığı seç',
                 style: GoogleFonts.inter(
                   fontSize: 12,
-                  color: range != null ? AppColors.navy : AppColors.textTertiary,
+                  color: range != null
+                      ? AppColors.navy
+                      : AppColors.textTertiary,
                 ),
               ),
             ),
             if (range != null)
               GestureDetector(
                 onTap: onClear,
-                child: const Icon(Icons.close, size: 15, color: AppColors.textTertiary),
+                child: const Icon(
+                  Icons.close,
+                  size: 15,
+                  color: AppColors.textTertiary,
+                ),
               ),
           ],
         ),
@@ -545,11 +668,14 @@ class _SwitchRow extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: Text(label, style: GoogleFonts.inter(
-            fontSize: 13,
-            fontWeight: FontWeight.w500,
-            color: AppColors.textPrimary,
-          )),
+          child: Text(
+            label,
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: AppColors.textPrimary,
+            ),
+          ),
         ),
         Switch(
           value: value,

@@ -13,7 +13,8 @@ class SubscriptionsScreen extends ConsumerStatefulWidget {
   const SubscriptionsScreen({super.key});
 
   @override
-  ConsumerState<SubscriptionsScreen> createState() => _SubscriptionsScreenState();
+  ConsumerState<SubscriptionsScreen> createState() =>
+      _SubscriptionsScreenState();
 }
 
 class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
@@ -36,7 +37,8 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
         children: [
           PageHeader(
             title: 'Abonelikler',
-            subtitle: state.result?.totalCount != null && state.result!.totalCount > 0
+            subtitle:
+                state.result?.totalCount != null && state.result!.totalCount > 0
                 ? '${state.result!.totalCount} abonelik'
                 : null,
             onBack: () => context.pop(),
@@ -46,23 +48,23 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
             child: state.isLoading && items.isEmpty
                 ? _buildShimmer()
                 : state.error != null && items.isEmpty
-                    ? _buildErrorState(state.error!)
-                    : items.isEmpty
-                        ? const EmptyState(
-                            icon: Icons.subscriptions_outlined,
-                            title: 'Abonelik bulunamadı',
-                            description: 'Henüz kayıtlı abonelik yok.',
-                          )
-                        : RefreshIndicator(
-                            color: AppColors.navy,
-                            onRefresh: () =>
-                                ref.read(subscriptionListProvider.notifier).load(),
-                            child: ListView.builder(
-                              padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
-                              itemCount: items.length,
-                              itemBuilder: (ctx, i) => _SubscriptionRow(sub: items[i]),
-                            ),
-                          ),
+                ? _buildErrorState(state.error!)
+                : items.isEmpty
+                ? const EmptyState(
+                    icon: Icons.subscriptions_outlined,
+                    title: 'Abonelik bulunamadı',
+                    description: 'Henüz kayıtlı abonelik yok.',
+                  )
+                : RefreshIndicator(
+                    color: AppColors.navy,
+                    onRefresh: () =>
+                        ref.read(subscriptionListProvider.notifier).load(),
+                    child: ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+                      itemCount: items.length,
+                      itemBuilder: (ctx, i) => _SubscriptionRow(sub: items[i]),
+                    ),
+                  ),
           ),
         ],
       ),
@@ -96,11 +98,22 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
         style: GoogleFonts.inter(fontSize: 13, color: AppColors.textPrimary),
         decoration: InputDecoration(
           hintText: 'Abonelik ara...',
-          hintStyle: GoogleFonts.inter(fontSize: 13, color: AppColors.textTertiary),
-          prefixIcon: const Icon(Icons.search, size: 18, color: AppColors.textTertiary),
+          hintStyle: GoogleFonts.inter(
+            fontSize: 13,
+            color: AppColors.textTertiary,
+          ),
+          prefixIcon: const Icon(
+            Icons.search,
+            size: 18,
+            color: AppColors.textTertiary,
+          ),
           suffixIcon: _searchCtrl.text.isNotEmpty
               ? IconButton(
-                  icon: const Icon(Icons.clear, size: 16, color: AppColors.textTertiary),
+                  icon: const Icon(
+                    Icons.clear,
+                    size: 16,
+                    color: AppColors.textTertiary,
+                  ),
                   onPressed: () {
                     _searchCtrl.clear();
                     setState(() {});
@@ -119,7 +132,9 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
             borderRadius: BorderRadius.circular(AppRadius.md),
             borderSide: const BorderSide(color: AppColors.navy, width: 2),
           ),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppRadius.md),
+          ),
         ),
         onChanged: (v) {
           setState(() {});
@@ -136,14 +151,24 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.wifi_off_rounded, size: 48, color: AppColors.textTertiary),
+            const Icon(
+              Icons.wifi_off_rounded,
+              size: 48,
+              color: AppColors.textTertiary,
+            ),
             const SizedBox(height: 12),
-            Text(error,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 14)),
+            Text(
+              error,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 14,
+              ),
+            ),
             const SizedBox(height: 16),
             TextButton.icon(
-              onPressed: () => ref.read(subscriptionListProvider.notifier).load(),
+              onPressed: () =>
+                  ref.read(subscriptionListProvider.notifier).load(),
               icon: const Icon(Icons.refresh, size: 16),
               label: const Text('Tekrar Dene'),
             ),
@@ -159,11 +184,11 @@ class _SubscriptionRow extends StatelessWidget {
   const _SubscriptionRow({required this.sub});
 
   Color get _statusColor => switch (sub.subscriptionStatus) {
-        'Active' => AppColors.success,
-        'Paused' => AppColors.warning,
-        'Cancelled' => AppColors.error,
-        _ => AppColors.textTertiary,
-      };
+    'Active' => AppColors.success,
+    'Paused' => AppColors.warning,
+    'Cancelled' => AppColors.error,
+    _ => AppColors.textTertiary,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -186,11 +211,16 @@ class _SubscriptionRow extends StatelessWidget {
           ),
           child: Icon(Icons.subscriptions_outlined, color: _statusColor),
         ),
-        title: Text(sub.serviceName,
-            style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600)),
+        title: Text(
+          sub.serviceName,
+          style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600),
+        ),
         subtitle: Text(
           '${sub.provider ?? '—'} · ${sub.billingCycleName}',
-          style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary),
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            color: AppColors.textSecondary,
+          ),
         ),
         trailing: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -198,7 +228,10 @@ class _SubscriptionRow extends StatelessWidget {
           children: [
             Text(
               '${sub.monthlyCost.toStringAsFixed(0)} ${sub.currency}/ay',
-              style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600),
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             Container(
               margin: const EdgeInsets.only(top: 2),
@@ -210,7 +243,10 @@ class _SubscriptionRow extends StatelessWidget {
               child: Text(
                 sub.subscriptionStatusName,
                 style: GoogleFonts.inter(
-                    fontSize: 10, fontWeight: FontWeight.w600, color: Colors.white),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
               ),
             ),
           ],

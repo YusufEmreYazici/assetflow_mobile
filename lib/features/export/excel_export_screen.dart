@@ -159,8 +159,9 @@ class _ExcelExportScreenState extends State<ExcelExportScreen> {
                               height: 36,
                               decoration: BoxDecoration(
                                 color: AppColors.infoBg,
-                                borderRadius:
-                                    BorderRadius.circular(AppRadius.sm),
+                                borderRadius: BorderRadius.circular(
+                                  AppRadius.sm,
+                                ),
                               ),
                               child: Icon(
                                 type.icon,
@@ -203,8 +204,9 @@ class _ExcelExportScreenState extends State<ExcelExportScreen> {
                                 ),
                                 decoration: BoxDecoration(
                                   color: AppColors.navy,
-                                  borderRadius:
-                                      BorderRadius.circular(AppRadius.sm),
+                                  borderRadius: BorderRadius.circular(
+                                    AppRadius.sm,
+                                  ),
                                 ),
                                 child: isLoading
                                     ? const SizedBox(
@@ -289,8 +291,10 @@ class _ExcelExportScreenState extends State<ExcelExportScreen> {
                               ),
                             ),
                             Text(
-                              DateFormat('d MMM, HH:mm', 'tr_TR')
-                                  .format(export.time),
+                              DateFormat(
+                                'd MMM, HH:mm',
+                                'tr_TR',
+                              ).format(export.time),
                               style: GoogleFonts.inter(
                                 fontSize: 10,
                                 color: AppColors.textTertiary,

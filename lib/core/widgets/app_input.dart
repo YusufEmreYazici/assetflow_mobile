@@ -87,10 +87,7 @@ class _AppInputState extends State<AppInput> {
           maxLines: widget.obscureText ? 1 : widget.maxLines,
           readOnly: widget.readOnly,
           onTap: widget.onTap,
-          style: GoogleFonts.inter(
-            fontSize: 14,
-            color: AppColors.textPrimary,
-          ),
+          style: GoogleFonts.inter(fontSize: 14, color: AppColors.textPrimary),
           decoration: InputDecoration(
             hintText: widget.hint,
             hintStyle: GoogleFonts.inter(
@@ -101,11 +98,16 @@ class _AppInputState extends State<AppInput> {
             fillColor: AppColors.surfaceWhite,
             prefixIcon: widget.prefixIcon,
             suffixIcon: widget.suffixIcon,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.md),
               borderSide: BorderSide(
-                color: _isFocused ? AppColors.navy : AppColors.surfaceInputBorder,
+                color: _isFocused
+                    ? AppColors.navy
+                    : AppColors.surfaceInputBorder,
                 width: _isFocused ? 2 : 1,
               ),
             ),

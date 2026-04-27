@@ -25,11 +25,11 @@ class DeviceDetailHeader extends ConsumerWidget {
   });
 
   ChipTone get _tone => switch (device.status) {
-        0 => ChipTone.success,
-        1 => ChipTone.info,
-        2 => ChipTone.warning,
-        _ => ChipTone.neutral,
-      };
+    0 => ChipTone.success,
+    1 => ChipTone.info,
+    2 => ChipTone.warning,
+    _ => ChipTone.neutral,
+  };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -53,12 +53,17 @@ class DeviceDetailHeader extends ConsumerWidget {
               GestureDetector(
                 onTap: onBack ?? () => Navigator.pop(context),
                 child: Container(
-                  width: 36, height: 36,
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.10),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
+                  child: const Icon(
+                    Icons.chevron_left,
+                    size: 22,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(width: 10),
@@ -69,7 +74,8 @@ class DeviceDetailHeader extends ConsumerWidget {
                     Text(
                       '$typeLabel · ${device.assetCode ?? ''}',
                       style: GoogleFonts.inter(
-                        fontSize: 10, fontWeight: FontWeight.w500,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
                         color: Colors.white.withValues(alpha: 0.6),
                         letterSpacing: 1.4,
                       ),
@@ -78,8 +84,10 @@ class DeviceDetailHeader extends ConsumerWidget {
                     Text(
                       device.name,
                       style: GoogleFonts.inter(
-                        fontSize: 19, fontWeight: FontWeight.w500,
-                        color: Colors.white, letterSpacing: -0.2,
+                        fontSize: 19,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                        letterSpacing: -0.2,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -113,53 +121,86 @@ class DeviceDetailHeader extends ConsumerWidget {
               GestureDetector(
                 onTap: onEdit,
                 child: Container(
-                  width: 36, height: 36,
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.10),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.edit_outlined, size: 16, color: Colors.white),
+                  child: const Icon(
+                    Icons.edit_outlined,
+                    size: 16,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-              if (onDelete != null || onReactivate != null || onRetire != null) ...[
+              if (onDelete != null ||
+                  onReactivate != null ||
+                  onRetire != null) ...[
                 const SizedBox(width: 4),
                 PopupMenuButton<String>(
                   padding: EdgeInsets.zero,
                   icon: Container(
-                    width: 36, height: 36,
+                    width: 36,
+                    height: 36,
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.10),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.more_vert, size: 18, color: Colors.white),
+                    child: const Icon(
+                      Icons.more_vert,
+                      size: 18,
+                      color: Colors.white,
+                    ),
                   ),
                   itemBuilder: (_) => [
                     if (onReactivate != null)
                       PopupMenuItem(
                         value: 'reactivate',
-                        child: Row(children: [
-                          Icon(Icons.refresh, color: AppColors.success, size: 18),
-                          const SizedBox(width: 10),
-                          const Text('Yeniden Aktifleştir'),
-                        ]),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.refresh,
+                              color: AppColors.success,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 10),
+                            const Text('Yeniden Aktifleştir'),
+                          ],
+                        ),
                       ),
                     if (onRetire != null)
                       PopupMenuItem(
                         value: 'retire',
-                        child: Row(children: [
-                          Icon(Icons.do_not_disturb_alt_outlined, color: AppColors.textSecondary, size: 18),
-                          const SizedBox(width: 10),
-                          const Text('Emekli Et'),
-                        ]),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.do_not_disturb_alt_outlined,
+                              color: AppColors.textSecondary,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 10),
+                            const Text('Emekli Et'),
+                          ],
+                        ),
                       ),
                     if (onDelete != null)
                       PopupMenuItem(
                         value: 'delete',
-                        child: Row(children: [
-                          Icon(Icons.delete_outline, color: AppColors.error, size: 18),
-                          const SizedBox(width: 10),
-                          Text('Sil', style: TextStyle(color: AppColors.error)),
-                        ]),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.delete_outline,
+                              color: AppColors.error,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              'Sil',
+                              style: TextStyle(color: AppColors.error),
+                            ),
+                          ],
+                        ),
                       ),
                   ],
                   onSelected: (action) {
@@ -175,7 +216,7 @@ class DeviceDetailHeader extends ConsumerWidget {
           const SizedBox(height: 14),
           Row(
             children: [
-              _InfoCell(label: 'DURUM',    value: statusLabel),
+              _InfoCell(label: 'DURUM', value: statusLabel),
               const SizedBox(width: 8),
               _InfoCell(label: 'ZİMMETLİ', value: device.assignedTo ?? '—'),
               const SizedBox(width: 8),
@@ -208,7 +249,8 @@ class _InfoCell extends StatelessWidget {
             Text(
               label,
               style: GoogleFonts.inter(
-                fontSize: 9, letterSpacing: 0.8,
+                fontSize: 9,
+                letterSpacing: 0.8,
                 color: Colors.white.withValues(alpha: 0.6),
               ),
             ),
@@ -216,7 +258,9 @@ class _InfoCell extends StatelessWidget {
             Text(
               value,
               style: GoogleFonts.inter(
-                fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
               ),
               overflow: TextOverflow.ellipsis,
             ),

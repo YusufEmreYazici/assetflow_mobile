@@ -15,16 +15,20 @@ class DeviceGeneralTab extends StatelessWidget {
     final typeLabel = deviceTypeLabels[device.type] ?? 'Cihaz';
     final statusLabel = deviceStatusLabels[device.status] ?? '?';
 
-    final bool hasPurchase = device.purchaseDate != null ||
+    final bool hasPurchase =
+        device.purchaseDate != null ||
         device.purchasePrice != null ||
         device.supplier != null;
-    final bool hasWarranty = device.warrantyDurationMonths != null ||
-        device.warrantyEndDate != null;
+    final bool hasWarranty =
+        device.warrantyDurationMonths != null || device.warrantyEndDate != null;
     final bool hasNotes = device.notes != null && device.notes!.isNotEmpty;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(
-        AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 100,
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.lg,
+        100,
       ),
       children: [
         _Section(
@@ -39,7 +43,11 @@ class DeviceGeneralTab extends StatelessWidget {
             if (device.serialNumber != null)
               KvRow(label: 'Seri No', value: device.serialNumber!, mono: true),
             if (device.assetCode != null)
-              KvRow(label: 'Demirbaş Kodu', value: device.assetCode!, mono: true),
+              KvRow(
+                label: 'Demirbaş Kodu',
+                value: device.assetCode!,
+                mono: true,
+              ),
             if (device.locationName != null)
               KvRow(label: 'Lokasyon', value: device.locationName!),
             KvRow(
@@ -125,12 +133,12 @@ class DeviceGeneralTab extends StatelessWidget {
   }
 
   String _warrantyLabel(int status) => switch (status) {
-        0 => 'Garanti Yok',
-        1 => 'Garantide',
-        2 => 'Yakında Bitiyor',
-        3 => 'Süresi Dolmuş',
-        _ => '?',
-      };
+    0 => 'Garanti Yok',
+    1 => 'Garantide',
+    2 => 'Yakında Bitiyor',
+    3 => 'Süresi Dolmuş',
+    _ => '?',
+  };
 }
 
 class _Section extends StatelessWidget {

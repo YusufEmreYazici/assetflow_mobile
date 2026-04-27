@@ -45,7 +45,8 @@ class AppHeader extends StatelessWidget {
           Row(
             children: [
               Container(
-                width: 32, height: 32,
+                width: 32,
+                height: 32,
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.14),
                   borderRadius: BorderRadius.circular(6),
@@ -54,8 +55,10 @@ class AppHeader extends StatelessWidget {
                 child: Text(
                   _initials.toUpperCase(),
                   style: GoogleFonts.inter(
-                    fontSize: 12, fontWeight: FontWeight.w500,
-                    color: Colors.white, letterSpacing: 0.5,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                    letterSpacing: 0.5,
                   ),
                 ),
               ),
@@ -67,7 +70,8 @@ class AppHeader extends StatelessWidget {
                     Text(
                       'Hoş geldin, ${userName.split(' ').first}',
                       style: GoogleFonts.inter(
-                        fontSize: 13, fontWeight: FontWeight.w500,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
                         color: Colors.white,
                       ),
                     ),
@@ -89,17 +93,26 @@ class AppHeader extends StatelessWidget {
                   children: [
                     _NavButton(
                       onTap: onNotif,
-                      child: const Icon(Icons.notifications_outlined, size: 18, color: Colors.white),
+                      child: const Icon(
+                        Icons.notifications_outlined,
+                        size: 18,
+                        color: Colors.white,
+                      ),
                     ),
                     if (showNotifBadge)
                       Positioned(
-                        top: 8, right: 8,
+                        top: 8,
+                        right: 8,
                         child: Container(
-                          width: 8, height: 8,
+                          width: 8,
+                          height: 8,
                           decoration: BoxDecoration(
                             color: AppColors.error,
                             shape: BoxShape.circle,
-                            border: Border.all(color: AppColors.navy, width: 1.5),
+                            border: Border.all(
+                              color: AppColors.navy,
+                              width: 1.5,
+                            ),
                           ),
                         ),
                       ),
@@ -111,7 +124,14 @@ class AppHeader extends StatelessWidget {
                 Semantics(
                   label: 'Menü',
                   button: true,
-                  child: _NavButton(onTap: onMenu!, child: const Icon(Icons.menu, size: 18, color: Colors.white)),
+                  child: _NavButton(
+                    onTap: onMenu!,
+                    child: const Icon(
+                      Icons.menu,
+                      size: 18,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ],
             ],
@@ -120,7 +140,8 @@ class AppHeader extends StatelessWidget {
           Text(
             company,
             style: GoogleFonts.inter(
-              fontSize: 10, fontWeight: FontWeight.w500,
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
               color: Colors.white.withValues(alpha: 0.55),
               letterSpacing: 1.4,
             ),
@@ -129,8 +150,10 @@ class AppHeader extends StatelessWidget {
           Text(
             title,
             style: GoogleFonts.inter(
-              fontSize: 22, fontWeight: FontWeight.w500,
-              color: Colors.white, letterSpacing: -0.2,
+              fontSize: 22,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+              letterSpacing: -0.2,
             ),
           ),
         ],
@@ -150,7 +173,8 @@ class _NavButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 36, height: 36,
+        width: 36,
+        height: 36,
         decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.10),
           borderRadius: BorderRadius.circular(8),

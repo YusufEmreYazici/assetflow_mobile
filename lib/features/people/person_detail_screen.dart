@@ -12,16 +12,16 @@ import 'package:assetflow_mobile/data/models/employee_model.dart';
 import 'package:assetflow_mobile/data/services/assignment_service.dart';
 import 'package:assetflow_mobile/data/services/employee_service.dart';
 
-final _personDetailProvider =
-    FutureProvider.autoDispose.family<Employee, String>((ref, id) async {
-  return EmployeeService().getById(id);
-});
+final _personDetailProvider = FutureProvider.autoDispose
+    .family<Employee, String>((ref, id) async {
+      return EmployeeService().getById(id);
+    });
 
-final _personAssignmentsProvider =
-    FutureProvider.autoDispose.family<List<Assignment>, String>((ref, employeeId) async {
-  final result = await AssignmentService().getAll(page: 1, pageSize: 100);
-  return result.items.where((a) => a.employeeId == employeeId).toList();
-});
+final _personAssignmentsProvider = FutureProvider.autoDispose
+    .family<List<Assignment>, String>((ref, employeeId) async {
+      final result = await AssignmentService().getAll(page: 1, pageSize: 100);
+      return result.items.where((a) => a.employeeId == employeeId).toList();
+    });
 
 class PersonDetailScreen extends ConsumerStatefulWidget {
   final String id;
@@ -43,8 +43,11 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
 
   void _onTab(int i) {
     setState(() => _tabIndex = i);
-    _pageController.animateToPage(i,
-        duration: const Duration(milliseconds: 250), curve: Curves.easeInOut);
+    _pageController.animateToPage(
+      i,
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
@@ -55,13 +58,27 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
         backgroundColor: AppColors.surfaceLight,
         body: Column(
           children: [
-            Container(color: AppColors.navy, height: MediaQuery.of(context).padding.top + 90),
-            const Expanded(child: Center(child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2))),
+            Container(
+              color: AppColors.navy,
+              height: MediaQuery.of(context).padding.top + 90,
+            ),
+            const Expanded(
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.navy,
+                  strokeWidth: 2,
+                ),
+              ),
+            ),
           ],
         ),
       ),
       error: (err, stack) => Scaffold(
-        appBar: AppBar(backgroundColor: AppColors.navy, foregroundColor: Colors.white, title: const Text('Hata')),
+        appBar: AppBar(
+          backgroundColor: AppColors.navy,
+          foregroundColor: Colors.white,
+          title: const Text('Hata'),
+        ),
         body: const Center(child: Text('Personel yüklenemedi.')),
       ),
       data: (emp) => _buildDetail(emp),
@@ -101,7 +118,8 @@ class _PersonHeader extends StatelessWidget {
 
   String get _initials {
     final parts = employee.fullName.trim().split(' ');
-    if (parts.length >= 2) return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
+    if (parts.length >= 2)
+      return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
     return employee.fullName.substring(0, 2).toUpperCase();
   }
 
@@ -124,17 +142,23 @@ class _PersonHeader extends StatelessWidget {
               GestureDetector(
                 onTap: goBackOrHome(context),
                 child: Container(
-                  width: 36, height: 36,
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.10),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
+                  child: const Icon(
+                    Icons.chevron_left,
+                    size: 22,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
               Container(
-                width: 44, height: 44,
+                width: 44,
+                height: 44,
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
@@ -143,7 +167,9 @@ class _PersonHeader extends StatelessWidget {
                 child: Text(
                   _initials,
                   style: GoogleFonts.inter(
-                    fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -155,14 +181,19 @@ class _PersonHeader extends StatelessWidget {
                     Text(
                       employee.fullName,
                       style: GoogleFonts.inter(
-                        fontSize: 17, fontWeight: FontWeight.w500, color: Colors.white,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
                       ),
                     ),
-                    if (employee.title != null || employee.department != null) ...[
+                    if (employee.title != null ||
+                        employee.department != null) ...[
                       const SizedBox(height: 2),
                       Text(
-                        [employee.title, employee.department]
-                            .whereType<String>().join(' · '),
+                        [
+                          employee.title,
+                          employee.department,
+                        ].whereType<String>().join(' · '),
                         style: GoogleFonts.inter(
                           fontSize: 12,
                           color: Colors.white.withValues(alpha: 0.7),
@@ -174,7 +205,9 @@ class _PersonHeader extends StatelessWidget {
                       children: [
                         AppChip(
                           label: employee.isActive ? 'AKTİF' : 'PASİF',
-                          tone: employee.isActive ? ChipTone.success : ChipTone.neutral,
+                          tone: employee.isActive
+                              ? ChipTone.success
+                              : ChipTone.neutral,
                         ),
                         if (employee.registrationNumber != null) ...[
                           const SizedBox(width: 8),
@@ -196,7 +229,10 @@ class _PersonHeader extends StatelessWidget {
           const SizedBox(height: 14),
           Row(
             children: [
-              _InfoCell(label: 'ZİMMET', value: '${employee.assignedDeviceCount} cihaz'),
+              _InfoCell(
+                label: 'ZİMMET',
+                value: '${employee.assignedDeviceCount} cihaz',
+              ),
               const SizedBox(width: 8),
               _InfoCell(
                 label: 'BAŞLANGIÇ',
@@ -205,7 +241,10 @@ class _PersonHeader extends StatelessWidget {
                     : '—',
               ),
               const SizedBox(width: 8),
-              _InfoCell(label: 'DURUM', value: employee.isActive ? 'Aktif' : 'Pasif'),
+              _InfoCell(
+                label: 'DURUM',
+                value: employee.isActive ? 'Aktif' : 'Pasif',
+              ),
             ],
           ),
         ],
@@ -234,7 +273,8 @@ class _InfoCell extends StatelessWidget {
             Text(
               label,
               style: GoogleFonts.inter(
-                fontSize: 9, letterSpacing: 0.8,
+                fontSize: 9,
+                letterSpacing: 0.8,
                 color: Colors.white.withValues(alpha: 0.6),
               ),
             ),
@@ -242,7 +282,9 @@ class _InfoCell extends StatelessWidget {
             Text(
               value,
               style: GoogleFonts.inter(
-                fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
               ),
               overflow: TextOverflow.ellipsis,
             ),
@@ -265,8 +307,13 @@ class _AssignmentsTab extends ConsumerWidget {
         child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2),
       ),
       error: (err, stack) => Center(
-        child: Text('Zimmetler yüklenemedi.',
-            style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary)),
+        child: Text(
+          'Zimmetler yüklenemedi.',
+          style: GoogleFonts.inter(
+            fontSize: 13,
+            color: AppColors.textSecondary,
+          ),
+        ),
       ),
       data: (assignments) {
         if (assignments.isEmpty) {
@@ -274,43 +321,81 @@ class _AssignmentsTab extends ConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.assignment_outlined, size: 48, color: AppColors.textTertiary),
+                const Icon(
+                  Icons.assignment_outlined,
+                  size: 48,
+                  color: AppColors.textTertiary,
+                ),
                 const SizedBox(height: 12),
-                Text('Zimmet kaydı bulunamadı.',
-                    style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary)),
+                Text(
+                  'Zimmet kaydı bulunamadı.',
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
               ],
             ),
           );
         }
         final dateFormat = DateFormat('dd/MM/yyyy');
         return ListView(
-          padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 100),
-          children: assignments.map((a) => Container(
-            margin: const EdgeInsets.only(bottom: 8),
-            decoration: BoxDecoration(
-              color: AppColors.surfaceWhite,
-              borderRadius: BorderRadius.circular(AppRadius.md),
-              border: Border.all(color: a.isActive ? AppColors.success : AppColors.surfaceDivider),
-            ),
-            padding: const EdgeInsets.all(14),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(children: [
-                  Expanded(
-                    child: Text(a.deviceName ?? '—',
-                        style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textPrimary)),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.lg,
+            AppSpacing.lg,
+            AppSpacing.lg,
+            100,
+          ),
+          children: assignments
+              .map(
+                (a) => Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceWhite,
+                    borderRadius: BorderRadius.circular(AppRadius.md),
+                    border: Border.all(
+                      color: a.isActive
+                          ? AppColors.success
+                          : AppColors.surfaceDivider,
+                    ),
                   ),
-                  AppChip(label: a.isActive ? 'AKTİF' : 'İADE', tone: a.isActive ? ChipTone.success : ChipTone.neutral),
-                ]),
-                const SizedBox(height: 4),
-                Text(
-                  '${dateFormat.format(a.assignedAt)}${a.returnedAt != null ? ' → ${dateFormat.format(a.returnedAt!)}' : ''}',
-                  style: GoogleFonts.inter(fontSize: 11, color: AppColors.textSecondary),
+                  padding: const EdgeInsets.all(14),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              a.deviceName ?? '—',
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                          ),
+                          AppChip(
+                            label: a.isActive ? 'AKTİF' : 'İADE',
+                            tone: a.isActive
+                                ? ChipTone.success
+                                : ChipTone.neutral,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${dateFormat.format(a.assignedAt)}${a.returnedAt != null ? ' → ${dateFormat.format(a.returnedAt!)}' : ''}',
+                        style: GoogleFonts.inter(
+                          fontSize: 11,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
-            ),
-          )).toList(),
+              )
+              .toList(),
         );
       },
     );
@@ -340,7 +425,11 @@ class _ContactTab extends StatelessWidget {
               if (employee.phone != null)
                 KvRow(label: 'Telefon', value: employee.phone!),
               if (employee.registrationNumber != null)
-                KvRow(label: 'Sicil No', value: employee.registrationNumber!, mono: true),
+                KvRow(
+                  label: 'Sicil No',
+                  value: employee.registrationNumber!,
+                  mono: true,
+                ),
               if (employee.department != null)
                 KvRow(label: 'Departman', value: employee.department!),
               if (employee.title != null)

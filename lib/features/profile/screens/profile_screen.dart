@@ -15,10 +15,14 @@ import 'package:assetflow_mobile/data/services/assignment_service.dart';
 import 'package:assetflow_mobile/features/auth/providers/auth_provider.dart';
 import 'package:assetflow_mobile/features/profile/providers/profile_provider.dart';
 
-final _myActiveAssignmentsProvider = FutureProvider.autoDispose<List<Assignment>>((ref) async {
-  final result = await AssignmentService().getAll(isActive: true, pageSize: 5);
-  return result.items;
-});
+final _myActiveAssignmentsProvider =
+    FutureProvider.autoDispose<List<Assignment>>((ref) async {
+      final result = await AssignmentService().getAll(
+        isActive: true,
+        pageSize: 5,
+      );
+      return result.items;
+    });
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -47,20 +51,25 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     // Show snackbars for success/error
     ref.listen(profileProvider, (prev, next) {
-      if (next.successMessage != null && next.successMessage != prev?.successMessage) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(next.successMessage!),
-          backgroundColor: AppColors.success,
-          behavior: SnackBarBehavior.floating,
-        ));
+      if (next.successMessage != null &&
+          next.successMessage != prev?.successMessage) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.successMessage!),
+            backgroundColor: AppColors.success,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
         ref.read(profileProvider.notifier).clearMessages();
       }
       if (next.error != null && next.error != prev?.error) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(next.error!),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.error!),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
         ref.read(profileProvider.notifier).clearMessages();
       }
     });
@@ -84,12 +93,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 GestureDetector(
                   onTap: goBackOrHome(context),
                   child: Container(
-                    width: 36, height: 36,
+                    width: 36,
+                    height: 36,
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.10),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
+                    child: const Icon(
+                      Icons.chevron_left,
+                      size: 22,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 14),
@@ -100,15 +114,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     children: [
                       _buildAvatar(profile, initials, 56),
                       Positioned(
-                        bottom: 0, right: 0,
+                        bottom: 0,
+                        right: 0,
                         child: Container(
-                          width: 20, height: 20,
+                          width: 20,
+                          height: 20,
                           decoration: BoxDecoration(
                             color: AppColors.navy,
                             shape: BoxShape.circle,
                             border: Border.all(color: Colors.white, width: 1.5),
                           ),
-                          child: const Icon(Icons.camera_alt, size: 11, color: Colors.white),
+                          child: const Icon(
+                            Icons.camera_alt,
+                            size: 11,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ],
@@ -123,7 +143,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       Text(
                         displayName,
                         style: GoogleFonts.inter(
-                          fontSize: 17, fontWeight: FontWeight.w500, color: Colors.white,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -136,7 +158,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       ),
                       const SizedBox(height: 4),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(4),
@@ -144,7 +169,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         child: Text(
                           displayRole,
                           style: GoogleFonts.inter(
-                            fontSize: 10, fontWeight: FontWeight.w500,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
                             color: Colors.white.withValues(alpha: 0.9),
                             letterSpacing: 0.5,
                           ),
@@ -162,7 +188,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             child: profileState.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : ListView(
-                    padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 40),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.lg,
+                      AppSpacing.lg,
+                      AppSpacing.lg,
+                      40,
+                    ),
                     children: [
                       // Stats
                       if (profile != null) ...[
@@ -194,13 +225,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             label: displayEmail,
                             caption: 'E-posta',
                           ),
-                          if (profile?.phoneNumber != null && profile!.phoneNumber!.isNotEmpty)
+                          if (profile?.phoneNumber != null &&
+                              profile!.phoneNumber!.isNotEmpty)
                             _Row(
                               icon: Icons.phone_outlined,
                               label: profile.phoneNumber!,
                               caption: 'Telefon',
                               chevron: true,
-                              onTap: () => _showEditPhoneSheet(context, profile.phoneNumber),
+                              onTap: () => _showEditPhoneSheet(
+                                context,
+                                profile.phoneNumber,
+                              ),
                             )
                           else
                             _Row(
@@ -273,9 +308,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       _Section(
                         label: 'HAKKINDA',
                         children: [
-                          const _Row(icon: Icons.apps_outlined, label: 'AssetFlow Mobile', caption: 'v2.3.0'),
-                          const _Row(icon: Icons.info_outline, label: 'Lisans Bilgisi', chevron: true),
-                          const _Row(icon: Icons.policy_outlined, label: 'Gizlilik Politikası', chevron: true, isLast: true),
+                          const _Row(
+                            icon: Icons.apps_outlined,
+                            label: 'AssetFlow Mobile',
+                            caption: 'v2.3.0',
+                          ),
+                          const _Row(
+                            icon: Icons.info_outline,
+                            label: 'Lisans Bilgisi',
+                            chevron: true,
+                          ),
+                          const _Row(
+                            icon: Icons.policy_outlined,
+                            label: 'Gizlilik Politikası',
+                            chevron: true,
+                            isLast: true,
+                          ),
                         ],
                       ),
                       const SizedBox(height: 24),
@@ -291,18 +339,25 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           decoration: BoxDecoration(
                             color: AppColors.errorBg,
                             borderRadius: BorderRadius.circular(AppRadius.md),
-                            border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
+                            border: Border.all(
+                              color: AppColors.error.withValues(alpha: 0.3),
+                            ),
                           ),
                           alignment: Alignment.center,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.logout, size: 18, color: AppColors.error),
+                              const Icon(
+                                Icons.logout,
+                                size: 18,
+                                color: AppColors.error,
+                              ),
                               const SizedBox(width: 8),
                               Text(
                                 'Çıkış Yap',
                                 style: GoogleFonts.inter(
-                                  fontSize: 14, fontWeight: FontWeight.w500,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
                                   color: AppColors.error,
                                 ),
                               ),
@@ -333,7 +388,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       );
     }
     return Container(
-      width: size, height: size,
+      width: size,
+      height: size,
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.15),
         shape: BoxShape.circle,
@@ -342,7 +398,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       child: Text(
         initials,
         style: GoogleFonts.inter(
-          fontSize: size * 0.35, fontWeight: FontWeight.w500, color: Colors.white,
+          fontSize: size * 0.35,
+          fontWeight: FontWeight.w500,
+          color: Colors.white,
         ),
       ),
     );
@@ -354,7 +412,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       allowMultiple: false,
     );
     if (result == null || result.files.single.path == null) return;
-    await ref.read(profileProvider.notifier).uploadAvatar(File(result.files.single.path!));
+    await ref
+        .read(profileProvider.notifier)
+        .uploadAvatar(File(result.files.single.path!));
   }
 
   // ── Stats row ──────────────────────────────────────────────────────────────
@@ -362,14 +422,28 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget _buildStatsRow(ProfileDto profile) {
     return Row(
       children: [
-        Expanded(child: _StatCard(label: 'Aktif Zimmet', value: '${profile.activeAssignmentCount}')),
+        Expanded(
+          child: _StatCard(
+            label: 'Aktif Zimmet',
+            value: '${profile.activeAssignmentCount}',
+          ),
+        ),
         const SizedBox(width: 10),
-        Expanded(child: _StatCard(label: 'Toplam Zimmet', value: '${profile.totalAssignmentCount}')),
+        Expanded(
+          child: _StatCard(
+            label: 'Toplam Zimmet',
+            value: '${profile.totalAssignmentCount}',
+          ),
+        ),
         const SizedBox(width: 10),
-        Expanded(child: _StatCard(
-          label: 'Son Giriş',
-          value: profile.lastLoginAt != null ? _formatDate(profile.lastLoginAt!) : '—',
-        )),
+        Expanded(
+          child: _StatCard(
+            label: 'Son Giriş',
+            value: profile.lastLoginAt != null
+                ? _formatDate(profile.lastLoginAt!)
+                : '—',
+          ),
+        ),
       ],
     );
   }
@@ -388,13 +462,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             children: [
               Text(
                 'AKTİF ZİMMETLER',
-                style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.textTertiary, letterSpacing: 0.8),
+                style: GoogleFonts.inter(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textTertiary,
+                  letterSpacing: 0.8,
+                ),
               ),
               GestureDetector(
                 onTap: () => context.push('/assignments'),
                 child: Text(
                   'Tümünü Gör',
-                  style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w500, color: AppColors.navy),
+                  style: GoogleFonts.inter(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.navy,
+                  ),
                 ),
               ),
             ],
@@ -409,16 +492,33 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           child: asyncAssignments.when(
             loading: () => const Padding(
               padding: EdgeInsets.all(20),
-              child: Center(child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.navy)),
+              child: Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: AppColors.navy,
+                ),
+              ),
             ),
             error: (e, st) => Padding(
               padding: const EdgeInsets.all(16),
-              child: Text('Yüklenemedi', style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary)),
+              child: Text(
+                'Yüklenemedi',
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  color: AppColors.textSecondary,
+                ),
+              ),
             ),
             data: (assignments) => assignments.isEmpty
                 ? Padding(
                     padding: const EdgeInsets.all(16),
-                    child: Text('Aktif zimmet yok.', style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary)),
+                    child: Text(
+                      'Aktif zimmet yok.',
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                   )
                 : Column(
                     children: [
@@ -426,7 +526,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         _AssignmentRow(
                           assignment: assignments[i],
                           isLast: i == assignments.length - 1,
-                          onTap: () => context.push('/assignments/${assignments[i].id}'),
+                          onTap: () =>
+                              context.push('/assignments/${assignments[i].id}'),
                         ),
                     ],
                   ),
@@ -440,9 +541,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   Widget _buildAssetQuickAccess(BuildContext context) {
     const items = [
-      (Icons.inventory_2_outlined, 'Sarf\nMalzemeleri', '/consumables', AppColors.warning),
-      (Icons.security_outlined,    'Yazılım\nLisansları', '/software-licenses', AppColors.navy),
-      (Icons.subscriptions_outlined,'Abonelikler', '/subscriptions', AppColors.success),
+      (
+        Icons.inventory_2_outlined,
+        'Sarf\nMalzemeleri',
+        '/consumables',
+        AppColors.warning,
+      ),
+      (
+        Icons.security_outlined,
+        'Yazılım\nLisansları',
+        '/software-licenses',
+        AppColors.navy,
+      ),
+      (
+        Icons.subscriptions_outlined,
+        'Abonelikler',
+        '/subscriptions',
+        AppColors.success,
+      ),
     ];
 
     return Column(
@@ -452,7 +568,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           padding: const EdgeInsets.only(bottom: 8),
           child: Text(
             'VARLIK YÖNETİMİ',
-            style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.textTertiary, letterSpacing: 0.8),
+            style: GoogleFonts.inter(
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              color: AppColors.textTertiary,
+              letterSpacing: 0.8,
+            ),
           ),
         ),
         Row(
@@ -475,18 +596,28 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     child: Column(
                       children: [
                         Container(
-                          width: 36, height: 36,
+                          width: 36,
+                          height: 36,
                           decoration: BoxDecoration(
                             color: items[i].$4.withValues(alpha: 0.10),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Icon(items[i].$1, size: 18, color: items[i].$4),
+                          child: Icon(
+                            items[i].$1,
+                            size: 18,
+                            color: items[i].$4,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           items[i].$2,
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w500, color: AppColors.textPrimary, height: 1.3),
+                          style: GoogleFonts.inter(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.textPrimary,
+                            height: 1.3,
+                          ),
                         ),
                       ],
                     ),
@@ -510,19 +641,26 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       title: 'Ad Soyad',
       child: TextField(
         controller: ctrl,
-        decoration: const InputDecoration(labelText: 'Ad Soyad', border: OutlineInputBorder()),
+        decoration: const InputDecoration(
+          labelText: 'Ad Soyad',
+          border: OutlineInputBorder(),
+        ),
         autofocus: true,
       ),
       onSave: () async {
         if (ctrl.text.trim().length < 2) return;
         Navigator.pop(context);
         final p = profile!;
-        await ref.read(profileProvider.notifier).updateProfile(UpdateProfileRequest(
-          fullName: ctrl.text.trim(),
-          phoneNumber: p.phoneNumber,
-          language: p.language,
-          timeZone: p.timeZone,
-        ));
+        await ref
+            .read(profileProvider.notifier)
+            .updateProfile(
+              UpdateProfileRequest(
+                fullName: ctrl.text.trim(),
+                phoneNumber: p.phoneNumber,
+                language: p.language,
+                timeZone: p.timeZone,
+              ),
+            );
       },
     );
   }
@@ -536,18 +674,26 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       child: TextField(
         controller: ctrl,
         keyboardType: TextInputType.phone,
-        decoration: const InputDecoration(labelText: 'Telefon', hintText: '+90 5XX XXX XX XX', border: OutlineInputBorder()),
+        decoration: const InputDecoration(
+          labelText: 'Telefon',
+          hintText: '+90 5XX XXX XX XX',
+          border: OutlineInputBorder(),
+        ),
         autofocus: true,
       ),
       onSave: () async {
         Navigator.pop(context);
         final p = profile!;
-        await ref.read(profileProvider.notifier).updateProfile(UpdateProfileRequest(
-          fullName: p.fullName,
-          phoneNumber: ctrl.text.trim().isEmpty ? null : ctrl.text.trim(),
-          language: p.language,
-          timeZone: p.timeZone,
-        ));
+        await ref
+            .read(profileProvider.notifier)
+            .updateProfile(
+              UpdateProfileRequest(
+                fullName: p.fullName,
+                phoneNumber: ctrl.text.trim().isEmpty ? null : ctrl.text.trim(),
+                language: p.language,
+                timeZone: p.timeZone,
+              ),
+            );
       },
     );
   }
@@ -568,13 +714,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       builder: (ctx) => Padding(
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
-          top: 24, left: 20, right: 20,
+          top: 24,
+          left: 20,
+          right: 20,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: GoogleFonts.inter(fontSize: 17, fontWeight: FontWeight.w500, color: AppColors.textPrimary)),
+            Text(
+              title,
+              style: GoogleFonts.inter(
+                fontSize: 17,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textPrimary,
+              ),
+            ),
             const SizedBox(height: 16),
             child,
             const SizedBox(height: 16),
@@ -590,7 +745,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         borderRadius: BorderRadius.circular(AppRadius.md),
                       ),
                       alignment: Alignment.center,
-                      child: Text('İptal', style: GoogleFonts.inter(fontSize: 14, color: AppColors.textSecondary)),
+                      child: Text(
+                        'İptal',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -605,7 +766,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         borderRadius: BorderRadius.circular(AppRadius.md),
                       ),
                       alignment: Alignment.center,
-                      child: Text('Kaydet', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white)),
+                      child: Text(
+                        'Kaydet',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -635,34 +803,58 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           return Padding(
             padding: EdgeInsets.only(
               bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
-              top: 24, left: 20, right: 20,
+              top: 24,
+              left: 20,
+              right: 20,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Şifre Değiştir', style: GoogleFonts.inter(fontSize: 17, fontWeight: FontWeight.w500, color: AppColors.textPrimary)),
+                Text(
+                  'Şifre Değiştir',
+                  style: GoogleFonts.inter(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
                 const SizedBox(height: 16),
                 TextField(
                   controller: currentCtrl,
                   obscureText: true,
-                  decoration: const InputDecoration(labelText: 'Mevcut Şifre', border: OutlineInputBorder()),
+                  decoration: const InputDecoration(
+                    labelText: 'Mevcut Şifre',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 TextField(
                   controller: newCtrl,
                   obscureText: true,
-                  decoration: const InputDecoration(labelText: 'Yeni Şifre', border: OutlineInputBorder()),
+                  decoration: const InputDecoration(
+                    labelText: 'Yeni Şifre',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 TextField(
                   controller: confirmCtrl,
                   obscureText: true,
-                  decoration: const InputDecoration(labelText: 'Yeni Şifre (tekrar)', border: OutlineInputBorder()),
+                  decoration: const InputDecoration(
+                    labelText: 'Yeni Şifre (tekrar)',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
                 if (err.isNotEmpty) ...[
                   const SizedBox(height: 8),
-                  Text(err, style: GoogleFonts.inter(fontSize: 12, color: AppColors.error)),
+                  Text(
+                    err,
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      color: AppColors.error,
+                    ),
+                  ),
                 ],
                 const SizedBox(height: 16),
                 GestureDetector(
@@ -676,7 +868,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       return;
                     }
                     Navigator.pop(ctx);
-                    await ref.read(profileProvider.notifier)
+                    await ref
+                        .read(profileProvider.notifier)
                         .changePassword(currentCtrl.text, newCtrl.text);
                   },
                   child: Container(
@@ -686,7 +879,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       borderRadius: BorderRadius.circular(AppRadius.md),
                     ),
                     alignment: Alignment.center,
-                    child: Text('Değiştir', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white)),
+                    child: Text(
+                      'Değiştir',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -701,17 +901,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   String _initials(String name) {
     final parts = name.trim().split(' ');
-    if (parts.length >= 2) return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
+    if (parts.length >= 2)
+      return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
     if (name.length >= 2) return name.substring(0, 2).toUpperCase();
     return name.toUpperCase();
   }
 
   String _roleLabel(String? role) => switch (role) {
-        'Admin' => 'YÖNETİCİ',
-        'SuperAdmin' => 'SÜPER YÖNETİCİ',
-        'User' => 'KULLANICI',
-        _ => role?.toUpperCase() ?? '',
-      };
+    'Admin' => 'YÖNETİCİ',
+    'SuperAdmin' => 'SÜPER YÖNETİCİ',
+    'User' => 'KULLANICI',
+    _ => role?.toUpperCase() ?? '',
+  };
 
   String _formatDate(DateTime dt) {
     final now = DateTime.now();
@@ -728,14 +929,20 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         title: const Text('Çıkış Yap'),
         content: const Text('Oturumunuzu kapatmak istiyor musunuz?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('İptal')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('İptal'),
+          ),
           TextButton(
             onPressed: () {
               HapticService.heavy();
               Navigator.pop(ctx);
               ref.read(authProvider.notifier).logout();
             },
-            child: const Text('Çıkış Yap', style: TextStyle(color: AppColors.error)),
+            child: const Text(
+              'Çıkış Yap',
+              style: TextStyle(color: AppColors.error),
+            ),
           ),
         ],
       ),
@@ -745,11 +952,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   void _clearCache(BuildContext context) async {
     await CacheManager.instance.clearAll();
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Önbellek temizlendi.'),
-        backgroundColor: AppColors.success,
-        behavior: SnackBarBehavior.floating,
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Önbellek temizlendi.'),
+          backgroundColor: AppColors.success,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 }
@@ -772,9 +981,23 @@ class _StatCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(value, style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w700, color: AppColors.navy)),
+          Text(
+            value,
+            style: GoogleFonts.inter(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              color: AppColors.navy,
+            ),
+          ),
           const SizedBox(height: 2),
-          Text(label, style: GoogleFonts.inter(fontSize: 10, color: AppColors.textSecondary), textAlign: TextAlign.center),
+          Text(
+            label,
+            style: GoogleFonts.inter(
+              fontSize: 10,
+              color: AppColors.textSecondary,
+            ),
+            textAlign: TextAlign.center,
+          ),
         ],
       ),
     );
@@ -795,7 +1018,12 @@ class _Section extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 8),
           child: Text(
             label,
-            style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.textTertiary, letterSpacing: 0.8),
+            style: GoogleFonts.inter(
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              color: AppColors.textTertiary,
+              letterSpacing: 0.8,
+            ),
           ),
         ),
         Container(
@@ -816,13 +1044,21 @@ class _AssignmentRow extends StatelessWidget {
   final bool isLast;
   final VoidCallback onTap;
 
-  const _AssignmentRow({required this.assignment, required this.isLast, required this.onTap});
+  const _AssignmentRow({
+    required this.assignment,
+    required this.isLast,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     final deviceLabel = assignment.deviceName ?? 'Cihaz';
-    final subLabel = [assignment.deviceBrand, assignment.deviceModel].where((e) => e != null && e.isNotEmpty).join(' ');
-    final date = '${assignment.assignedAt.day}.${assignment.assignedAt.month.toString().padLeft(2, '0')}.${assignment.assignedAt.year}';
+    final subLabel = [
+      assignment.deviceBrand,
+      assignment.deviceModel,
+    ].where((e) => e != null && e.isNotEmpty).join(' ');
+    final date =
+        '${assignment.assignedAt.day}.${assignment.assignedAt.month.toString().padLeft(2, '0')}.${assignment.assignedAt.year}';
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -833,29 +1069,64 @@ class _AssignmentRow extends StatelessWidget {
       child: Container(
         decoration: isLast
             ? null
-            : const BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.surfaceDivider))),
+            : const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: AppColors.surfaceDivider),
+                ),
+              ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
             Container(
-              width: 32, height: 32,
-              decoration: BoxDecoration(color: AppColors.navy.withValues(alpha: 0.08), borderRadius: BorderRadius.circular(AppRadius.sm)),
-              child: const Icon(Icons.devices_outlined, size: 16, color: AppColors.navy),
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: AppColors.navy.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(AppRadius.sm),
+              ),
+              child: const Icon(
+                Icons.devices_outlined,
+                size: 16,
+                color: AppColors.navy,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(deviceLabel, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.textPrimary)),
+                  Text(
+                    deviceLabel,
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
                   if (subLabel.isNotEmpty)
-                    Text(subLabel, style: GoogleFonts.inter(fontSize: 11, color: AppColors.textSecondary)),
+                    Text(
+                      subLabel,
+                      style: GoogleFonts.inter(
+                        fontSize: 11,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                 ],
               ),
             ),
-            Text(date, style: GoogleFonts.inter(fontSize: 11, color: AppColors.textTertiary)),
+            Text(
+              date,
+              style: GoogleFonts.inter(
+                fontSize: 11,
+                color: AppColors.textTertiary,
+              ),
+            ),
             const SizedBox(width: 4),
-            const Icon(Icons.chevron_right, size: 16, color: AppColors.textTertiary),
+            const Icon(
+              Icons.chevron_right,
+              size: 16,
+              color: AppColors.textTertiary,
+            ),
           ],
         ),
       ),
@@ -884,20 +1155,30 @@ class _Row extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: onTap == null ? null : () {
-        HapticService.light();
-        onTap!();
-      },
+      onTap: onTap == null
+          ? null
+          : () {
+              HapticService.light();
+              onTap!();
+            },
       child: Container(
         decoration: isLast
             ? null
-            : const BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.surfaceDivider))),
+            : const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: AppColors.surfaceDivider),
+                ),
+              ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [
             Container(
-              width: 32, height: 32,
-              decoration: BoxDecoration(color: AppColors.surfaceLight, borderRadius: BorderRadius.circular(AppRadius.sm)),
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: AppColors.surfaceLight,
+                borderRadius: BorderRadius.circular(AppRadius.sm),
+              ),
               child: Icon(icon, size: 16, color: AppColors.navy),
             ),
             const SizedBox(width: 12),
@@ -905,13 +1186,31 @@ class _Row extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.textPrimary)),
+                  Text(
+                    label,
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
                   if (caption != null)
-                    Text(caption!, style: GoogleFonts.inter(fontSize: 11, color: AppColors.textSecondary)),
+                    Text(
+                      caption!,
+                      style: GoogleFonts.inter(
+                        fontSize: 11,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                 ],
               ),
             ),
-            if (chevron) const Icon(Icons.chevron_right, size: 16, color: AppColors.textTertiary),
+            if (chevron)
+              const Icon(
+                Icons.chevron_right,
+                size: 16,
+                color: AppColors.textTertiary,
+              ),
           ],
         ),
       ),

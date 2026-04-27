@@ -41,19 +41,26 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 GestureDetector(
                   onTap: goBackOrHome(context),
                   child: Container(
-                    width: 36, height: 36,
+                    width: 36,
+                    height: 36,
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.10),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
+                    child: const Icon(
+                      Icons.chevron_left,
+                      size: 22,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Text(
                   'Ayarlar',
                   style: GoogleFonts.inter(
-                    fontSize: 17, fontWeight: FontWeight.w500, color: Colors.white,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
                   ),
                 ),
               ],
@@ -102,7 +109,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             .read(dashboardVariantProvider.notifier)
                             .setVariant(DashboardVariant.a),
                       ),
-                      const Divider(height: 1, color: AppColors.surfaceDivider, indent: 16, endIndent: 16),
+                      const Divider(
+                        height: 1,
+                        color: AppColors.surfaceDivider,
+                        indent: 16,
+                        endIndent: 16,
+                      ),
                       _VariantRow(
                         label: 'Analytics (B)',
                         caption: 'Durum çubuğu, metrik strip, grafik',
@@ -172,7 +184,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             .read(localeProvider.notifier)
                             .setLocale(const Locale('tr')),
                       ),
-                      const Divider(height: 1, color: AppColors.surfaceDivider, indent: 16, endIndent: 16),
+                      const Divider(
+                        height: 1,
+                        color: AppColors.surfaceDivider,
+                        indent: 16,
+                        endIndent: 16,
+                      ),
                       _VariantRow(
                         label: 'English',
                         caption: 'English interface',
@@ -203,8 +220,10 @@ class _SectionLabel extends StatelessWidget {
     return Text(
       text,
       style: GoogleFonts.inter(
-        fontSize: 10, fontWeight: FontWeight.w500,
-        color: AppColors.textTertiary, letterSpacing: 0.8,
+        fontSize: 10,
+        fontWeight: FontWeight.w500,
+        color: AppColors.textTertiary,
+        letterSpacing: 0.8,
       ),
     );
   }
@@ -243,32 +262,38 @@ class _VariantRow extends StatelessWidget {
                   Text(
                     label,
                     style: GoogleFonts.inter(
-                      fontSize: 13, fontWeight: FontWeight.w500,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
                       color: AppColors.textPrimary,
                     ),
                   ),
                   Text(
                     caption,
                     style: GoogleFonts.inter(
-                      fontSize: 11, color: AppColors.textSecondary,
+                      fontSize: 11,
+                      color: AppColors.textSecondary,
                     ),
                   ),
                 ],
               ),
             ),
             Container(
-              width: 20, height: 20,
+              width: 20,
+              height: 20,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: selected ? AppColors.navy : AppColors.surfaceInputBorder,
+                  color: selected
+                      ? AppColors.navy
+                      : AppColors.surfaceInputBorder,
                   width: 2,
                 ),
               ),
               child: selected
                   ? Center(
                       child: Container(
-                        width: 10, height: 10,
+                        width: 10,
+                        height: 10,
                         decoration: const BoxDecoration(
                           color: AppColors.navy,
                           shape: BoxShape.circle,
@@ -307,7 +332,8 @@ class _ToggleRow extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 32, height: 32,
+            width: 32,
+            height: 32,
             decoration: BoxDecoration(
               color: AppColors.surfaceLight,
               borderRadius: BorderRadius.circular(AppRadius.sm),
@@ -322,14 +348,16 @@ class _ToggleRow extends StatelessWidget {
                 Text(
                   label,
                   style: GoogleFonts.inter(
-                    fontSize: 13, fontWeight: FontWeight.w500,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
                     color: AppColors.textPrimary,
                   ),
                 ),
                 Text(
                   caption,
                   style: GoogleFonts.inter(
-                    fontSize: 11, color: AppColors.textSecondary,
+                    fontSize: 11,
+                    color: AppColors.textSecondary,
                   ),
                 ),
               ],

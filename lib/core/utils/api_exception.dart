@@ -22,9 +22,7 @@ class ValidationException implements Exception {
 
   String get message {
     if (errors.isEmpty) return 'Girilen bilgiler geçersiz.';
-    return errors.values
-        .expand((v) => v is List ? v : [v])
-        .join('\n');
+    return errors.values.expand((v) => v is List ? v : [v]).join('\n');
   }
 
   @override

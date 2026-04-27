@@ -20,16 +20,27 @@ class SubscriptionDetailScreen extends ConsumerWidget {
         appBar: AppBar(
           backgroundColor: AppColors.navy,
           foregroundColor: Colors.white,
-          leading: IconButton(icon: const Icon(Icons.chevron_left), onPressed: () => context.pop()),
+          leading: IconButton(
+            icon: const Icon(Icons.chevron_left),
+            onPressed: () => context.pop(),
+          ),
         ),
-        body: const Center(child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2)),
+        body: const Center(
+          child: CircularProgressIndicator(
+            color: AppColors.navy,
+            strokeWidth: 2,
+          ),
+        ),
       ),
       error: (e, _) => Scaffold(
         backgroundColor: AppColors.surfaceLight,
         appBar: AppBar(
           backgroundColor: AppColors.navy,
           foregroundColor: Colors.white,
-          leading: IconButton(icon: const Icon(Icons.chevron_left), onPressed: () => context.pop()),
+          leading: IconButton(
+            icon: const Icon(Icons.chevron_left),
+            onPressed: () => context.pop(),
+          ),
         ),
         body: Center(child: Text('Yüklenemedi: $e')),
       ),
@@ -43,11 +54,11 @@ class _SubscriptionDetailView extends StatelessWidget {
   const _SubscriptionDetailView({required this.sub});
 
   Color get _statusColor => switch (sub.subscriptionStatus) {
-        'Active' => AppColors.success,
-        'Paused' => AppColors.warning,
-        'Cancelled' => AppColors.error,
-        _ => AppColors.textTertiary,
-      };
+    'Active' => AppColors.success,
+    'Paused' => AppColors.warning,
+    'Cancelled' => AppColors.error,
+    _ => AppColors.textTertiary,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -57,9 +68,17 @@ class _SubscriptionDetailView extends StatelessWidget {
         backgroundColor: AppColors.navy,
         foregroundColor: Colors.white,
         leading: IconButton(
-            icon: const Icon(Icons.chevron_left, color: Colors.white), onPressed: () => context.pop()),
-        title: Text(sub.serviceName,
-            style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
+          icon: const Icon(Icons.chevron_left, color: Colors.white),
+          onPressed: () => context.pop(),
+        ),
+        title: Text(
+          sub.serviceName,
+          style: GoogleFonts.inter(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -85,7 +104,13 @@ class _SubscriptionDetailView extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withAlpha(10), blurRadius: 8, offset: const Offset(0, 2))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(10),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,19 +122,41 @@ class _SubscriptionDetailView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(sub.serviceName,
-                        style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700)),
+                    Text(
+                      sub.serviceName,
+                      style: GoogleFonts.inter(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                     if (sub.provider != null)
-                      Text(sub.provider!,
-                          style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary)),
+                      Text(
+                        sub.provider!,
+                        style: GoogleFonts.inter(
+                          fontSize: 13,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
                   ],
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(color: _statusColor, borderRadius: BorderRadius.circular(20)),
-                child: Text(sub.subscriptionStatusName,
-                    style: GoogleFonts.inter(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: _statusColor,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  sub.subscriptionStatusName,
+                  style: GoogleFonts.inter(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
             ],
           ),
@@ -120,10 +167,20 @@ class _SubscriptionDetailView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Aylık', style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary)),
+                    Text(
+                      'Aylık',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                     Text(
                       '${sub.monthlyCost.toStringAsFixed(2)} ${sub.currency}',
-                      style: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.navy),
+                      style: GoogleFonts.inter(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.navy,
+                      ),
                     ),
                   ],
                 ),
@@ -132,10 +189,20 @@ class _SubscriptionDetailView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Yıllık', style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary)),
+                    Text(
+                      'Yıllık',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                     Text(
                       '${sub.effectiveAnnualCost.toStringAsFixed(2)} ${sub.currency}',
-                      style: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.warning),
+                      style: GoogleFonts.inter(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.warning,
+                      ),
                     ),
                   ],
                 ),
@@ -163,7 +230,13 @@ class _SubscriptionDetailView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Abonelik Bilgileri', style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w700)),
+            Text(
+              'Abonelik Bilgileri',
+              style: GoogleFonts.inter(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             const SizedBox(height: 12),
             ...rows.map(
               (r) => Padding(
@@ -172,10 +245,22 @@ class _SubscriptionDetailView extends StatelessWidget {
                   children: [
                     SizedBox(
                       width: 150,
-                      child: Text(r.$1, style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary)),
+                      child: Text(
+                        r.$1,
+                        style: GoogleFonts.inter(
+                          fontSize: 13,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
                     ),
                     Expanded(
-                      child: Text(r.$2, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w500)),
+                      child: Text(
+                        r.$2,
+                        style: GoogleFonts.inter(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -183,7 +268,13 @@ class _SubscriptionDetailView extends StatelessWidget {
             ),
             if (sub.notes != null) ...[
               const Divider(),
-              Text('Notlar', style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary)),
+              Text(
+                'Notlar',
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  color: AppColors.textSecondary,
+                ),
+              ),
               const SizedBox(height: 4),
               Text(sub.notes!, style: GoogleFonts.inter(fontSize: 13)),
             ],
@@ -209,7 +300,10 @@ class _SubscriptionDetailView extends StatelessWidget {
           Expanded(
             child: Text(
               '$days gün içinde yenileniyor!',
-              style: GoogleFonts.inter(fontWeight: FontWeight.w600, color: AppColors.warning),
+              style: GoogleFonts.inter(
+                fontWeight: FontWeight.w600,
+                color: AppColors.warning,
+              ),
             ),
           ),
         ],

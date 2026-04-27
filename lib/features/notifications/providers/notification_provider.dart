@@ -39,7 +39,9 @@ class NotificationNotifier
       state.whenData((items) {
         if (!mounted) return;
         state = AsyncValue.data(
-          items.map((n) => n.isRead ? n : n.copyWith(isRead: true, readAt: now)).toList(),
+          items
+              .map((n) => n.isRead ? n : n.copyWith(isRead: true, readAt: now))
+              .toList(),
         );
       });
     } catch (_) {}
@@ -59,21 +61,31 @@ class NotificationNotifier
     state.whenData((items) {
       if (!mounted) return;
       state = AsyncValue.data(
-        items.map((n) => n.id == id ? n.copyWith(isRead: isRead, readAt: readAt) : n).toList(),
+        items
+            .map(
+              (n) =>
+                  n.id == id ? n.copyWith(isRead: isRead, readAt: readAt) : n,
+            )
+            .toList(),
       );
     });
   }
 }
 
-final notificationProvider = StateNotifierProvider<NotificationNotifier,
-    AsyncValue<List<NotificationItem>>>((ref) {
-  return NotificationNotifier(ApiClient.instance);
-});
+final notificationProvider =
+    StateNotifierProvider<
+      NotificationNotifier,
+      AsyncValue<List<NotificationItem>>
+    >((ref) {
+      return NotificationNotifier(ApiClient.instance);
+    });
 
 final unreadNotificationCountProvider = Provider<int>((ref) {
-  return ref.watch(notificationProvider).when(
-    data: (items) => items.where((n) => !n.isRead).length,
-    loading: () => 0,
-    error: (e, st) => 0,
-  );
+  return ref
+      .watch(notificationProvider)
+      .when(
+        data: (items) => items.where((n) => !n.isRead).length,
+        loading: () => 0,
+        error: (e, st) => 0,
+      );
 });

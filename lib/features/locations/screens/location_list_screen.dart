@@ -10,7 +10,9 @@ import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
 import 'package:assetflow_mobile/data/models/location_model.dart';
 import 'package:assetflow_mobile/data/services/location_service.dart';
 
-final _locationListProvider = FutureProvider.autoDispose<List<Location>>((ref) async {
+final _locationListProvider = FutureProvider.autoDispose<List<Location>>((
+  ref,
+) async {
   final result = await LocationService().getAll(page: 1, pageSize: 100);
   return result.items;
 });
@@ -40,7 +42,8 @@ class LocationListScreen extends ConsumerWidget {
                 if (result == true) ref.invalidate(_locationListProvider);
               },
               child: Container(
-                width: 36, height: 36,
+                width: 36,
+                height: 36,
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.10),
                   borderRadius: BorderRadius.circular(8),
@@ -53,14 +56,16 @@ class LocationListScreen extends ConsumerWidget {
             child: async.when(
               loading: () => const Center(
                 child: CircularProgressIndicator(
-                  color: AppColors.navy, strokeWidth: 2,
+                  color: AppColors.navy,
+                  strokeWidth: 2,
                 ),
               ),
               error: (err, stack) => Center(
                 child: Text(
                   'Lokasyonlar yüklenemedi.',
                   style: GoogleFonts.inter(
-                    fontSize: 13, color: AppColors.textSecondary,
+                    fontSize: 13,
+                    color: AppColors.textSecondary,
                   ),
                 ),
               ),
@@ -114,13 +119,17 @@ class _LocationCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 36, height: 36,
+              width: 36,
+              height: 36,
               decoration: BoxDecoration(
                 color: AppColors.infoBg,
                 borderRadius: BorderRadius.circular(AppRadius.sm),
               ),
-              child: const Icon(Icons.location_on_outlined,
-                  size: 20, color: AppColors.navy),
+              child: const Icon(
+                Icons.location_on_outlined,
+                size: 20,
+                color: AppColors.navy,
+              ),
             ),
             const SizedBox(height: 10),
             Text(
@@ -151,12 +160,10 @@ class _LocationCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _Metric(
-                  value: '${location.deviceCount}',
-                  label: 'Cihaz',
-                ),
+                _Metric(value: '${location.deviceCount}', label: 'Cihaz'),
                 Container(
-                  width: 1, height: 24,
+                  width: 1,
+                  height: 24,
                   color: AppColors.surfaceDivider,
                 ),
                 _Metric(

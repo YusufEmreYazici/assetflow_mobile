@@ -54,13 +54,19 @@ class SapState {
       isLoadingStatus: isLoadingStatus ?? this.isLoadingStatus,
       lastEmployeeSync: lastEmployeeSync ?? this.lastEmployeeSync,
       isSyncingEmployees: isSyncingEmployees ?? this.isSyncingEmployees,
-      employeeSyncError: clearEmployeeSyncError ? null : (employeeSyncError ?? this.employeeSyncError),
+      employeeSyncError: clearEmployeeSyncError
+          ? null
+          : (employeeSyncError ?? this.employeeSyncError),
       lastAssetSync: lastAssetSync ?? this.lastAssetSync,
       isSyncingAssets: isSyncingAssets ?? this.isSyncingAssets,
-      assetSyncError: clearAssetSyncError ? null : (assetSyncError ?? this.assetSyncError),
+      assetSyncError: clearAssetSyncError
+          ? null
+          : (assetSyncError ?? this.assetSyncError),
       budgets: budgets ?? this.budgets,
       isLoadingBudgets: isLoadingBudgets ?? this.isLoadingBudgets,
-      budgetsError: clearBudgetsError ? null : (budgetsError ?? this.budgetsError),
+      budgetsError: clearBudgetsError
+          ? null
+          : (budgetsError ?? this.budgetsError),
     );
   }
 }
@@ -88,10 +94,16 @@ class SapNotifier extends StateNotifier<SapState> {
 
   Future<void> syncEmployees() async {
     if (state.isSyncingEmployees) return;
-    state = state.copyWith(isSyncingEmployees: true, clearEmployeeSyncError: true);
+    state = state.copyWith(
+      isSyncingEmployees: true,
+      clearEmployeeSyncError: true,
+    );
     try {
       final result = await _service.syncEmployees();
-      state = state.copyWith(lastEmployeeSync: result, isSyncingEmployees: false);
+      state = state.copyWith(
+        lastEmployeeSync: result,
+        isSyncingEmployees: false,
+      );
       if (result.newCount > 0) {
         await NotificationService.instance.notifySapNewEmployee(
           employeeName: '${result.newCount} personel',
@@ -111,7 +123,9 @@ class SapNotifier extends StateNotifier<SapState> {
       final result = await _service.syncAssets();
       state = state.copyWith(lastAssetSync: result, isSyncingAssets: false);
       if (result.newCount > 0) {
-        await NotificationService.instance.notifySapAssetsImported(count: result.newCount);
+        await NotificationService.instance.notifySapAssetsImported(
+          count: result.newCount,
+        );
       }
     } catch (e) {
       final msg = _parseError(e);
@@ -153,7 +167,8 @@ class SapNotifier extends StateNotifier<SapState> {
             (err.response.data as Map)['message'] ??
             'SAP baglantisi kurulamadi';
       }
-      if (err?.response?.statusCode == 404 || err?.response?.statusCode == 501) {
+      if (err?.response?.statusCode == 404 ||
+          err?.response?.statusCode == 501) {
         return 'SAP entegrasyonu henuz yapilandirilmadi';
       }
     } catch (_) {}

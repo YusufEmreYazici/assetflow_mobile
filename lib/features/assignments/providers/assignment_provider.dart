@@ -119,7 +119,12 @@ class AssignmentNotifier extends StateNotifier<AssignmentListState> {
           final items = (cached as List)
               .map((j) => Assignment.fromJson(j as Map<String, dynamic>))
               .toList();
-          state = state.copyWith(assignments: items, isLoading: false, page: 1, hasMore: false);
+          state = state.copyWith(
+            assignments: items,
+            isLoading: false,
+            page: 1,
+            hasMore: false,
+          );
           return;
         }
       }
@@ -140,11 +145,19 @@ class AssignmentNotifier extends StateNotifier<AssignmentListState> {
           final items = (cached as List)
               .map((j) => Assignment.fromJson(j as Map<String, dynamic>))
               .toList();
-          state = state.copyWith(assignments: items, isLoading: false, page: 1, hasMore: false);
+          state = state.copyWith(
+            assignments: items,
+            isLoading: false,
+            page: 1,
+            hasMore: false,
+          );
           return;
         }
       }
-      state = state.copyWith(isLoading: false, error: 'Beklenmeyen bir hata olustu.');
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Beklenmeyen bir hata olustu.',
+      );
     }
   }
 

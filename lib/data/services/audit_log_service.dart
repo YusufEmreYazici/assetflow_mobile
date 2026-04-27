@@ -32,7 +32,8 @@ class AuditLogService {
       queryParameters: {
         'page': page,
         'pageSize': pageSize,
-        if (entityName != null && entityName.isNotEmpty) 'entityName': entityName,
+        if (entityName != null && entityName.isNotEmpty)
+          'entityName': entityName,
         if (action != null && action.isNotEmpty) 'action': action,
       },
     );

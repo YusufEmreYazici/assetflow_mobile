@@ -82,8 +82,9 @@ class OfflineCacheService {
   // ── Meta ───────────────────────────────────────────────────────────────────
 
   static Future<void> _setLastSync(String key) async {
-    await Hive.box<String>(_metaBox)
-        .put('${key}_last_sync', DateTime.now().toIso8601String());
+    await Hive.box<String>(
+      _metaBox,
+    ).put('${key}_last_sync', DateTime.now().toIso8601String());
   }
 
   static DateTime? getLastSync(String key) {

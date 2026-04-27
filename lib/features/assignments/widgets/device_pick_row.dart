@@ -16,16 +16,16 @@ class DevicePickRow extends StatelessWidget {
   });
 
   IconData get _typeIcon => switch (device.type) {
-        0 => Icons.laptop_outlined,
-        1 => Icons.desktop_mac_outlined,
-        2 => Icons.monitor_outlined,
-        3 => Icons.print_outlined,
-        4 => Icons.smartphone_outlined,
-        5 => Icons.tablet_outlined,
-        6 => Icons.dns_outlined,
-        7 => Icons.router_outlined,
-        _ => Icons.devices_outlined,
-      };
+    0 => Icons.laptop_outlined,
+    1 => Icons.desktop_mac_outlined,
+    2 => Icons.monitor_outlined,
+    3 => Icons.print_outlined,
+    4 => Icons.smartphone_outlined,
+    5 => Icons.tablet_outlined,
+    6 => Icons.dns_outlined,
+    7 => Icons.router_outlined,
+    _ => Icons.devices_outlined,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +72,11 @@ class DevicePickRow extends StatelessWidget {
                   if (device.assetCode != null || device.brand != null) ...[
                     const SizedBox(height: 2),
                     Text(
-                      [device.assetCode, device.brand, device.model]
-                          .whereType<String>()
-                          .join(' · '),
+                      [
+                        device.assetCode,
+                        device.brand,
+                        device.model,
+                      ].whereType<String>().join(' · '),
                       style: GoogleFonts.inter(
                         fontSize: 11,
                         color: AppColors.textSecondary,

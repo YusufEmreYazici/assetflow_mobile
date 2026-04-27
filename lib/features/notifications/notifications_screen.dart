@@ -15,7 +15,8 @@ class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
 
   @override
-  ConsumerState<NotificationsScreen> createState() => _NotificationsScreenState();
+  ConsumerState<NotificationsScreen> createState() =>
+      _NotificationsScreenState();
 }
 
 class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
@@ -70,10 +71,10 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       final entityId = notif.relatedEntityId!;
 
       final route = switch (entityType) {
-        'Device'     => '/devices/$entityId',
+        'Device' => '/devices/$entityId',
         'Assignment' => '/assignments/$entityId',
-        'Employee'   => '/person/$entityId',
-        'Location'   => '/location/$entityId',
+        'Employee' => '/person/$entityId',
+        'Location' => '/location/$entityId',
         _ => null,
       };
 
@@ -103,7 +104,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           Container(
             decoration: const BoxDecoration(
               color: AppColors.surfaceWhite,
-              border: Border(bottom: BorderSide(color: AppColors.surfaceDivider)),
+              border: Border(
+                bottom: BorderSide(color: AppColors.surfaceDivider),
+              ),
             ),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -114,11 +117,16 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                   return GestureDetector(
                     onTap: () => setState(() => _tabIndex = e.key),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 14,
+                        horizontal: 12,
+                      ),
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
-                            color: isActive ? AppColors.navy : Colors.transparent,
+                            color: isActive
+                                ? AppColors.navy
+                                : Colors.transparent,
                             width: 2,
                           ),
                         ),
@@ -128,7 +136,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                         style: GoogleFonts.inter(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
-                          color: isActive ? AppColors.navy : AppColors.textSecondary,
+                          color: isActive
+                              ? AppColors.navy
+                              : AppColors.textSecondary,
                         ),
                       ),
                     ),
@@ -145,12 +155,20 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.error_outline, color: AppColors.error, size: 48),
+                    const Icon(
+                      Icons.error_outline,
+                      color: AppColors.error,
+                      size: 48,
+                    ),
                     const SizedBox(height: 12),
-                    Text('Bildirimler yüklenemedi', style: GoogleFonts.inter(color: AppColors.textSecondary)),
+                    Text(
+                      'Bildirimler yüklenemedi',
+                      style: GoogleFonts.inter(color: AppColors.textSecondary),
+                    ),
                     const SizedBox(height: 12),
                     ElevatedButton(
-                      onPressed: () => ref.read(notificationProvider.notifier).load(),
+                      onPressed: () =>
+                          ref.read(notificationProvider.notifier).load(),
                       child: const Text('Tekrar Dene'),
                     ),
                   ],
@@ -160,15 +178,23 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 final filtered = _filtered(items);
                 if (filtered.isEmpty) return const EmptyState.noNotifications();
                 return RefreshIndicator(
-                  onRefresh: () => ref.read(notificationProvider.notifier).load(),
+                  onRefresh: () =>
+                      ref.read(notificationProvider.notifier).load(),
                   color: AppColors.primary500,
                   child: ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 20),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.lg,
+                      AppSpacing.md,
+                      AppSpacing.lg,
+                      20,
+                    ),
                     itemCount: filtered.length,
                     itemBuilder: (context, i) => _NotifCard(
                       notif: filtered[i],
                       onTap: () => _handleTap(filtered[i]),
-                      onDelete: () => ref.read(notificationProvider.notifier).delete(filtered[i].id),
+                      onDelete: () => ref
+                          .read(notificationProvider.notifier)
+                          .delete(filtered[i].id),
                     ),
                   ),
                 );
@@ -220,7 +246,11 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 color: Colors.white.withValues(alpha: 0.10),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
+              child: const Icon(
+                Icons.chevron_left,
+                size: 22,
+                color: Colors.white,
+              ),
             ),
           ),
           const SizedBox(width: 12),
@@ -230,19 +260,27 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
               children: [
                 Text(
                   'Bildirimler',
-                  style: GoogleFonts.inter(fontSize: 17, fontWeight: FontWeight.w500, color: Colors.white),
+                  style: GoogleFonts.inter(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
                 ),
                 if (unreadCount > 0)
                   Text(
                     '$unreadCount okunmamış',
-                    style: GoogleFonts.inter(fontSize: 11, color: Colors.white.withValues(alpha: 0.7)),
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      color: Colors.white.withValues(alpha: 0.7),
+                    ),
                   ),
               ],
             ),
           ),
           if (unreadCount > 0)
             GestureDetector(
-              onTap: () => ref.read(notificationProvider.notifier).markAllAsRead(),
+              onTap: () =>
+                  ref.read(notificationProvider.notifier).markAllAsRead(),
               child: Text(
                 'Tümünü Oku',
                 style: GoogleFonts.inter(
@@ -263,7 +301,11 @@ class _NotifCard extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onDelete;
 
-  const _NotifCard({required this.notif, required this.onTap, required this.onDelete});
+  const _NotifCard({
+    required this.notif,
+    required this.onTap,
+    required this.onDelete,
+  });
 
   IconData get _icon => switch (notif.type) {
     0 || 1 => Icons.warning_amber_outlined,
@@ -296,7 +338,10 @@ class _NotifCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasNavigation = notif.relatedEntityId != null || notif.type <= 3;  // type<=3 = warranty/assignment → has a list to navigate to
+    final hasNavigation =
+        notif.relatedEntityId != null ||
+        notif.type <=
+            3; // type<=3 = warranty/assignment → has a list to navigate to
 
     return Dismissible(
       key: ValueKey(notif.id),
@@ -321,7 +366,9 @@ class _NotifCard extends StatelessWidget {
             color: notif.isRead ? AppColors.surfaceWhite : _bgColor,
             borderRadius: BorderRadius.circular(AppRadius.md),
             border: Border.all(
-              color: notif.isRead ? AppColors.surfaceDivider : _color.withValues(alpha: 0.3),
+              color: notif.isRead
+                  ? AppColors.surfaceDivider
+                  : _color.withValues(alpha: 0.3),
             ),
           ),
           child: Row(
@@ -348,7 +395,9 @@ class _NotifCard extends StatelessWidget {
                             notif.title,
                             style: GoogleFonts.inter(
                               fontSize: 13,
-                              fontWeight: notif.isRead ? FontWeight.w400 : FontWeight.w500,
+                              fontWeight: notif.isRead
+                                  ? FontWeight.w400
+                                  : FontWeight.w500,
                               color: AppColors.textPrimary,
                             ),
                           ),
@@ -357,23 +406,37 @@ class _NotifCard extends StatelessWidget {
                           Container(
                             width: 8,
                             height: 8,
-                            decoration: BoxDecoration(color: _color, shape: BoxShape.circle),
+                            decoration: BoxDecoration(
+                              color: _color,
+                              shape: BoxShape.circle,
+                            ),
                           )
                         else if (hasNavigation)
-                          const Icon(Icons.chevron_right, size: 16, color: AppColors.textTertiary),
+                          const Icon(
+                            Icons.chevron_right,
+                            size: 16,
+                            color: AppColors.textTertiary,
+                          ),
                       ],
                     ),
                     const SizedBox(height: 3),
                     Text(
                       notif.message,
-                      style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary, height: 1.4),
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                        height: 1.4,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Row(
                       children: [
                         Text(
                           _relativeTime(),
-                          style: GoogleFonts.inter(fontSize: 10, color: AppColors.textTertiary),
+                          style: GoogleFonts.inter(
+                            fontSize: 10,
+                            color: AppColors.textTertiary,
+                          ),
                         ),
                         if (notif.isRead && hasNavigation) ...[
                           const SizedBox(width: 6),

@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:assetflow_mobile/data/models/location_model.dart';
 import 'package:assetflow_mobile/data/services/location_service.dart';
 
-final locationServiceProvider = Provider<LocationService>((ref) => LocationService());
+final locationServiceProvider = Provider<LocationService>(
+  (ref) => LocationService(),
+);
 
 class LocationListState {
   final List<Location> locations;
@@ -65,7 +67,10 @@ class LocationNotifier extends StateNotifier<LocationListState> {
       }
       state = state.copyWith(isLoading: false, error: msg);
     } catch (_) {
-      state = state.copyWith(isLoading: false, error: 'Beklenmeyen bir hata olustu.');
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Beklenmeyen bir hata olustu.',
+      );
     }
   }
 
@@ -85,6 +90,8 @@ class LocationNotifier extends StateNotifier<LocationListState> {
 }
 
 final locationProvider =
-    StateNotifierProvider.autoDispose<LocationNotifier, LocationListState>((ref) {
-  return LocationNotifier(ref.watch(locationServiceProvider));
-});
+    StateNotifierProvider.autoDispose<LocationNotifier, LocationListState>((
+      ref,
+    ) {
+      return LocationNotifier(ref.watch(locationServiceProvider));
+    });

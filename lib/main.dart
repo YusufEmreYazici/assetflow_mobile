@@ -15,10 +15,7 @@ import 'package:assetflow_mobile/features/auth/providers/auth_provider.dart';
 import 'package:assetflow_mobile/l10n/app_localizations.dart';
 
 // Replace with real DSN from https://sentry.io before production deploy
-const _sentryDsn = String.fromEnvironment(
-  'SENTRY_DSN',
-  defaultValue: '',
-);
+const _sentryDsn = String.fromEnvironment('SENTRY_DSN', defaultValue: '');
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,18 +24,15 @@ void main() async {
   await OfflineCacheService.init();
   await HapticService.init();
 
-  await SentryFlutter.init(
-    (options) {
-      options.dsn = _sentryDsn;
-      options.tracesSampleRate = 0.2;
-      options.environment = const String.fromEnvironment(
-        'APP_ENV',
-        defaultValue: 'development',
-      );
-      options.release = 'assetflow-mobile@2.3.1+26';
-    },
-    appRunner: () => runApp(const ProviderScope(child: AssetFlowApp())),
-  );
+  await SentryFlutter.init((options) {
+    options.dsn = _sentryDsn;
+    options.tracesSampleRate = 0.2;
+    options.environment = const String.fromEnvironment(
+      'APP_ENV',
+      defaultValue: 'development',
+    );
+    options.release = 'assetflow-mobile@2.3.1+26';
+  }, appRunner: () => runApp(const ProviderScope(child: AssetFlowApp())));
 }
 
 class AssetFlowApp extends ConsumerStatefulWidget {
@@ -78,10 +72,7 @@ class _AssetFlowAppState extends ConsumerState<AssetFlowApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('tr'),
-        Locale('en'),
-      ],
+      supportedLocales: const [Locale('tr'), Locale('en')],
       routerConfig: router,
     );
   }

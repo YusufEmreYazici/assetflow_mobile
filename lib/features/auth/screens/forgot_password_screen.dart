@@ -28,11 +28,16 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       setState(() => _error = 'Geçerli bir e-posta adresi girin.');
       return;
     }
-    setState(() { _error = null; _isLoading = true; });
+    setState(() {
+      _error = null;
+      _isLoading = true;
+    });
     await Future.delayed(const Duration(milliseconds: 700));
     if (!mounted) return;
     setState(() => _isLoading = false);
-    context.pushReplacement('/password-sent?email=${Uri.encodeComponent(email)}');
+    context.pushReplacement(
+      '/password-sent?email=${Uri.encodeComponent(email)}',
+    );
   }
 
   @override
@@ -51,34 +56,45 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               padding: const EdgeInsets.fromLTRB(28, 28, 28, 40),
               children: [
                 Container(
-                  width: 48, height: 48,
+                  width: 48,
+                  height: 48,
                   decoration: BoxDecoration(
                     color: AppColors.infoBg,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(Icons.mail_outline, size: 22, color: AppColors.info),
+                  child: const Icon(
+                    Icons.mail_outline,
+                    size: 22,
+                    color: AppColors.info,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 Text(
                   'Şifrenizi mi unuttunuz?',
                   style: GoogleFonts.inter(
-                    fontSize: 20, fontWeight: FontWeight.w500,
-                    color: AppColors.textPrimary, letterSpacing: -0.2,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textPrimary,
+                    letterSpacing: -0.2,
                   ),
                 ),
                 const SizedBox(height: 10),
                 Text(
                   'Kurumsal e-posta adresinize bir sıfırlama bağlantısı göndereceğiz. Bağlantı 30 dakika geçerli olacaktır.',
                   style: GoogleFonts.inter(
-                    fontSize: 13, color: AppColors.textSecondary, height: 1.55,
+                    fontSize: 13,
+                    color: AppColors.textSecondary,
+                    height: 1.55,
                   ),
                 ),
                 const SizedBox(height: 28),
                 Text(
                   'KURUMSAL E-POSTA',
                   style: GoogleFonts.inter(
-                    fontSize: 11, fontWeight: FontWeight.w500,
-                    color: AppColors.textSecondary, letterSpacing: 1,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textSecondary,
+                    letterSpacing: 1,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -86,29 +102,48 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   controller: _emailCtrl,
                   keyboardType: TextInputType.emailAddress,
                   autofocus: true,
-                  style: GoogleFonts.inter(fontSize: 14, color: AppColors.textPrimary),
-                  onChanged: (_) { if (_error != null) setState(() => _error = null); },
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    color: AppColors.textPrimary,
+                  ),
+                  onChanged: (_) {
+                    if (_error != null) setState(() => _error = null);
+                  },
                   decoration: InputDecoration(
                     hintText: 'ad.soyad@sirket.com.tr',
-                    hintStyle: GoogleFonts.inter(fontSize: 14, color: AppColors.textTertiary),
+                    hintStyle: GoogleFonts.inter(
+                      fontSize: 14,
+                      color: AppColors.textTertiary,
+                    ),
                     filled: true,
                     fillColor: AppColors.surfaceWhite,
                     prefixIcon: const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 14),
-                      child: Icon(Icons.mail_outline, size: 18, color: AppColors.textTertiary),
+                      child: Icon(
+                        Icons.mail_outline,
+                        size: 18,
+                        color: AppColors.textTertiary,
+                      ),
                     ),
                     prefixIconConstraints: const BoxConstraints(minWidth: 46),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppRadius.md),
                       borderSide: BorderSide(
-                        color: _error != null ? AppColors.error : AppColors.surfaceInputBorder,
+                        color: _error != null
+                            ? AppColors.error
+                            : AppColors.surfaceInputBorder,
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppRadius.md),
                       borderSide: BorderSide(
-                        color: _error != null ? AppColors.error : AppColors.navy,
+                        color: _error != null
+                            ? AppColors.error
+                            : AppColors.navy,
                         width: 2,
                       ),
                     ),
@@ -116,12 +151,20 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       borderRadius: BorderRadius.circular(AppRadius.md),
                       borderSide: const BorderSide(color: AppColors.error),
                     ),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppRadius.md),
+                    ),
                   ),
                 ),
                 if (_error != null) ...[
                   const SizedBox(height: 6),
-                  Text(_error!, style: GoogleFonts.inter(fontSize: 11, color: AppColors.error)),
+                  Text(
+                    _error!,
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      color: AppColors.error,
+                    ),
+                  ),
                 ],
                 const SizedBox(height: 22),
                 GestureDetector(
@@ -136,10 +179,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     child: Center(
                       child: _isLoading
                           ? const SizedBox(
-                              width: 20, height: 20,
+                              width: 20,
+                              height: 20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation(Colors.white),
+                                valueColor: AlwaysStoppedAnimation(
+                                  Colors.white,
+                                ),
                               ),
                             )
                           : Row(
@@ -148,12 +194,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 Text(
                                   'Sıfırlama Linki Gönder',
                                   style: GoogleFonts.inter(
-                                    fontSize: 14, fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
                                     color: Colors.white,
                                   ),
                                 ),
                                 const SizedBox(width: 8),
-                                const Icon(Icons.arrow_forward, size: 14, color: Colors.white),
+                                const Icon(
+                                  Icons.arrow_forward,
+                                  size: 14,
+                                  color: Colors.white,
+                                ),
                               ],
                             ),
                     ),
@@ -168,7 +219,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     child: Text(
                       '← Giriş ekranına dön',
                       style: GoogleFonts.inter(
-                        fontSize: 13, fontWeight: FontWeight.w500,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
                         color: AppColors.navy,
                       ),
                     ),

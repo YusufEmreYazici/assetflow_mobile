@@ -3,8 +3,9 @@ import 'package:assetflow_mobile/data/models/software_license_model.dart';
 import 'package:assetflow_mobile/data/models/paged_result.dart';
 import 'package:assetflow_mobile/data/services/software_license_service.dart';
 
-final softwareLicenseServiceProvider =
-    Provider<SoftwareLicenseService>((_) => SoftwareLicenseService());
+final softwareLicenseServiceProvider = Provider<SoftwareLicenseService>(
+  (_) => SoftwareLicenseService(),
+);
 
 class SoftwareLicenseListState {
   final PagedResult<SoftwareLicense>? result;
@@ -25,19 +26,20 @@ class SoftwareLicenseListState {
     String? error,
     String? search,
     bool clearError = false,
-  }) =>
-      SoftwareLicenseListState(
-        result: result ?? this.result,
-        isLoading: isLoading ?? this.isLoading,
-        error: clearError ? null : (error ?? this.error),
-        search: search ?? this.search,
-      );
+  }) => SoftwareLicenseListState(
+    result: result ?? this.result,
+    isLoading: isLoading ?? this.isLoading,
+    error: clearError ? null : (error ?? this.error),
+    search: search ?? this.search,
+  );
 }
 
-class SoftwareLicenseListNotifier extends StateNotifier<SoftwareLicenseListState> {
+class SoftwareLicenseListNotifier
+    extends StateNotifier<SoftwareLicenseListState> {
   final SoftwareLicenseService _service;
 
-  SoftwareLicenseListNotifier(this._service) : super(const SoftwareLicenseListState());
+  SoftwareLicenseListNotifier(this._service)
+    : super(const SoftwareLicenseListState());
 
   Future<void> load() async {
     state = state.copyWith(isLoading: true, clearError: true);
@@ -55,14 +57,19 @@ class SoftwareLicenseListNotifier extends StateNotifier<SoftwareLicenseListState
   }
 }
 
-final softwareLicenseListProvider = StateNotifierProvider.autoDispose<
-    SoftwareLicenseListNotifier, SoftwareLicenseListState>((ref) {
-  final notifier = SoftwareLicenseListNotifier(ref.read(softwareLicenseServiceProvider));
-  notifier.load();
-  return notifier;
-});
+final softwareLicenseListProvider =
+    StateNotifierProvider.autoDispose<
+      SoftwareLicenseListNotifier,
+      SoftwareLicenseListState
+    >((ref) {
+      final notifier = SoftwareLicenseListNotifier(
+        ref.read(softwareLicenseServiceProvider),
+      );
+      notifier.load();
+      return notifier;
+    });
 
-final softwareLicenseDetailProvider =
-    FutureProvider.autoDispose.family<SoftwareLicense, String>((ref, id) {
-  return ref.read(softwareLicenseServiceProvider).getById(id);
-});
+final softwareLicenseDetailProvider = FutureProvider.autoDispose
+    .family<SoftwareLicense, String>((ref, id) {
+      return ref.read(softwareLicenseServiceProvider).getById(id);
+    });

@@ -152,7 +152,8 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
             action: GestureDetector(
               onTap: _navigateToAssign,
               child: Container(
-                width: 36, height: 36,
+                width: 36,
+                height: 36,
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.14),
                   borderRadius: BorderRadius.circular(8),
@@ -163,115 +164,117 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
           ),
           Expanded(
             child: Column(
-        children: [
-          // Search bar
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-            child: Row(
               children: [
-                Expanded(
-                  child: TextField(
-                    controller: _searchController,
-                    onSubmitted: (_) => _onSearch(),
-                    decoration: InputDecoration(
-                      hintText: 'Zimmet no, cihaz, personel ara...',
-                      prefixIcon: const Icon(Icons.search, size: 20),
-                      suffixIcon: state.searchQuery.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.clear, size: 18),
-                              onPressed: _clearSearch,
-                            )
-                          : null,
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10,
-                        horizontal: 12,
-                      ),
-                      isDense: true,
-                    ),
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                SizedBox(
-                  height: 44,
-                  child: ElevatedButton(
-                    onPressed: _onSearch,
-                    child: const Icon(Icons.search, size: 20),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Filter chips
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: Row(
-              children: [
-                _FilterChip(
-                  label: 'Tümü',
-                  selected: state.filter == AssignmentFilter.all,
-                  onTap: () => ref
-                      .read(assignmentProvider.notifier)
-                      .setFilter(AssignmentFilter.all),
-                ),
-                const SizedBox(width: 8),
-                _FilterChip(
-                  label: 'Aktif',
-                  selected: state.filter == AssignmentFilter.active,
-                  color: AppColors.success,
-                  onTap: () => ref
-                      .read(assignmentProvider.notifier)
-                      .setFilter(AssignmentFilter.active),
-                ),
-                const SizedBox(width: 8),
-                _FilterChip(
-                  label: 'Tamamlanan',
-                  selected: state.filter == AssignmentFilter.returned,
-                  color: AppColors.textTertiary,
-                  onTap: () => ref
-                      .read(assignmentProvider.notifier)
-                      .setFilter(AssignmentFilter.returned),
-                ),
-              ],
-            ),
-          ),
-          // List
-          Expanded(
-            child: state.isLoading
-                ? _buildShimmer()
-                : state.error != null
-                ? _buildError(state.error!)
-                : state.assignments.isEmpty
-                ? _buildEmpty()
-                : RefreshIndicator(
-                    color: AppColors.primary500,
-                    backgroundColor: AppColors.dark800,
-                    onRefresh: () =>
-                        ref.read(assignmentProvider.notifier).refresh(),
-                    child: ListView.builder(
-                      controller: _scrollController,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      itemCount:
-                          state.assignments.length +
-                          (state.isLoadingMore ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        if (index == state.assignments.length) {
-                          return const Padding(
-                            padding: EdgeInsets.all(16),
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                color: AppColors.primary500,
-                              ),
+                // Search bar
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _searchController,
+                          onSubmitted: (_) => _onSearch(),
+                          decoration: InputDecoration(
+                            hintText: 'Zimmet no, cihaz, personel ara...',
+                            prefixIcon: const Icon(Icons.search, size: 20),
+                            suffixIcon: state.searchQuery.isNotEmpty
+                                ? IconButton(
+                                    icon: const Icon(Icons.clear, size: 18),
+                                    onPressed: _clearSearch,
+                                  )
+                                : null,
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 10,
+                              horizontal: 12,
                             ),
-                          );
-                        }
-                        return _buildAssignmentItem(state.assignments[index]);
-                      },
-                    ),
+                            isDense: true,
+                          ),
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      SizedBox(
+                        height: 44,
+                        child: ElevatedButton(
+                          onPressed: _onSearch,
+                          child: const Icon(Icons.search, size: 20),
+                        ),
+                      ),
+                    ],
                   ),
-          ),
-        ],
-          ),
+                ),
+                // Filter chips
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                  child: Row(
+                    children: [
+                      _FilterChip(
+                        label: 'Tümü',
+                        selected: state.filter == AssignmentFilter.all,
+                        onTap: () => ref
+                            .read(assignmentProvider.notifier)
+                            .setFilter(AssignmentFilter.all),
+                      ),
+                      const SizedBox(width: 8),
+                      _FilterChip(
+                        label: 'Aktif',
+                        selected: state.filter == AssignmentFilter.active,
+                        color: AppColors.success,
+                        onTap: () => ref
+                            .read(assignmentProvider.notifier)
+                            .setFilter(AssignmentFilter.active),
+                      ),
+                      const SizedBox(width: 8),
+                      _FilterChip(
+                        label: 'Tamamlanan',
+                        selected: state.filter == AssignmentFilter.returned,
+                        color: AppColors.textTertiary,
+                        onTap: () => ref
+                            .read(assignmentProvider.notifier)
+                            .setFilter(AssignmentFilter.returned),
+                      ),
+                    ],
+                  ),
+                ),
+                // List
+                Expanded(
+                  child: state.isLoading
+                      ? _buildShimmer()
+                      : state.error != null
+                      ? _buildError(state.error!)
+                      : state.assignments.isEmpty
+                      ? _buildEmpty()
+                      : RefreshIndicator(
+                          color: AppColors.primary500,
+                          backgroundColor: AppColors.dark800,
+                          onRefresh: () =>
+                              ref.read(assignmentProvider.notifier).refresh(),
+                          child: ListView.builder(
+                            controller: _scrollController,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            itemCount:
+                                state.assignments.length +
+                                (state.isLoadingMore ? 1 : 0),
+                            itemBuilder: (context, index) {
+                              if (index == state.assignments.length) {
+                                return const Padding(
+                                  padding: EdgeInsets.all(16),
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      color: AppColors.primary500,
+                                    ),
+                                  ),
+                                );
+                              }
+                              return _buildAssignmentItem(
+                                state.assignments[index],
+                              );
+                            },
+                          ),
+                        ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -295,240 +298,244 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
         context.push('/assignments/${a.id}');
       },
       child: Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header row: assetTag + status
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 3,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary600.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    a.assetTag ?? '-',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontFamily: 'monospace',
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary400,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: a.type == 0
-                        ? AppColors.info.withValues(alpha: 0.15)
-                        : AppColors.warning.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    typeLabel,
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: a.type == 0 ? AppColors.info : AppColors.warning,
-                    ),
-                  ),
-                ),
-                const Spacer(),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 3,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isActive
-                        ? AppColors.success.withValues(alpha: 0.15)
-                        : AppColors.surfaceLight,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    isActive ? 'Aktif' : 'Iade Edildi',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: isActive
-                          ? AppColors.success
-                          : AppColors.textTertiary,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            // Device
-            Row(
-              children: [
-                const Icon(
-                  Icons.computer,
-                  size: 14,
-                  color: AppColors.textTertiary,
-                ),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    '${a.deviceName ?? ''} ${[a.deviceBrand, a.deviceModel].where((s) => s != null).join(' ')}',
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: AppColors.textPrimary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            // Employee
-            Row(
-              children: [
-                const Icon(
-                  Icons.person,
-                  size: 14,
-                  color: AppColors.textTertiary,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  a.employeeName ?? '',
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                if (a.employeeRegistrationNumber != null) ...[
-                  const SizedBox(width: 6),
-                  Text(
-                    '(${a.employeeRegistrationNumber})',
-                    style: const TextStyle(
-                      fontSize: 11,
-                      color: AppColors.textTertiary,
-                      fontFamily: 'monospace',
-                    ),
-                  ),
-                ],
-              ],
-            ),
-            const SizedBox(height: 4),
-            // Date
-            Row(
-              children: [
-                const Icon(
-                  Icons.calendar_today,
-                  size: 12,
-                  color: AppColors.textTertiary,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  dateFormat.format(a.assignedAt),
-                  style: const TextStyle(
-                    fontSize: 11,
-                    color: AppColors.textTertiary,
-                  ),
-                ),
-                if (a.returnedAt != null) ...[
-                  const Text(
-                    ' → ',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: AppColors.textTertiary,
-                    ),
-                  ),
-                  Text(
-                    dateFormat.format(a.returnedAt!),
-                    style: const TextStyle(
-                      fontSize: 11,
-                      color: AppColors.textTertiary,
-                    ),
-                  ),
-                ],
-              ],
-            ),
-            // Actions
-            if (isActive) ...[
-              const SizedBox(height: 8),
+        margin: const EdgeInsets.only(bottom: 8),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header row: assetTag + status
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  InkWell(
-                    onTap: () => _exportForm(a.id, a.assetTag ?? a.id),
-                    borderRadius: BorderRadius.circular(6),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.border),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.description,
-                            size: 14,
-                            color: AppColors.success,
-                          ),
-                          SizedBox(width: 4),
-                          Text(
-                            'Excel',
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: AppColors.success,
-                            ),
-                          ),
-                        ],
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary600.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      a.assetTag ?? '-',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontFamily: 'monospace',
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary400,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  InkWell(
-                    onTap: () => _navigateToReturn(a),
-                    borderRadius: BorderRadius.circular(6),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
+                  const SizedBox(width: 6),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: a.type == 0
+                          ? AppColors.info.withValues(alpha: 0.15)
+                          : AppColors.warning.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      typeLabel,
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: a.type == 0 ? AppColors.info : AppColors.warning,
                       ),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.border),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.undo, size: 14, color: AppColors.warning),
-                          SizedBox(width: 4),
-                          Text(
-                            'Iade Et',
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: AppColors.warning,
-                            ),
-                          ),
-                        ],
+                    ),
+                  ),
+                  const Spacer(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isActive
+                          ? AppColors.success.withValues(alpha: 0.15)
+                          : AppColors.surfaceLight,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      isActive ? 'Aktif' : 'Iade Edildi',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: isActive
+                            ? AppColors.success
+                            : AppColors.textTertiary,
                       ),
                     ),
                   ),
                 ],
               ),
+              const SizedBox(height: 10),
+              // Device
+              Row(
+                children: [
+                  const Icon(
+                    Icons.computer,
+                    size: 14,
+                    color: AppColors.textTertiary,
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      '${a.deviceName ?? ''} ${[a.deviceBrand, a.deviceModel].where((s) => s != null).join(' ')}',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              // Employee
+              Row(
+                children: [
+                  const Icon(
+                    Icons.person,
+                    size: 14,
+                    color: AppColors.textTertiary,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    a.employeeName ?? '',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  if (a.employeeRegistrationNumber != null) ...[
+                    const SizedBox(width: 6),
+                    Text(
+                      '(${a.employeeRegistrationNumber})',
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: AppColors.textTertiary,
+                        fontFamily: 'monospace',
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+              const SizedBox(height: 4),
+              // Date
+              Row(
+                children: [
+                  const Icon(
+                    Icons.calendar_today,
+                    size: 12,
+                    color: AppColors.textTertiary,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    dateFormat.format(a.assignedAt),
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: AppColors.textTertiary,
+                    ),
+                  ),
+                  if (a.returnedAt != null) ...[
+                    const Text(
+                      ' → ',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: AppColors.textTertiary,
+                      ),
+                    ),
+                    Text(
+                      dateFormat.format(a.returnedAt!),
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: AppColors.textTertiary,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+              // Actions
+              if (isActive) ...[
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    InkWell(
+                      onTap: () => _exportForm(a.id, a.assetTag ?? a.id),
+                      borderRadius: BorderRadius.circular(6),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: AppColors.border),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.description,
+                              size: 14,
+                              color: AppColors.success,
+                            ),
+                            SizedBox(width: 4),
+                            Text(
+                              'Excel',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: AppColors.success,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    InkWell(
+                      onTap: () => _navigateToReturn(a),
+                      borderRadius: BorderRadius.circular(6),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: AppColors.border),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.undo,
+                              size: 14,
+                              color: AppColors.warning,
+                            ),
+                            SizedBox(width: 4),
+                            Text(
+                              'Iade Et',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: AppColors.warning,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ],
-          ],
+          ),
         ),
-      ),
       ),
     );
   }

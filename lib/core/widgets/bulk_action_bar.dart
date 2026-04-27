@@ -25,14 +25,19 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
   String _busyText = '';
 
   void _warnOffline() {
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text('Çevrimiçi olduğunuzda bu işlemi yapabilirsiniz'),
-      behavior: SnackBarBehavior.floating,
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Çevrimiçi olduğunuzda bu işlemi yapabilirsiniz'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   Future<void> _changeStatus() async {
-    if (!ref.read(connectivityProvider)) { _warnOffline(); return; }
+    if (!ref.read(connectivityProvider)) {
+      _warnOffline();
+      return;
+    }
     final selected = ref.read(bulkSelectionProvider).selectedIds.toList();
     if (selected.isEmpty) return;
 
@@ -52,18 +57,21 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
         await svc.update(id, {'status': newStatus});
       } catch (_) {}
       done++;
-      if (mounted) setState(() => _busyText = '$done/${selected.length} güncelleniyor…');
+      if (mounted)
+        setState(() => _busyText = '$done/${selected.length} güncelleniyor…');
     }
 
     if (!mounted) return;
     setState(() => _isBusy = false);
     ref.read(deviceProvider.notifier).refresh();
     ref.read(bulkSelectionProvider.notifier).exit();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('${selected.length} cihazın durumu "$label" yapıldı'),
-      backgroundColor: AppColors.success,
-      behavior: SnackBarBehavior.floating,
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${selected.length} cihazın durumu "$label" yapıldı'),
+        backgroundColor: AppColors.success,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   Future<int?> _showStatusPicker() async {
@@ -71,29 +79,40 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
       context: context,
       backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
       builder: (ctx) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 8),
             Container(
-              width: 36, height: 4,
+              width: 36,
+              height: 4,
               decoration: BoxDecoration(
-                  color: AppColors.surfaceDivider,
-                  borderRadius: BorderRadius.circular(2)),
+                color: AppColors.surfaceDivider,
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
             const SizedBox(height: 12),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Text('Yeni Durum', style: GoogleFonts.inter(
-                  fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
+              child: Text(
+                'Yeni Durum',
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
             ),
             const SizedBox(height: 8),
-            ...deviceStatusLabels.entries.map((e) => ListTile(
-                  title: Text(e.value, style: GoogleFonts.inter(fontSize: 14)),
-                  onTap: () => Navigator.pop(ctx, e.key),
-                )),
+            ...deviceStatusLabels.entries.map(
+              (e) => ListTile(
+                title: Text(e.value, style: GoogleFonts.inter(fontSize: 14)),
+                onTap: () => Navigator.pop(ctx, e.key),
+              ),
+            ),
             const SizedBox(height: 8),
           ],
         ),
@@ -102,7 +121,10 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
   }
 
   Future<void> _changeLocation() async {
-    if (!ref.read(connectivityProvider)) { _warnOffline(); return; }
+    if (!ref.read(connectivityProvider)) {
+      _warnOffline();
+      return;
+    }
     final selected = ref.read(bulkSelectionProvider).selectedIds.toList();
     if (selected.isEmpty) return;
 
@@ -118,11 +140,13 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
       locationName = picked.$2;
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Lokasyonlar yüklenemedi'),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Lokasyonlar yüklenemedi'),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       }
       return;
     }
@@ -139,18 +163,23 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
         await svc.update(id, {'locationId': locationId});
       } catch (_) {}
       done++;
-      if (mounted) setState(() => _busyText = '$done/${selected.length} güncelleniyor…');
+      if (mounted)
+        setState(() => _busyText = '$done/${selected.length} güncelleniyor…');
     }
 
     if (!mounted) return;
     setState(() => _isBusy = false);
     ref.read(deviceProvider.notifier).refresh();
     ref.read(bulkSelectionProvider.notifier).exit();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('${selected.length} cihaz "$locationName" lokasyonuna taşındı'),
-      backgroundColor: AppColors.success,
-      behavior: SnackBarBehavior.floating,
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '${selected.length} cihaz "$locationName" lokasyonuna taşındı',
+        ),
+        backgroundColor: AppColors.success,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   Future<(String, String)?> _showLocationPicker(List<dynamic> locations) async {
@@ -159,7 +188,8 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
       backgroundColor: Theme.of(context).colorScheme.surface,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
       builder: (ctx) {
         return DraggableScrollableSheet(
           initialChildSize: 0.6,
@@ -170,16 +200,23 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
             children: [
               const SizedBox(height: 8),
               Container(
-                width: 36, height: 4,
+                width: 36,
+                height: 4,
                 decoration: BoxDecoration(
-                    color: AppColors.surfaceDivider,
-                    borderRadius: BorderRadius.circular(2)),
+                  color: AppColors.surfaceDivider,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
               const SizedBox(height: 12),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text('Lokasyon Seç', style: GoogleFonts.inter(
-                    fontSize: 16, fontWeight: FontWeight.w600)),
+                child: Text(
+                  'Lokasyon Seç',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
               const SizedBox(height: 8),
               Expanded(
@@ -189,10 +226,18 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
                   itemBuilder: (_, i) {
                     final loc = locations[i];
                     return ListTile(
-                      leading: const Icon(Icons.place_outlined, color: AppColors.navy),
-                      title: Text(loc.name as String,
-                          style: GoogleFonts.inter(fontSize: 14)),
-                      onTap: () => Navigator.pop(ctx, (loc.id as String, loc.name as String)),
+                      leading: const Icon(
+                        Icons.place_outlined,
+                        color: AppColors.navy,
+                      ),
+                      title: Text(
+                        loc.name as String,
+                        style: GoogleFonts.inter(fontSize: 14),
+                      ),
+                      onTap: () => Navigator.pop(ctx, (
+                        loc.id as String,
+                        loc.name as String,
+                      )),
                     );
                   },
                 ),
@@ -205,28 +250,45 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
   }
 
   Future<void> _deleteSelected() async {
-    if (!ref.read(connectivityProvider)) { _warnOffline(); return; }
+    if (!ref.read(connectivityProvider)) {
+      _warnOffline();
+      return;
+    }
     final selected = ref.read(bulkSelectionProvider).selectedIds.toList();
     if (selected.isEmpty) return;
 
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Cihazları Sil', style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
+        title: Text(
+          'Cihazları Sil',
+          style: GoogleFonts.inter(fontWeight: FontWeight.w600),
+        ),
         content: Text(
           '${selected.length} cihazı silmek istediğinizden emin misiniz?\nBu işlem geri alınamaz.',
-          style: GoogleFonts.inter(fontSize: 14, color: AppColors.textSecondary),
+          style: GoogleFonts.inter(
+            fontSize: 14,
+            color: AppColors.textSecondary,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text('İptal', style: GoogleFonts.inter(color: AppColors.textSecondary)),
+            child: Text(
+              'İptal',
+              style: GoogleFonts.inter(color: AppColors.textSecondary),
+            ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: TextButton.styleFrom(foregroundColor: AppColors.error),
-            child: Text('Sil', style: GoogleFonts.inter(
-                color: AppColors.error, fontWeight: FontWeight.w600)),
+            child: Text(
+              'Sil',
+              style: GoogleFonts.inter(
+                color: AppColors.error,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ],
       ),
@@ -243,17 +305,20 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
     for (final id in selected) {
       await notifier.deleteDevice(id);
       done++;
-      if (mounted) setState(() => _busyText = '$done/${selected.length} siliniyor…');
+      if (mounted)
+        setState(() => _busyText = '$done/${selected.length} siliniyor…');
     }
 
     if (!mounted) return;
     setState(() => _isBusy = false);
     ref.read(bulkSelectionProvider.notifier).exit();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('${selected.length} cihaz silindi'),
-      backgroundColor: AppColors.error,
-      behavior: SnackBarBehavior.floating,
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${selected.length} cihaz silindi'),
+        backgroundColor: AppColors.error,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   void _showMoreMenu() {
@@ -262,22 +327,27 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
       context: context,
       backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
       builder: (ctx) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 8),
             Container(
-              width: 36, height: 4,
+              width: 36,
+              height: 4,
               decoration: BoxDecoration(
-                  color: AppColors.surfaceDivider,
-                  borderRadius: BorderRadius.circular(2)),
+                color: AppColors.surfaceDivider,
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
             ListTile(
               leading: const Icon(Icons.select_all, color: AppColors.navy),
-              title: Text('Tümünü Seç (${widget.filteredDeviceIds.length})',
-                  style: GoogleFonts.inter(fontSize: 14)),
+              title: Text(
+                'Tümünü Seç (${widget.filteredDeviceIds.length})',
+                style: GoogleFonts.inter(fontSize: 14),
+              ),
               onTap: () {
                 selectionNotifier.selectAll(widget.filteredDeviceIds);
                 Navigator.pop(ctx);
@@ -285,23 +355,30 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
             ),
             ListTile(
               leading: const Icon(Icons.star_border, color: AppColors.warning),
-              title: Text('Favorilere Ekle', style: GoogleFonts.inter(fontSize: 14)),
+              title: Text(
+                'Favorilere Ekle',
+                style: GoogleFonts.inter(fontSize: 14),
+              ),
               onTap: () {
                 final ids = ref.read(bulkSelectionProvider).selectedIds;
                 ref.read(favoritesProvider.notifier).addAll(ids);
                 Navigator.pop(ctx);
                 selectionNotifier.exit();
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('${ids.length} cihaz favorilere eklendi'),
-                  backgroundColor: AppColors.warning,
-                  behavior: SnackBarBehavior.floating,
-                ));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('${ids.length} cihaz favorilere eklendi'),
+                    backgroundColor: AppColors.warning,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
               },
             ),
             ListTile(
               leading: const Icon(Icons.delete_outline, color: AppColors.error),
-              title: Text('Seçilenleri Sil',
-                  style: GoogleFonts.inter(fontSize: 14, color: AppColors.error)),
+              title: Text(
+                'Seçilenleri Sil',
+                style: GoogleFonts.inter(fontSize: 14, color: AppColors.error),
+              ),
               onTap: () {
                 Navigator.pop(ctx);
                 _deleteSelected();
@@ -322,10 +399,17 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.navy,
-        boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 8, offset: Offset(0, -2))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 8,
+            offset: Offset(0, -2),
+          ),
+        ],
       ),
       padding: EdgeInsets.only(
-        left: 16, right: 16,
+        left: 16,
+        right: 16,
         top: 10,
         bottom: MediaQuery.of(context).padding.bottom + 10,
       ),
@@ -333,12 +417,22 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
           ? Row(
               children: [
                 const SizedBox(
-                  width: 18, height: 18,
-                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
                 ),
                 const SizedBox(width: 12),
-                Text(_busyText, style: GoogleFonts.inter(
-                    fontSize: 13, color: Colors.white, fontWeight: FontWeight.w500)),
+                Text(
+                  _busyText,
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ],
             )
           : Row(
@@ -346,7 +440,9 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
                 Text(
                   '$count seçili',
                   style: GoogleFonts.inter(
-                    fontSize: 13, fontWeight: FontWeight.w600, color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
                   ),
                 ),
                 const Spacer(),

@@ -34,11 +34,7 @@ class _EmptyContent extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(
-          Icons.draw_outlined,
-          size: 32,
-          color: AppColors.textTertiary,
-        ),
+        Icon(Icons.draw_outlined, size: 32, color: AppColors.textTertiary),
         const SizedBox(height: 8),
         Text(
           'İmzalamak için dokunun',
@@ -50,10 +46,7 @@ class _EmptyContent extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           'Zimmet belgesini dijital olarak onaylayın',
-          style: GoogleFonts.inter(
-            fontSize: 11,
-            color: AppColors.textTertiary,
-          ),
+          style: GoogleFonts.inter(fontSize: 11, color: AppColors.textTertiary),
         ),
       ],
     );

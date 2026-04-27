@@ -6,7 +6,11 @@ class StatusSegment {
   final String label;
   final int value;
   final Color color;
-  const StatusSegment({required this.label, required this.value, required this.color});
+  const StatusSegment({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
 }
 
 class StatusBar extends StatelessWidget {
@@ -36,30 +40,40 @@ class StatusBar extends StatelessWidget {
         Wrap(
           spacing: 16,
           runSpacing: 8,
-          children: segments.map((s) => Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 8, height: 8,
-                decoration: BoxDecoration(
-                  color: s.color,
-                  borderRadius: BorderRadius.circular(2),
+          children: segments
+              .map(
+                (s) => Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: s.color,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      s.label,
+                      style: GoogleFonts.inter(
+                        fontSize: 11,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      '${s.value}',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(width: 6),
-              Text(
-                s.label,
-                style: GoogleFonts.inter(fontSize: 11, color: AppColors.textSecondary),
-              ),
-              const SizedBox(width: 6),
-              Text(
-                '${s.value}',
-                style: GoogleFonts.inter(
-                  fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textPrimary,
-                ),
-              ),
-            ],
-          )).toList(),
+              )
+              .toList(),
         ),
       ],
     );

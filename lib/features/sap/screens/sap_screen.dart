@@ -45,7 +45,8 @@ class SapScreen extends ConsumerWidget {
             _SyncCard(
               title: 'Varlık Aktarımı',
               icon: Icons.inventory_2_outlined,
-              description: 'SAP Asset Management modülünden varlık envanterini içe aktarır.',
+              description:
+                  'SAP Asset Management modülünden varlık envanterini içe aktarır.',
               isSyncing: state.isSyncingAssets,
               lastResult: state.lastAssetSync,
               error: state.assetSyncError,
@@ -151,12 +152,18 @@ class _ConnectionCard extends StatelessWidget {
                 if (status?.version != null)
                   Text(
                     'Sürüm: ${status!.version}',
-                    style: const TextStyle(fontSize: 12, color: AppColors.textTertiary),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textTertiary,
+                    ),
                   )
                 else
                   const Text(
                     'Backend SAP entegrasyonu gerekli',
-                    style: TextStyle(fontSize: 12, color: AppColors.textTertiary),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textTertiary,
+                    ),
                   ),
               ],
             ),
@@ -241,7 +248,10 @@ class _SyncCard extends StatelessWidget {
                     ),
                     Text(
                       description,
-                      style: const TextStyle(fontSize: 12, color: AppColors.textTertiary),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textTertiary,
+                      ),
                     ),
                   ],
                 ),
@@ -252,12 +262,19 @@ class _SyncCard extends StatelessWidget {
                 child: ElevatedButton.icon(
                   onPressed: isSyncing ? null : onSync,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFE8A800).withValues(alpha: 0.15),
+                    backgroundColor: const Color(
+                      0xFFE8A800,
+                    ).withValues(alpha: 0.15),
                     foregroundColor: const Color(0xFFE8A800),
-                    side: const BorderSide(color: Color(0xFFE8A800), width: 0.8),
+                    side: const BorderSide(
+                      color: Color(0xFFE8A800),
+                      width: 0.8,
+                    ),
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     elevation: 0,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                   icon: isSyncing
                       ? const SizedBox(
@@ -269,8 +286,13 @@ class _SyncCard extends StatelessWidget {
                           ),
                         )
                       : const Icon(Icons.sync, size: 16),
-                  label: Text(isSyncing ? 'Aktarılıyor...' : 'Senkronize Et',
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                  label: Text(
+                    isSyncing ? 'Aktarılıyor...' : 'Senkronize Et',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -284,16 +306,25 @@ class _SyncCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.errorLight.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
+                border: Border.all(
+                  color: AppColors.error.withValues(alpha: 0.3),
+                ),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.warning_amber_rounded, color: AppColors.error, size: 16),
+                  const Icon(
+                    Icons.warning_amber_rounded,
+                    color: AppColors.error,
+                    size: 16,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       error!,
-                      style: const TextStyle(fontSize: 12, color: AppColors.error),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.error,
+                      ),
                     ),
                   ),
                 ],
@@ -326,7 +357,9 @@ class _SyncCard extends StatelessWidget {
                   child: _ResultBadge(
                     label: resultLabels.$3,
                     count: lastResult!.errorCount,
-                    color: lastResult!.errorCount > 0 ? AppColors.error : AppColors.textTertiary,
+                    color: lastResult!.errorCount > 0
+                        ? AppColors.error
+                        : AppColors.textTertiary,
                   ),
                 ),
               ],
@@ -334,7 +367,10 @@ class _SyncCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               'Son aktarım: ${DateFormat('dd.MM.yyyy HH:mm').format(lastResult!.syncTime)}',
-              style: const TextStyle(fontSize: 11, color: AppColors.textTertiary),
+              style: const TextStyle(
+                fontSize: 11,
+                color: AppColors.textTertiary,
+              ),
             ),
           ],
         ],
@@ -348,7 +384,11 @@ class _ResultBadge extends StatelessWidget {
   final int count;
   final Color color;
 
-  const _ResultBadge({required this.label, required this.count, required this.color});
+  const _ResultBadge({
+    required this.label,
+    required this.count,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -437,10 +477,20 @@ class _BudgetsSection extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.info_outline, color: AppColors.textTertiary, size: 18),
+          const Icon(
+            Icons.info_outline,
+            color: AppColors.textTertiary,
+            size: 18,
+          ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(error, style: const TextStyle(fontSize: 13, color: AppColors.textTertiary)),
+            child: Text(
+              error,
+              style: const TextStyle(
+                fontSize: 13,
+                color: AppColors.textTertiary,
+              ),
+            ),
           ),
         ],
       ),
@@ -458,7 +508,11 @@ class _BudgetsSection extends StatelessWidget {
       child: const Center(
         child: Column(
           children: [
-            Icon(Icons.account_balance_wallet_outlined, color: AppColors.textTertiary, size: 36),
+            Icon(
+              Icons.account_balance_wallet_outlined,
+              color: AppColors.textTertiary,
+              size: 36,
+            ),
             SizedBox(height: 8),
             Text(
               'Bekleyen bütçe onayı yok',
@@ -521,7 +575,11 @@ class _BudgetTile extends StatelessWidget {
               color: statusColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(Icons.account_balance_wallet_outlined, color: statusColor, size: 20),
+            child: Icon(
+              Icons.account_balance_wallet_outlined,
+              color: statusColor,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -550,10 +608,16 @@ class _BudgetTile extends StatelessWidget {
                       ),
                     ),
                     if (item.department != null) ...[
-                      const Text(' · ', style: TextStyle(color: AppColors.textTertiary)),
+                      const Text(
+                        ' · ',
+                        style: TextStyle(color: AppColors.textTertiary),
+                      ),
                       Text(
                         item.department!,
-                        style: const TextStyle(fontSize: 12, color: AppColors.textTertiary),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textTertiary,
+                        ),
                       ),
                     ],
                   ],
@@ -582,7 +646,10 @@ class _BudgetTile extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 DateFormat('dd.MM.yy').format(item.createdAt),
-                style: const TextStyle(fontSize: 11, color: AppColors.textTertiary),
+                style: const TextStyle(
+                  fontSize: 11,
+                  color: AppColors.textTertiary,
+                ),
               ),
             ],
           ),

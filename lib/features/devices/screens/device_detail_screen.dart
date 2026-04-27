@@ -17,10 +17,11 @@ import 'package:assetflow_mobile/features/devices/widgets/device_hardware_tab.da
 import 'package:assetflow_mobile/features/devices/widgets/device_assignments_tab.dart';
 import 'package:assetflow_mobile/features/devices/widgets/device_history_tab.dart';
 
-final _deviceDetailProvider =
-    FutureProvider.autoDispose.family<Device, String>((ref, id) async {
-  return DeviceService().getById(id);
-});
+final _deviceDetailProvider = FutureProvider.autoDispose.family<Device, String>(
+  (ref, id) async {
+    return DeviceService().getById(id);
+  },
+);
 
 class DeviceDetailScreen extends ConsumerStatefulWidget {
   final String id;
@@ -99,12 +100,17 @@ class _DeviceDetailScreenState extends ConsumerState<DeviceDetailScreen> {
             child: GestureDetector(
               onTap: goBackOrHome(context),
               child: Container(
-                width: 36, height: 36,
+                width: 36,
+                height: 36,
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.10),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
+                child: const Icon(
+                  Icons.chevron_left,
+                  size: 22,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
@@ -115,8 +121,11 @@ class _DeviceDetailScreenState extends ConsumerState<DeviceDetailScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.error_outline,
-                        size: 48, color: AppColors.error),
+                    const Icon(
+                      Icons.error_outline,
+                      size: 48,
+                      color: AppColors.error,
+                    ),
                     const SizedBox(height: 12),
                     Text(
                       'Cihaz yüklenemedi',
@@ -128,10 +137,12 @@ class _DeviceDetailScreenState extends ConsumerState<DeviceDetailScreen> {
                     ),
                     const SizedBox(height: 16),
                     GestureDetector(
-                      onTap: () => ref.invalidate(_deviceDetailProvider(widget.id)),
+                      onTap: () =>
+                          ref.invalidate(_deviceDetailProvider(widget.id)),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10,
+                          horizontal: 20,
+                          vertical: 10,
                         ),
                         decoration: BoxDecoration(
                           color: AppColors.navy,
@@ -176,8 +187,12 @@ class _DeviceDetailScreenState extends ConsumerState<DeviceDetailScreen> {
               }
             },
             onDelete: () => _confirmAndDelete(device),
-            onReactivate: device.status == 3 ? () => _confirmAndReactivate(device) : null,
-            onRetire: device.status != 3 ? () => _confirmAndRetire(device) : null,
+            onReactivate: device.status == 3
+                ? () => _confirmAndReactivate(device)
+                : null,
+            onRetire: device.status != 3
+                ? () => _confirmAndRetire(device)
+                : null,
           ),
           AppTabBar(
             tabs: _tabs,
@@ -206,10 +221,10 @@ class _DeviceDetailScreenState extends ConsumerState<DeviceDetailScreen> {
             context.push('/assignments/new?deviceId=${device.id}');
           }
         },
-        backgroundColor: hasActiveAssignment ? AppColors.warning : AppColors.navy,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-        ),
+        backgroundColor: hasActiveAssignment
+            ? AppColors.warning
+            : AppColors.navy,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         icon: Icon(
           hasActiveAssignment
               ? Icons.assignment_return_outlined

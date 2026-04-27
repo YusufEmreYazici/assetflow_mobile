@@ -14,7 +14,10 @@ class SubscriptionService {
     final params = <String, dynamic>{'page': page, 'pageSize': pageSize};
     if (search != null && search.isNotEmpty) params['search'] = search;
     if (status != null) params['status'] = status;
-    final response = await _dio.get('/api/assets/subscriptions', queryParameters: params);
+    final response = await _dio.get(
+      '/api/assets/subscriptions',
+      queryParameters: params,
+    );
     return PagedResult.fromJson(
       response.data as Map<String, dynamic>,
       (json) => Subscription.fromJson(json),

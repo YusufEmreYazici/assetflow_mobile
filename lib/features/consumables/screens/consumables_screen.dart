@@ -36,7 +36,8 @@ class _ConsumablesScreenState extends ConsumerState<ConsumablesScreen> {
         children: [
           PageHeader(
             title: 'Sarf Malzemeleri',
-            subtitle: state.result?.totalCount != null && state.result!.totalCount > 0
+            subtitle:
+                state.result?.totalCount != null && state.result!.totalCount > 0
                 ? '${state.result!.totalCount} malzeme'
                 : null,
             onBack: () => context.pop(),
@@ -46,23 +47,24 @@ class _ConsumablesScreenState extends ConsumerState<ConsumablesScreen> {
             child: state.isLoading && items.isEmpty
                 ? _buildShimmer()
                 : state.error != null && items.isEmpty
-                    ? _buildErrorState(state.error!)
-                    : items.isEmpty
-                        ? const EmptyState(
-                            icon: Icons.inventory_2_outlined,
-                            title: 'Sarf malzeme bulunamadı',
-                            description: 'Henüz kayıtlı sarf malzeme yok.',
-                          )
-                        : RefreshIndicator(
-                            color: AppColors.navy,
-                            onRefresh: () =>
-                                ref.read(consumableListProvider.notifier).load(reset: true),
-                            child: ListView.builder(
-                              padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
-                              itemCount: items.length,
-                              itemBuilder: (ctx, i) => _ConsumableRow(item: items[i]),
-                            ),
-                          ),
+                ? _buildErrorState(state.error!)
+                : items.isEmpty
+                ? const EmptyState(
+                    icon: Icons.inventory_2_outlined,
+                    title: 'Sarf malzeme bulunamadı',
+                    description: 'Henüz kayıtlı sarf malzeme yok.',
+                  )
+                : RefreshIndicator(
+                    color: AppColors.navy,
+                    onRefresh: () => ref
+                        .read(consumableListProvider.notifier)
+                        .load(reset: true),
+                    child: ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+                      itemCount: items.length,
+                      itemBuilder: (ctx, i) => _ConsumableRow(item: items[i]),
+                    ),
+                  ),
           ),
         ],
       ),
@@ -96,11 +98,22 @@ class _ConsumablesScreenState extends ConsumerState<ConsumablesScreen> {
         style: GoogleFonts.inter(fontSize: 13, color: AppColors.textPrimary),
         decoration: InputDecoration(
           hintText: 'Malzeme ara...',
-          hintStyle: GoogleFonts.inter(fontSize: 13, color: AppColors.textTertiary),
-          prefixIcon: const Icon(Icons.search, size: 18, color: AppColors.textTertiary),
+          hintStyle: GoogleFonts.inter(
+            fontSize: 13,
+            color: AppColors.textTertiary,
+          ),
+          prefixIcon: const Icon(
+            Icons.search,
+            size: 18,
+            color: AppColors.textTertiary,
+          ),
           suffixIcon: _searchCtrl.text.isNotEmpty
               ? IconButton(
-                  icon: const Icon(Icons.clear, size: 16, color: AppColors.textTertiary),
+                  icon: const Icon(
+                    Icons.clear,
+                    size: 16,
+                    color: AppColors.textTertiary,
+                  ),
                   onPressed: () {
                     _searchCtrl.clear();
                     setState(() {});
@@ -119,7 +132,9 @@ class _ConsumablesScreenState extends ConsumerState<ConsumablesScreen> {
             borderRadius: BorderRadius.circular(AppRadius.md),
             borderSide: const BorderSide(color: AppColors.navy, width: 2),
           ),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppRadius.md),
+          ),
         ),
         onChanged: (v) {
           setState(() {});
@@ -136,14 +151,24 @@ class _ConsumablesScreenState extends ConsumerState<ConsumablesScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.wifi_off_rounded, size: 48, color: AppColors.textTertiary),
+            const Icon(
+              Icons.wifi_off_rounded,
+              size: 48,
+              color: AppColors.textTertiary,
+            ),
             const SizedBox(height: 12),
-            Text(error,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 14)),
+            Text(
+              error,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 14,
+              ),
+            ),
             const SizedBox(height: 16),
             TextButton.icon(
-              onPressed: () => ref.read(consumableListProvider.notifier).load(reset: true),
+              onPressed: () =>
+                  ref.read(consumableListProvider.notifier).load(reset: true),
               icon: const Icon(Icons.refresh, size: 16),
               label: const Text('Tekrar Dene'),
             ),
@@ -174,7 +199,9 @@ class _ConsumableRow extends StatelessWidget {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: item.isLowStock ? AppColors.warning.withAlpha(30) : AppColors.success.withAlpha(30),
+            color: item.isLowStock
+                ? AppColors.warning.withAlpha(30)
+                : AppColors.success.withAlpha(30),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(
@@ -182,11 +209,16 @@ class _ConsumableRow extends StatelessWidget {
             color: item.isLowStock ? AppColors.warning : AppColors.success,
           ),
         ),
-        title: Text(item.name,
-            style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600)),
+        title: Text(
+          item.name,
+          style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600),
+        ),
         subtitle: Text(
           '${item.category} · ${item.storageLocation ?? item.locationName ?? '—'}',
-          style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary),
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            color: AppColors.textSecondary,
+          ),
         ),
         trailing: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -201,15 +233,23 @@ class _ConsumableRow extends StatelessWidget {
               child: Text(
                 '${item.currentStock} ${item.unit}',
                 style: GoogleFonts.inter(
-                    fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
               ),
             ),
             if (item.isLowStock)
               Padding(
                 padding: const EdgeInsets.only(top: 2),
-                child: Text('Düşük!',
-                    style: GoogleFonts.inter(
-                        fontSize: 10, color: AppColors.warning, fontWeight: FontWeight.w600)),
+                child: Text(
+                  'Düşük!',
+                  style: GoogleFonts.inter(
+                    fontSize: 10,
+                    color: AppColors.warning,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
           ],
         ),

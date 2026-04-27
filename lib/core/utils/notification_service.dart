@@ -52,8 +52,9 @@ class NotificationService {
     if (_initialized) return;
 
     try {
-      const androidSettings =
-          AndroidInitializationSettings('@mipmap/ic_launcher');
+      const androidSettings = AndroidInitializationSettings(
+        '@mipmap/ic_launcher',
+      );
       const iosSettings = DarwinInitializationSettings(
         requestAlertPermission: true,
         requestBadgePermission: true,
@@ -70,7 +71,8 @@ class NotificationService {
       // Request permission on Android 13+
       await _plugin
           .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
+            AndroidFlutterLocalNotificationsPlugin
+          >()
           ?.requestNotificationsPermission();
     } catch (_) {
       // Don't crash the app if notification init fails
@@ -84,8 +86,10 @@ class NotificationService {
 
   /// Maps internal channelId to NotificationSettings key
   static String? _settingsKey(String channelId) {
-    if (channelId == _Channels.assignment) return ns.NotificationSettings.assignments;
-    if (channelId == _Channels.warranty) return ns.NotificationSettings.warranty;
+    if (channelId == _Channels.assignment)
+      return ns.NotificationSettings.assignments;
+    if (channelId == _Channels.warranty)
+      return ns.NotificationSettings.warranty;
     if (channelId == _Channels.device) return ns.NotificationSettings.devices;
     if (channelId == _Channels.sap) return ns.NotificationSettings.sap;
     if (channelId == _Channels.system) return ns.NotificationSettings.system;
@@ -123,7 +127,10 @@ class NotificationService {
         presentBadge: true,
         presentSound: true,
       );
-      final details = NotificationDetails(android: androidDetails, iOS: iosDetails);
+      final details = NotificationDetails(
+        android: androidDetails,
+        iOS: iosDetails,
+      );
       await _plugin.show(id, title, body, details);
     } catch (_) {
       // Silently fail - don't crash the app for a notification
@@ -212,8 +219,9 @@ class NotificationService {
     if (items.isEmpty) return;
 
     final critical = items.where((i) => i.daysRemaining <= 30).toList();
-    final warning =
-        items.where((i) => i.daysRemaining > 30 && i.daysRemaining <= 90).toList();
+    final warning = items
+        .where((i) => i.daysRemaining > 30 && i.daysRemaining <= 90)
+        .toList();
     final expired = items.where((i) => i.daysRemaining <= 0).toList();
 
     if (expired.isNotEmpty) {

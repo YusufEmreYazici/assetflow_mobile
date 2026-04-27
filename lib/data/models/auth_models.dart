@@ -4,7 +4,10 @@ class LoginRequest {
 
   LoginRequest({required this.identifier, required this.password});
 
-  Map<String, dynamic> toJson() => {'identifier': identifier, 'password': password};
+  Map<String, dynamic> toJson() => {
+    'identifier': identifier,
+    'password': password,
+  };
 }
 
 class RegisterRequest {

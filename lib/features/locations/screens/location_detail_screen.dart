@@ -10,17 +10,18 @@ import 'package:assetflow_mobile/core/widgets/kv_row.dart';
 import 'package:assetflow_mobile/data/models/location_model.dart';
 import 'package:assetflow_mobile/data/services/location_service.dart';
 
-final _locationDetailProvider =
-    FutureProvider.autoDispose.family<Location, String>((ref, id) async {
-  return LocationService().getById(id);
-});
+final _locationDetailProvider = FutureProvider.autoDispose
+    .family<Location, String>((ref, id) async {
+      return LocationService().getById(id);
+    });
 
 class LocationDetailScreen extends ConsumerStatefulWidget {
   final String id;
   const LocationDetailScreen({super.key, required this.id});
 
   @override
-  ConsumerState<LocationDetailScreen> createState() => _LocationDetailScreenState();
+  ConsumerState<LocationDetailScreen> createState() =>
+      _LocationDetailScreenState();
 }
 
 class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
@@ -33,31 +34,55 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
       body: async.when(
         loading: () => Column(
           children: [
-            Container(color: AppColors.navy, height: MediaQuery.of(context).padding.top + 70),
-            const Expanded(child: Center(child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2))),
+            Container(
+              color: AppColors.navy,
+              height: MediaQuery.of(context).padding.top + 70,
+            ),
+            const Expanded(
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.navy,
+                  strokeWidth: 2,
+                ),
+              ),
+            ),
           ],
         ),
         error: (err, stack) => Column(
           children: [
             Container(
               color: AppColors.navy,
-              padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 14, left: AppSpacing.lg, bottom: 18),
+              padding: EdgeInsets.only(
+                top: MediaQuery.of(context).padding.top + 14,
+                left: AppSpacing.lg,
+                bottom: 18,
+              ),
               child: GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: Container(
-                  width: 36, height: 36,
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.10),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
+                  child: const Icon(
+                    Icons.chevron_left,
+                    size: 22,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
             Expanded(
               child: Center(
-                child: Text('Lokasyon yüklenemedi.',
-                    style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary)),
+                child: Text(
+                  'Lokasyon yüklenemedi.',
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
               ),
             ),
           ],
@@ -84,12 +109,17 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
               GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: Container(
-                  width: 36, height: 36,
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.10),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
+                  child: const Icon(
+                    Icons.chevron_left,
+                    size: 22,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
@@ -100,7 +130,8 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
                     Text(
                       'LOKASYON',
                       style: GoogleFonts.inter(
-                        fontSize: 10, fontWeight: FontWeight.w500,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
                         color: Colors.white.withValues(alpha: 0.6),
                         letterSpacing: 1.2,
                       ),
@@ -109,7 +140,8 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
                     Text(
                       location.name,
                       style: GoogleFonts.inter(
-                        fontSize: 19, fontWeight: FontWeight.w500,
+                        fontSize: 19,
+                        fontWeight: FontWeight.w500,
                         color: Colors.white,
                       ),
                     ),
@@ -129,39 +161,57 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
               GestureDetector(
                 onTap: () async {
                   HapticService.light();
-                  final result = await context.push('/location/${widget.id}/edit');
+                  final result = await context.push(
+                    '/location/${widget.id}/edit',
+                  );
                   if (result == true && mounted) {
                     ref.invalidate(_locationDetailProvider(widget.id));
                   }
                 },
                 child: Container(
-                  width: 36, height: 36,
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.10),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.edit_outlined, size: 16, color: Colors.white),
+                  child: const Icon(
+                    Icons.edit_outlined,
+                    size: 16,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(width: 4),
               PopupMenuButton<String>(
                 padding: EdgeInsets.zero,
                 icon: Container(
-                  width: 36, height: 36,
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.10),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.more_vert, size: 18, color: Colors.white),
+                  child: const Icon(
+                    Icons.more_vert,
+                    size: 18,
+                    color: Colors.white,
+                  ),
                 ),
                 itemBuilder: (_) => [
                   PopupMenuItem(
                     value: 'delete',
-                    child: Row(children: [
-                      Icon(Icons.delete_outline, color: AppColors.error, size: 18),
-                      const SizedBox(width: 10),
-                      Text('Sil', style: TextStyle(color: AppColors.error)),
-                    ]),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.delete_outline,
+                          color: AppColors.error,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 10),
+                        Text('Sil', style: TextStyle(color: AppColors.error)),
+                      ],
+                    ),
                   ),
                 ],
                 onSelected: (action) {
@@ -190,12 +240,17 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
                       child: Text(
                         'DETAYLAR',
                         style: GoogleFonts.inter(
-                          fontSize: 10, fontWeight: FontWeight.w500,
-                          color: AppColors.textTertiary, letterSpacing: 0.8,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.textTertiary,
+                          letterSpacing: 0.8,
                         ),
                       ),
                     ),
-                    KvRow(label: 'Cihaz Sayısı', value: '${location.deviceCount}'),
+                    KvRow(
+                      label: 'Cihaz Sayısı',
+                      value: '${location.deviceCount}',
+                    ),
                     KvRow(
                       label: 'Durum',
                       value: location.isActive ? 'Aktif' : 'Pasif',
@@ -207,9 +262,17 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
                     if (location.room != null)
                       KvRow(label: 'Oda', value: location.room!),
                     if (location.description != null)
-                      KvRow(label: 'Açıklama', value: location.description!, last: true)
+                      KvRow(
+                        label: 'Açıklama',
+                        value: location.description!,
+                        last: true,
+                      )
                     else
-                      KvRow(label: 'Adres', value: location.address ?? '—', last: true),
+                      KvRow(
+                        label: 'Adres',
+                        value: location.address ?? '—',
+                        last: true,
+                      ),
                   ],
                 ),
               ),
@@ -241,9 +304,7 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Lokasyonu Sil?'),
-        content: Text(
-          '${location.name} silinecek. Bu işlem geri alınamaz.',
-        ),
+        content: Text('${location.name} silinecek. Bu işlem geri alınamaz.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),

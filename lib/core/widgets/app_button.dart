@@ -28,15 +28,32 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (bg, fg, borderColor) = switch (variant) {
-      AppButtonVariant.primary   => (AppColors.navy, Colors.white, AppColors.navy),
-      AppButtonVariant.secondary => (AppColors.surfaceWhite, AppColors.navy, AppColors.surfaceInputBorder),
-      AppButtonVariant.danger    => (AppColors.error, Colors.white, AppColors.error),
-      AppButtonVariant.ghost     => (Colors.transparent, AppColors.navy, Colors.transparent),
+      AppButtonVariant.primary => (
+        AppColors.navy,
+        Colors.white,
+        AppColors.navy,
+      ),
+      AppButtonVariant.secondary => (
+        AppColors.surfaceWhite,
+        AppColors.navy,
+        AppColors.surfaceInputBorder,
+      ),
+      AppButtonVariant.danger => (
+        AppColors.error,
+        Colors.white,
+        AppColors.error,
+      ),
+      AppButtonVariant.ghost => (
+        Colors.transparent,
+        AppColors.navy,
+        Colors.transparent,
+      ),
     };
 
     Widget child = isLoading
         ? SizedBox(
-            width: 18, height: 18,
+            width: 18,
+            height: 18,
             child: CircularProgressIndicator(
               strokeWidth: 2,
               valueColor: AlwaysStoppedAnimation(fg),
@@ -89,6 +106,8 @@ class AppButton extends StatelessWidget {
       ),
     );
 
-    return isFullWidth ? SizedBox(width: double.infinity, child: button) : button;
+    return isFullWidth
+        ? SizedBox(width: double.infinity, child: button)
+        : button;
   }
 }

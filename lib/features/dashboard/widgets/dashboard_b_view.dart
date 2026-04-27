@@ -64,7 +64,11 @@ class DashboardBView extends ConsumerWidget {
           // Hero KPI card
           Padding(
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.xl, AppSpacing.xl, AppSpacing.xl, 0),
+              AppSpacing.xl,
+              AppSpacing.xl,
+              AppSpacing.xl,
+              0,
+            ),
             child: Container(
               decoration: BoxDecoration(
                 color: AppColors.surfaceWhite,
@@ -84,8 +88,10 @@ class DashboardBView extends ConsumerWidget {
                             Text(
                               'ENVANTER DURUMU · NİSAN 2026',
                               style: GoogleFonts.inter(
-                                fontSize: 10, fontWeight: FontWeight.w500,
-                                color: AppColors.textSecondary, letterSpacing: 1,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.textSecondary,
+                                letterSpacing: 1,
                               ),
                             ),
                             const SizedBox(height: 6),
@@ -96,15 +102,18 @@ class DashboardBView extends ConsumerWidget {
                                 Text(
                                   '$totalDevices',
                                   style: GoogleFonts.inter(
-                                    fontSize: 32, fontWeight: FontWeight.w500,
-                                    color: AppColors.navy, letterSpacing: -0.8,
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.navy,
+                                    letterSpacing: -0.8,
                                   ),
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
                                   'toplam cihaz',
                                   style: GoogleFonts.inter(
-                                    fontSize: 12, color: AppColors.textSecondary,
+                                    fontSize: 12,
+                                    color: AppColors.textSecondary,
                                   ),
                                 ),
                               ],
@@ -117,7 +126,10 @@ class DashboardBView extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 3,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.successBg,
                               borderRadius: BorderRadius.circular(4),
@@ -125,8 +137,10 @@ class DashboardBView extends ConsumerWidget {
                             child: Text(
                               '▲ 3 BU AY',
                               style: GoogleFonts.inter(
-                                fontSize: 10, fontWeight: FontWeight.w500,
-                                color: AppColors.success, letterSpacing: 0.6,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.success,
+                                letterSpacing: 0.6,
                               ),
                             ),
                           ),
@@ -134,7 +148,8 @@ class DashboardBView extends ConsumerWidget {
                           Text(
                             'Son 6 ay',
                             style: GoogleFonts.inter(
-                              fontSize: 10, color: AppColors.textTertiary,
+                              fontSize: 10,
+                              color: AppColors.textTertiary,
                             ),
                           ),
                           const SizedBox(height: 2),
@@ -151,12 +166,30 @@ class DashboardBView extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  StatusBar(segments: [
-                    StatusSegment(label: 'Zimmetli', value: assigned,     color: AppColors.success),
-                    StatusSegment(label: 'Depoda',   value: inStorage,    color: AppColors.info),
-                    StatusSegment(label: 'Bakımda',  value: maintenance,  color: AppColors.warning),
-                    StatusSegment(label: 'Emekli',   value: retired > 0 ? retired : 14, color: AppColors.textTertiary),
-                  ]),
+                  StatusBar(
+                    segments: [
+                      StatusSegment(
+                        label: 'Zimmetli',
+                        value: assigned,
+                        color: AppColors.success,
+                      ),
+                      StatusSegment(
+                        label: 'Depoda',
+                        value: inStorage,
+                        color: AppColors.info,
+                      ),
+                      StatusSegment(
+                        label: 'Bakımda',
+                        value: maintenance,
+                        color: AppColors.warning,
+                      ),
+                      StatusSegment(
+                        label: 'Emekli',
+                        value: retired > 0 ? retired : 14,
+                        color: AppColors.textTertiary,
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -165,7 +198,11 @@ class DashboardBView extends ConsumerWidget {
           // Metric strip
           Padding(
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.xl, 14, AppSpacing.xl, 0),
+              AppSpacing.xl,
+              14,
+              AppSpacing.xl,
+              0,
+            ),
             child: Row(
               children: [
                 MetricStrip(
@@ -195,37 +232,59 @@ class DashboardBView extends ConsumerWidget {
           // Quick Actions
           Padding(
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.xl, AppSpacing.xl, AppSpacing.xl, 0),
+              AppSpacing.xl,
+              AppSpacing.xl,
+              AppSpacing.xl,
+              0,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SectionHeader(title: 'HIZLI İŞLEMLER', padding: EdgeInsets.zero),
+                const SectionHeader(
+                  title: 'HIZLI İŞLEMLER',
+                  padding: EdgeInsets.zero,
+                ),
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    QuickAction(icon: Icons.add, label: 'Cihaz', primary: true,
-                        onTap: () => context.push('/devices/new')),
+                    QuickAction(
+                      icon: Icons.add,
+                      label: 'Cihaz',
+                      primary: true,
+                      onTap: () => context.push('/devices/new'),
+                    ),
                     const SizedBox(width: 8),
-                    QuickAction(icon: Icons.assignment_outlined, label: 'Zimmet',
-                        onTap: () => context.push('/assignments')),
+                    QuickAction(
+                      icon: Icons.assignment_outlined,
+                      label: 'Zimmet',
+                      onTap: () => context.push('/assignments'),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    QuickAction(icon: Icons.upload_outlined, label: 'İade',
-                        onTap: () => context.push(
-                          '/devices',
-                          extra: <String, dynamic>{'returnMode': true},
-                        )),
+                    QuickAction(
+                      icon: Icons.upload_outlined,
+                      label: 'İade',
+                      onTap: () => context.push(
+                        '/devices',
+                        extra: <String, dynamic>{'returnMode': true},
+                      ),
+                    ),
                     const SizedBox(width: 8),
                     QuickAction(
                       icon: Icons.qr_code_scanner,
                       label: 'QR Tara',
                       onTap: () async {
-                        final code = await BarcodeScannerService.scanBarcode(context);
+                        final code = await BarcodeScannerService.scanBarcode(
+                          context,
+                        );
                         if (code != null && context.mounted) {
-                          context.go('/devices', extra: <String, dynamic>{'qrCode': code});
+                          context.go(
+                            '/devices',
+                            extra: <String, dynamic>{'qrCode': code},
+                          );
                         }
                       },
                     ),
@@ -238,14 +297,22 @@ class DashboardBView extends ConsumerWidget {
           // Favorites
           Padding(
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.xl, AppSpacing.xl, AppSpacing.xl, 0),
+              AppSpacing.xl,
+              AppSpacing.xl,
+              AppSpacing.xl,
+              0,
+            ),
             child: const FavoritesSection(),
           ),
 
           // Recent activity
           Padding(
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.xl, AppSpacing.xxl, AppSpacing.xl, 0),
+              AppSpacing.xl,
+              AppSpacing.xxl,
+              AppSpacing.xl,
+              0,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -262,8 +329,10 @@ class DashboardBView extends ConsumerWidget {
                     child: Text(
                       'TÜMÜ →',
                       style: GoogleFonts.inter(
-                        fontSize: 11, fontWeight: FontWeight.w500,
-                        color: AppColors.navyLight, letterSpacing: 0.3,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.navyLight,
+                        letterSpacing: 0.3,
                       ),
                     ),
                   ),
@@ -277,10 +346,11 @@ class DashboardBView extends ConsumerWidget {
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
-                    children: List.generate(4, (i) => ActivityTile(
-                      item: kMockActivity[i],
-                      isLast: i == 3,
-                    )),
+                    children: List.generate(
+                      4,
+                      (i) =>
+                          ActivityTile(item: kMockActivity[i], isLast: i == 3),
+                    ),
                   ),
                 ),
               ],
@@ -290,11 +360,18 @@ class DashboardBView extends ConsumerWidget {
           // Location distribution
           Padding(
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.xl, AppSpacing.xxl, AppSpacing.xl, 0),
+              AppSpacing.xl,
+              AppSpacing.xxl,
+              AppSpacing.xl,
+              0,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SectionHeader(title: 'LOKASYON DAĞILIMI', padding: EdgeInsets.zero),
+                const SectionHeader(
+                  title: 'LOKASYON DAĞILIMI',
+                  padding: EdgeInsets.zero,
+                ),
                 const SizedBox(height: 10),
                 Container(
                   decoration: BoxDecoration(
@@ -312,7 +389,9 @@ class DashboardBView extends ConsumerWidget {
                         decoration: i < _locationRows.length - 1
                             ? const BoxDecoration(
                                 border: Border(
-                                  bottom: BorderSide(color: AppColors.surfaceDivider),
+                                  bottom: BorderSide(
+                                    color: AppColors.surfaceDivider,
+                                  ),
                                 ),
                               )
                             : null,
@@ -324,14 +403,16 @@ class DashboardBView extends ConsumerWidget {
                                   child: Text(
                                     r.name,
                                     style: GoogleFonts.inter(
-                                      fontSize: 12, color: AppColors.textPrimary,
+                                      fontSize: 12,
+                                      color: AppColors.textPrimary,
                                     ),
                                   ),
                                 ),
                                 Text(
                                   '${r.count}',
                                   style: GoogleFonts.inter(
-                                    fontSize: 12, fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
                                     color: AppColors.textSecondary,
                                   ),
                                 ),
@@ -344,7 +425,9 @@ class DashboardBView extends ConsumerWidget {
                                 value: r.pct,
                                 minHeight: 4,
                                 backgroundColor: AppColors.surfaceLight,
-                                valueColor: const AlwaysStoppedAnimation(AppColors.navy),
+                                valueColor: const AlwaysStoppedAnimation(
+                                  AppColors.navy,
+                                ),
                               ),
                             ),
                           ],
@@ -362,11 +445,11 @@ class DashboardBView extends ConsumerWidget {
   }
 
   String _roleLabel(String? role) => switch (role) {
-        'Admin'   => 'Yönetici',
-        'Manager' => 'Müdür',
-        'ITAdmin' => 'IT Yönetici',
-        _         => role ?? '',
-      };
+    'Admin' => 'Yönetici',
+    'Manager' => 'Müdür',
+    'ITAdmin' => 'IT Yönetici',
+    _ => role ?? '',
+  };
 }
 
 class _LocationRow {
@@ -378,8 +461,8 @@ class _LocationRow {
 
 const _locationRows = [
   _LocationRow('Ankara Genel Müdürlük', 52, 0.33),
-  _LocationRow('Mersin Limanı',         38, 0.24),
-  _LocationRow('İzmit Terminal',        26, 0.16),
-  _LocationRow('Aliağa Rafineri',       18, 0.11),
-  _LocationRow('Diğer (18 lokasyon)',   24, 0.16),
+  _LocationRow('Mersin Limanı', 38, 0.24),
+  _LocationRow('İzmit Terminal', 26, 0.16),
+  _LocationRow('Aliağa Rafineri', 18, 0.11),
+  _LocationRow('Diğer (18 lokasyon)', 24, 0.16),
 ];

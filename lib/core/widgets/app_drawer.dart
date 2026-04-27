@@ -25,32 +25,103 @@ class DrawerSection {
 }
 
 final kDrawerSections = [
-  DrawerSection(title: 'YÖNETİM', items: [
-    const DrawerItem(key: 'home',      label: 'Anasayfa',       icon: Icons.home_outlined),
-    const DrawerItem(key: 'devices',   label: 'Cihazlar',       icon: Icons.devices_outlined),
-    const DrawerItem(key: 'people',    label: 'Personel',       icon: Icons.people_outline),
-    const DrawerItem(key: 'assign',    label: 'Zimmetler',      icon: Icons.assignment_outlined),
-    const DrawerItem(key: 'locations', label: 'Lokasyonlar',    icon: Icons.location_on_outlined),
-  ]),
-  DrawerSection(title: 'VARLIKLAR', items: [
-    const DrawerItem(key: 'consumables',      label: 'Sarf Malzemeleri',  icon: Icons.inventory_2_outlined),
-    const DrawerItem(key: 'software-licenses',label: 'Yazılım Lisansları',icon: Icons.security_outlined),
-    const DrawerItem(key: 'subscriptions',    label: 'Abonelikler',       icon: Icons.subscriptions_outlined),
-  ]),
-  DrawerSection(title: 'RAPORLAR', items: [
-    const DrawerItem(key: 'reports',   label: 'Raporlar',        icon: Icons.bar_chart_outlined),
-    const DrawerItem(key: 'audit',     label: 'Audit Log',       icon: Icons.history),
-    const DrawerItem(key: 'export',    label: 'Excel Export',    icon: Icons.download_outlined),
-  ]),
-  DrawerSection(title: 'SİSTEM', items: [
-    const DrawerItem(key: 'notif',     label: 'Bildirimler',     icon: Icons.notifications_outlined),
-    const DrawerItem(key: 'sap',       label: 'SAP Senkron.',    icon: Icons.sync),
-    const DrawerItem(key: 'settings',  label: 'Ayarlar',         icon: Icons.settings_outlined),
-    const DrawerItem(key: 'profile',   label: 'Profilim',        icon: Icons.person_outline),
-  ]),
-  DrawerSection(title: 'YARDIM', items: [
-    const DrawerItem(key: 'about',     label: 'Hakkında',        icon: Icons.info_outline),
-  ]),
+  DrawerSection(
+    title: 'YÖNETİM',
+    items: [
+      const DrawerItem(
+        key: 'home',
+        label: 'Anasayfa',
+        icon: Icons.home_outlined,
+      ),
+      const DrawerItem(
+        key: 'devices',
+        label: 'Cihazlar',
+        icon: Icons.devices_outlined,
+      ),
+      const DrawerItem(
+        key: 'people',
+        label: 'Personel',
+        icon: Icons.people_outline,
+      ),
+      const DrawerItem(
+        key: 'assign',
+        label: 'Zimmetler',
+        icon: Icons.assignment_outlined,
+      ),
+      const DrawerItem(
+        key: 'locations',
+        label: 'Lokasyonlar',
+        icon: Icons.location_on_outlined,
+      ),
+    ],
+  ),
+  DrawerSection(
+    title: 'VARLIKLAR',
+    items: [
+      const DrawerItem(
+        key: 'consumables',
+        label: 'Sarf Malzemeleri',
+        icon: Icons.inventory_2_outlined,
+      ),
+      const DrawerItem(
+        key: 'software-licenses',
+        label: 'Yazılım Lisansları',
+        icon: Icons.security_outlined,
+      ),
+      const DrawerItem(
+        key: 'subscriptions',
+        label: 'Abonelikler',
+        icon: Icons.subscriptions_outlined,
+      ),
+    ],
+  ),
+  DrawerSection(
+    title: 'RAPORLAR',
+    items: [
+      const DrawerItem(
+        key: 'reports',
+        label: 'Raporlar',
+        icon: Icons.bar_chart_outlined,
+      ),
+      const DrawerItem(key: 'audit', label: 'Audit Log', icon: Icons.history),
+      const DrawerItem(
+        key: 'export',
+        label: 'Excel Export',
+        icon: Icons.download_outlined,
+      ),
+    ],
+  ),
+  DrawerSection(
+    title: 'SİSTEM',
+    items: [
+      const DrawerItem(
+        key: 'notif',
+        label: 'Bildirimler',
+        icon: Icons.notifications_outlined,
+      ),
+      const DrawerItem(key: 'sap', label: 'SAP Senkron.', icon: Icons.sync),
+      const DrawerItem(
+        key: 'settings',
+        label: 'Ayarlar',
+        icon: Icons.settings_outlined,
+      ),
+      const DrawerItem(
+        key: 'profile',
+        label: 'Profilim',
+        icon: Icons.person_outline,
+      ),
+    ],
+  ),
+  DrawerSection(
+    title: 'YARDIM',
+    items: [
+      const DrawerItem(
+        key: 'about',
+        label: 'Hakkında',
+        icon: Icons.info_outline,
+      ),
+    ],
+  ),
 ];
 
 class AppDrawer extends StatelessWidget {
@@ -93,7 +164,9 @@ class AppDrawer extends StatelessWidget {
             color: AppColors.navy,
             padding: EdgeInsets.only(
               top: MediaQuery.of(context).padding.top + 20,
-              left: 20, right: 20, bottom: 20,
+              left: 20,
+              right: 20,
+              bottom: 20,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,7 +174,8 @@ class AppDrawer extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      width: 60, height: 60,
+                      width: 60,
+                      height: 60,
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.14),
                         borderRadius: BorderRadius.circular(10),
@@ -110,8 +184,10 @@ class AppDrawer extends StatelessWidget {
                       child: Text(
                         _initials.toUpperCase(),
                         style: GoogleFonts.inter(
-                          fontSize: 22, fontWeight: FontWeight.w500,
-                          color: Colors.white, letterSpacing: 0.5,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
                         ),
                       ),
                     ),
@@ -123,8 +199,10 @@ class AppDrawer extends StatelessWidget {
                           Text(
                             userName,
                             style: GoogleFonts.inter(
-                              fontSize: 17, fontWeight: FontWeight.w500,
-                              color: Colors.white, letterSpacing: -0.1,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                              letterSpacing: -0.1,
                             ),
                           ),
                           const SizedBox(height: 2),
@@ -142,12 +220,17 @@ class AppDrawer extends StatelessWidget {
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
                       child: Container(
-                        width: 32, height: 32,
+                        width: 32,
+                        height: 32,
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.10),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Icon(Icons.close, size: 16, color: Colors.white),
+                        child: const Icon(
+                          Icons.close,
+                          size: 16,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ],
@@ -156,7 +239,10 @@ class AppDrawer extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.18),
                         borderRadius: BorderRadius.circular(4),
@@ -164,8 +250,10 @@ class AppDrawer extends StatelessWidget {
                       child: Text(
                         userRole.toUpperCase(),
                         style: GoogleFonts.inter(
-                          fontSize: 10, fontWeight: FontWeight.w500,
-                          color: Colors.white, letterSpacing: 0.8,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                          letterSpacing: 0.8,
                         ),
                       ),
                     ),
@@ -195,8 +283,10 @@ class AppDrawer extends StatelessWidget {
                     child: Text(
                       kDrawerSections[si].title,
                       style: GoogleFonts.inter(
-                        fontSize: 10, fontWeight: FontWeight.w500,
-                        color: AppColors.textTertiary, letterSpacing: 1.4,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.textTertiary,
+                        letterSpacing: 1.4,
                       ),
                     ),
                   ),
@@ -237,12 +327,17 @@ class AppDrawer extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(18, 10, 18, 10),
                     child: Row(
                       children: [
-                        const Icon(Icons.logout, size: 18, color: AppColors.error),
+                        const Icon(
+                          Icons.logout,
+                          size: 18,
+                          color: AppColors.error,
+                        ),
                         const SizedBox(width: 14),
                         Text(
                           'Çıkış Yap',
                           style: GoogleFonts.inter(
-                            fontSize: 14, fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
                             color: AppColors.error,
                           ),
                         ),
@@ -331,7 +426,8 @@ class _DrawerMenuItem extends StatelessWidget {
                 child: Text(
                   item.badge!,
                   style: GoogleFonts.inter(
-                    fontSize: 10, fontWeight: FontWeight.w500,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
                     letterSpacing: 0.2,
                     color: item.badgeIsError
                         ? Colors.white

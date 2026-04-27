@@ -124,8 +124,7 @@ class SapSyncScreen extends ConsumerWidget {
                   label: 'Personel Senkronizasyonu',
                   caption: 'SAP HR\'dan personel listesini çek',
                   isSyncing: state.isSyncingEmployees,
-                  onTap: () =>
-                      ref.read(sapProvider.notifier).syncEmployees(),
+                  onTap: () => ref.read(sapProvider.notifier).syncEmployees(),
                 ),
                 const SizedBox(height: 8),
                 _SyncButton(

@@ -15,12 +15,16 @@ import 'package:assetflow_mobile/features/assignments/widgets/person_pick_row.da
 import 'package:assetflow_mobile/features/assignments/widgets/signature_pad.dart';
 import 'package:assetflow_mobile/features/assignments/widgets/step_indicator.dart';
 
-final _employeesProvider = FutureProvider.autoDispose<List<Employee>>((ref) async {
+final _employeesProvider = FutureProvider.autoDispose<List<Employee>>((
+  ref,
+) async {
   final result = await EmployeeService().getAll(page: 1, pageSize: 200);
   return result.items.where((e) => e.isActive).toList();
 });
 
-final _availableDevicesProvider = FutureProvider.autoDispose<List<Device>>((ref) async {
+final _availableDevicesProvider = FutureProvider.autoDispose<List<Device>>((
+  ref,
+) async {
   final result = await DeviceService().getAll(page: 1, pageSize: 200);
   return result.items.where((d) => d.status == 1).toList();
 });
@@ -212,12 +216,17 @@ class _AssignWizardScreenState extends ConsumerState<AssignWizardScreen> {
           GestureDetector(
             onTap: _back,
             child: Container(
-              width: 36, height: 36,
+              width: 36,
+              height: 36,
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.10),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
+              child: const Icon(
+                Icons.chevron_left,
+                size: 22,
+                color: Colors.white,
+              ),
             ),
           ),
           const SizedBox(width: 12),
@@ -249,29 +258,46 @@ class _AssignWizardScreenState extends ConsumerState<AssignWizardScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(
-            AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 0,
+            AppSpacing.lg,
+            AppSpacing.lg,
+            AppSpacing.lg,
+            0,
           ),
           child: AppInput(
             hint: 'İsim, departman veya ünvan ara…',
             controller: _personSearchCtrl,
-            prefixIcon: const Icon(Icons.search, size: 18, color: AppColors.textTertiary),
+            prefixIcon: const Icon(
+              Icons.search,
+              size: 18,
+              color: AppColors.textTertiary,
+            ),
             onChanged: (v) => setState(() => _personSearch = v.toLowerCase()),
           ),
         ),
         Expanded(
           child: employeesAsync.when(
             loading: () => const Center(
-              child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2),
+              child: CircularProgressIndicator(
+                color: AppColors.navy,
+                strokeWidth: 2,
+              ),
             ),
             error: (err, stack) => Center(
-              child: Text('Personel yüklenemedi.',
-                  style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary)),
+              child: Text(
+                'Personel yüklenemedi.',
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  color: AppColors.textSecondary,
+                ),
+              ),
             ),
             data: (employees) {
               final filtered = employees.where((e) {
                 if (_personSearch.isEmpty) return true;
                 return e.fullName.toLowerCase().contains(_personSearch) ||
-                    (e.department ?? '').toLowerCase().contains(_personSearch) ||
+                    (e.department ?? '').toLowerCase().contains(
+                      _personSearch,
+                    ) ||
                     (e.title ?? '').toLowerCase().contains(_personSearch);
               }).toList();
 
@@ -299,7 +325,10 @@ class _AssignWizardScreenState extends ConsumerState<AssignWizardScreen> {
         if (_selectedEmployee != null)
           Container(
             margin: const EdgeInsets.fromLTRB(
-              AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 0,
+              AppSpacing.lg,
+              AppSpacing.md,
+              AppSpacing.lg,
+              0,
             ),
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
@@ -309,7 +338,11 @@ class _AssignWizardScreenState extends ConsumerState<AssignWizardScreen> {
             ),
             child: Row(
               children: [
-                const Icon(Icons.person_outline, size: 16, color: AppColors.navy),
+                const Icon(
+                  Icons.person_outline,
+                  size: 16,
+                  color: AppColors.navy,
+                ),
                 const SizedBox(width: 8),
                 Text(
                   _selectedEmployee!.fullName,
@@ -324,14 +357,25 @@ class _AssignWizardScreenState extends ConsumerState<AssignWizardScreen> {
           ),
         Padding(
           padding: const EdgeInsets.fromLTRB(
-            AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 0,
+            AppSpacing.lg,
+            AppSpacing.md,
+            AppSpacing.lg,
+            0,
           ),
           child: AppInput(
             hint: 'Cihaz adı veya kod ara…',
             controller: _deviceSearchCtrl,
-            prefixIcon: const Icon(Icons.search, size: 18, color: AppColors.textTertiary),
+            prefixIcon: const Icon(
+              Icons.search,
+              size: 18,
+              color: AppColors.textTertiary,
+            ),
             suffixIcon: IconButton(
-              icon: const Icon(Icons.qr_code_scanner, size: 18, color: AppColors.textTertiary),
+              icon: const Icon(
+                Icons.qr_code_scanner,
+                size: 18,
+                color: AppColors.textTertiary,
+              ),
               tooltip: 'QR / Barkod Tara',
               onPressed: _scanDeviceQR,
             ),
@@ -341,11 +385,19 @@ class _AssignWizardScreenState extends ConsumerState<AssignWizardScreen> {
         Expanded(
           child: devicesAsync.when(
             loading: () => const Center(
-              child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2),
+              child: CircularProgressIndicator(
+                color: AppColors.navy,
+                strokeWidth: 2,
+              ),
             ),
             error: (err, stack) => Center(
-              child: Text('Cihazlar yüklenemedi.',
-                  style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary)),
+              child: Text(
+                'Cihazlar yüklenemedi.',
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  color: AppColors.textSecondary,
+                ),
+              ),
             ),
             data: (devices) {
               final filtered = devices.where((d) {
@@ -359,7 +411,8 @@ class _AssignWizardScreenState extends ConsumerState<AssignWizardScreen> {
                   child: Text(
                     'Depoda bekleyen cihaz bulunamadı.',
                     style: GoogleFonts.inter(
-                      fontSize: 13, color: AppColors.textSecondary,
+                      fontSize: 13,
+                      color: AppColors.textSecondary,
                     ),
                   ),
                 );
@@ -401,8 +454,11 @@ class _AssignWizardScreenState extends ConsumerState<AssignWizardScreen> {
                 controller: TextEditingController(
                   text: dateFormat.format(_startDate),
                 ),
-                suffixIcon: const Icon(Icons.calendar_today_outlined,
-                    size: 16, color: AppColors.textTertiary),
+                suffixIcon: const Icon(
+                  Icons.calendar_today_outlined,
+                  size: 16,
+                  color: AppColors.textTertiary,
+                ),
               ),
             ),
           ),
@@ -412,8 +468,9 @@ class _AssignWizardScreenState extends ConsumerState<AssignWizardScreen> {
             value: _durationDays,
             items: [
               const DropdownMenuItem(value: null, child: Text('Süresiz')),
-              ..._durationOptions.map((o) =>
-                  DropdownMenuItem(value: o.$1, child: Text(o.$2))),
+              ..._durationOptions.map(
+                (o) => DropdownMenuItem(value: o.$1, child: Text(o.$2)),
+              ),
             ],
             onChanged: (v) => setState(() => _durationDays = v),
           ),
@@ -467,10 +524,13 @@ class _AssignWizardScreenState extends ConsumerState<AssignWizardScreen> {
             rows: [
               _SummaryRow('Ad', _selectedDevice?.name ?? '—'),
               _SummaryRow('Demirbaş', _selectedDevice?.assetCode ?? '—'),
-              _SummaryRow('Marka/Model',
-                  [_selectedDevice?.brand, _selectedDevice?.model]
-                      .whereType<String>()
-                      .join(' ')),
+              _SummaryRow(
+                'Marka/Model',
+                [
+                  _selectedDevice?.brand,
+                  _selectedDevice?.model,
+                ].whereType<String>().join(' '),
+              ),
             ],
           ),
           const SizedBox(height: 10),
@@ -483,20 +543,15 @@ class _AssignWizardScreenState extends ConsumerState<AssignWizardScreen> {
                 _durationDays == null
                     ? 'Süresiz'
                     : _durationOptions
-                            .firstWhere(
-                              (o) => o.$1 == _durationDays,
-                              orElse: () => (_durationDays!, '$_durationDays gün'),
-                            )
-                            .$2,
+                          .firstWhere(
+                            (o) => o.$1 == _durationDays,
+                            orElse: () =>
+                                (_durationDays!, '$_durationDays gün'),
+                          )
+                          .$2,
               ),
-              _SummaryRow(
-                'Kişisel Kullanım',
-                _personalUse ? 'Evet' : 'Hayır',
-              ),
-              _SummaryRow(
-                'Yurt Dışı',
-                _international ? 'Evet' : 'Hayır',
-              ),
+              _SummaryRow('Kişisel Kullanım', _personalUse ? 'Evet' : 'Hayır'),
+              _SummaryRow('Yurt Dışı', _international ? 'Evet' : 'Hayır'),
             ],
           ),
           const SizedBox(height: 16),
@@ -754,7 +809,10 @@ class _DropdownField<T> extends StatelessWidget {
           decoration: InputDecoration(
             filled: true,
             fillColor: AppColors.surfaceWhite,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.md),
               borderSide: const BorderSide(color: AppColors.surfaceInputBorder),
@@ -794,10 +852,12 @@ class _Btn extends StatelessWidget {
     final bg = success
         ? AppColors.success
         : secondary
-            ? AppColors.surfaceWhite
-            : AppColors.navy;
+        ? AppColors.surfaceWhite
+        : AppColors.navy;
     final fg = secondary ? AppColors.navy : Colors.white;
-    final border = secondary ? AppColors.surfaceInputBorder : Colors.transparent;
+    final border = secondary
+        ? AppColors.surfaceInputBorder
+        : Colors.transparent;
 
     return GestureDetector(
       onTap: isLoading ? null : onTap,
@@ -811,9 +871,11 @@ class _Btn extends StatelessWidget {
         alignment: Alignment.center,
         child: isLoading
             ? const SizedBox(
-                width: 20, height: 20,
+                width: 20,
+                height: 20,
                 child: CircularProgressIndicator(
-                  color: Colors.white, strokeWidth: 2,
+                  color: Colors.white,
+                  strokeWidth: 2,
                 ),
               )
             : Text(

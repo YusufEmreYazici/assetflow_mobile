@@ -64,13 +64,13 @@ class Device {
   factory Device.fromJson(Map<String, dynamic> json) {
     return Device(
       id: json['id'].toString(),
-      name: json['name'] as String,
+      name: json['name'] as String? ?? '',
       assetCode: json['assetCode'] as String?,
       brand: json['brand'] as String?,
       model: json['model'] as String?,
       serialNumber: json['serialNumber'] as String?,
-      type: json['type'] as int,
-      status: json['status'] as int,
+      type: _parseDeviceType(json['type']),
+      status: _parseDeviceStatus(json['status']),
       purchaseDate: json['purchaseDate'] != null
           ? DateTime.parse(json['purchaseDate'] as String)
           : null,
@@ -82,7 +82,7 @@ class Device {
       warrantyEndDate: json['warrantyEndDate'] != null
           ? DateTime.parse(json['warrantyEndDate'] as String)
           : null,
-      warrantyStatus: json['warrantyStatus'] as int?,
+      warrantyStatus: _parseWarrantyStatus(json['warrantyStatus']),
       notes: json['notes'] as String?,
       assignedTo: json['assignedTo'] as String?,
       activeAssignmentId: json['activeAssignmentId'] as String?,
@@ -99,6 +99,43 @@ class Device {
       biosVersion: json['biosVersion'] as String?,
       motherboardInfo: json['motherboardInfo'] as String?,
     );
+  }
+
+  // Backend sends string enums (JsonStringEnumConverter) — map to local int constants
+  static int _parseDeviceType(dynamic v) {
+    if (v is int) return v;
+    const m = {
+      'Laptop': 0,
+      'Desktop': 1,
+      'Monitor': 2,
+      'Printer': 3,
+      'Phone': 4,
+      'Tablet': 5,
+      'Server': 6,
+      'NetworkDevice': 7,
+      'Other': 8,
+    };
+    return m[v as String? ?? ''] ?? 8;
+  }
+
+  static int _parseDeviceStatus(dynamic v) {
+    if (v is int) return v;
+    const m = {
+      'Active': 0,
+      'InStorage': 1,
+      'UnderMaintenance': 2,
+      'Retired': 3,
+      'Lost': 4,
+    };
+    return m[v as String? ?? ''] ?? 0;
+  }
+
+  // Backend: Active=0, ExpiringSoon=1, Expired=2 → mobile: 1=Garantide, 2=Yaklasıyor, 3=Bitti
+  static int? _parseWarrantyStatus(dynamic v) {
+    if (v == null) return null;
+    if (v is int) return v == 0 ? 1 : v + 1;
+    const m = {'Active': 1, 'ExpiringSoon': 2, 'Expired': 3};
+    return m[v as String? ?? ''] ?? 0;
   }
 
   Map<String, dynamic> toJson() => {

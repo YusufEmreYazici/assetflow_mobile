@@ -20,16 +20,27 @@ class SoftwareLicenseDetailScreen extends ConsumerWidget {
         appBar: AppBar(
           backgroundColor: AppColors.navy,
           foregroundColor: Colors.white,
-          leading: IconButton(icon: const Icon(Icons.chevron_left), onPressed: () => context.pop()),
+          leading: IconButton(
+            icon: const Icon(Icons.chevron_left),
+            onPressed: () => context.pop(),
+          ),
         ),
-        body: const Center(child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2)),
+        body: const Center(
+          child: CircularProgressIndicator(
+            color: AppColors.navy,
+            strokeWidth: 2,
+          ),
+        ),
       ),
       error: (e, _) => Scaffold(
         backgroundColor: AppColors.surfaceLight,
         appBar: AppBar(
           backgroundColor: AppColors.navy,
           foregroundColor: Colors.white,
-          leading: IconButton(icon: const Icon(Icons.chevron_left), onPressed: () => context.pop()),
+          leading: IconButton(
+            icon: const Icon(Icons.chevron_left),
+            onPressed: () => context.pop(),
+          ),
         ),
         body: Center(child: Text('Yüklenemedi: $e')),
       ),
@@ -54,9 +65,17 @@ class _LicenseDetailView extends StatelessWidget {
         backgroundColor: AppColors.navy,
         foregroundColor: Colors.white,
         leading: IconButton(
-            icon: const Icon(Icons.chevron_left, color: Colors.white), onPressed: () => context.pop()),
-        title: Text(license.productName,
-            style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
+          icon: const Icon(Icons.chevron_left, color: Colors.white),
+          onPressed: () => context.pop(),
+        ),
+        title: Text(
+          license.productName,
+          style: GoogleFonts.inter(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -81,7 +100,13 @@ class _LicenseDetailView extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withAlpha(10), blurRadius: 8, offset: const Offset(0, 2))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(10),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,32 +114,71 @@ class _LicenseDetailView extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('${license.vendor} ${license.productName}',
-                  style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700)),
+              Text(
+                '${license.vendor} ${license.productName}',
+                style: GoogleFonts.inter(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
               _statusChip(),
             ],
           ),
-          Text(license.version ?? '', style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary)),
+          Text(
+            license.version ?? '',
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              color: AppColors.textSecondary,
+            ),
+          ),
           const SizedBox(height: 16),
           Row(
             children: [
               Expanded(
                 child: Column(
                   children: [
-                    Text('${license.usedSeats}',
-                        style: GoogleFonts.inter(fontSize: 32, fontWeight: FontWeight.w800,
-                            color: isOverused ? AppColors.error : AppColors.navy)),
-                    Text('Kullanılan', style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary)),
+                    Text(
+                      '${license.usedSeats}',
+                      style: GoogleFonts.inter(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w800,
+                        color: isOverused ? AppColors.error : AppColors.navy,
+                      ),
+                    ),
+                    Text(
+                      'Kullanılan',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                   ],
                 ),
               ),
-              Text('/', style: GoogleFonts.inter(fontSize: 28, color: AppColors.textTertiary)),
+              Text(
+                '/',
+                style: GoogleFonts.inter(
+                  fontSize: 28,
+                  color: AppColors.textTertiary,
+                ),
+              ),
               Expanded(
                 child: Column(
                   children: [
-                    Text('${license.totalSeats}',
-                        style: GoogleFonts.inter(fontSize: 32, fontWeight: FontWeight.w800)),
-                    Text('Toplam', style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary)),
+                    Text(
+                      '${license.totalSeats}',
+                      style: GoogleFonts.inter(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    Text(
+                      'Toplam',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -129,8 +193,13 @@ class _LicenseDetailView extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
           ),
           const SizedBox(height: 4),
-          Text('${license.availableSeats} koltuk boş · %${(utilPct * 100).round()} kullanımda',
-              style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary)),
+          Text(
+            '${license.availableSeats} koltuk boş · %${(utilPct * 100).round()} kullanımda',
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              color: AppColors.textSecondary,
+            ),
+          ),
         ],
       ),
     );
@@ -151,16 +220,36 @@ class _LicenseDetailView extends StatelessWidget {
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(20)),
-      child: Text(label, style: GoogleFonts.inter(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        label,
+        style: GoogleFonts.inter(
+          color: Colors.white,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
     );
   }
 
   Widget _buildInfoCard(BuildContext context) {
     final rows = <(String, String)>[
       ('Lisans Türü', license.licenseType),
-      ('Birim Fiyat', license.purchasePrice != null ? '${license.purchasePrice!.toStringAsFixed(2)} ${license.currency}' : '—'),
-      ('Yenileme Maliyeti', license.renewalCost != null ? '${license.renewalCost!.toStringAsFixed(2)} ${license.currency}' : '—'),
+      (
+        'Birim Fiyat',
+        license.purchasePrice != null
+            ? '${license.purchasePrice!.toStringAsFixed(2)} ${license.currency}'
+            : '—',
+      ),
+      (
+        'Yenileme Maliyeti',
+        license.renewalCost != null
+            ? '${license.renewalCost!.toStringAsFixed(2)} ${license.currency}'
+            : '—',
+      ),
       ('Başlangıç', license.startDate?.substring(0, 10) ?? '—'),
       ('Bitiş', license.expiryDate?.substring(0, 10) ?? '—'),
       ('Otomatik Yenileme', license.autoRenew ? 'Açık' : 'Kapalı'),
@@ -174,7 +263,13 @@ class _LicenseDetailView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Lisans Bilgileri', style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w700)),
+            Text(
+              'Lisans Bilgileri',
+              style: GoogleFonts.inter(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             const SizedBox(height: 12),
             ...rows.map(
               (r) => Padding(
@@ -183,10 +278,22 @@ class _LicenseDetailView extends StatelessWidget {
                   children: [
                     SizedBox(
                       width: 140,
-                      child: Text(r.$1, style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary)),
+                      child: Text(
+                        r.$1,
+                        style: GoogleFonts.inter(
+                          fontSize: 13,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
                     ),
                     Expanded(
-                      child: Text(r.$2, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w500)),
+                      child: Text(
+                        r.$2,
+                        style: GoogleFonts.inter(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -194,7 +301,13 @@ class _LicenseDetailView extends StatelessWidget {
             ),
             if (license.notes != null) ...[
               const Divider(),
-              Text('Notlar', style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary)),
+              Text(
+                'Notlar',
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  color: AppColors.textSecondary,
+                ),
+              ),
               const SizedBox(height: 4),
               Text(license.notes!, style: GoogleFonts.inter(fontSize: 13)),
             ],

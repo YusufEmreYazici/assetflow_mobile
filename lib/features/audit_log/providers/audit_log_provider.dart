@@ -35,17 +35,20 @@ class AuditLogState {
     bool clearError = false,
     bool clearFilterAction = false,
     bool clearFilterEntity = false,
-  }) =>
-      AuditLogState(
-        logs: logs ?? this.logs,
-        isLoading: isLoading ?? this.isLoading,
-        isLoadingMore: isLoadingMore ?? this.isLoadingMore,
-        hasMore: hasMore ?? this.hasMore,
-        page: page ?? this.page,
-        error: clearError ? null : (error ?? this.error),
-        filterAction: clearFilterAction ? null : (filterAction ?? this.filterAction),
-        filterEntity: clearFilterEntity ? null : (filterEntity ?? this.filterEntity),
-      );
+  }) => AuditLogState(
+    logs: logs ?? this.logs,
+    isLoading: isLoading ?? this.isLoading,
+    isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+    hasMore: hasMore ?? this.hasMore,
+    page: page ?? this.page,
+    error: clearError ? null : (error ?? this.error),
+    filterAction: clearFilterAction
+        ? null
+        : (filterAction ?? this.filterAction),
+    filterEntity: clearFilterEntity
+        ? null
+        : (filterEntity ?? this.filterEntity),
+  );
 }
 
 class AuditLogNotifier extends StateNotifier<AuditLogState> {
@@ -56,7 +59,13 @@ class AuditLogNotifier extends StateNotifier<AuditLogState> {
 
   Future<void> load({bool reset = false}) async {
     if (reset) {
-      state = state.copyWith(isLoading: true, logs: [], page: 1, hasMore: true, clearError: true);
+      state = state.copyWith(
+        isLoading: true,
+        logs: [],
+        page: 1,
+        hasMore: true,
+        clearError: true,
+      );
     } else {
       if (!state.hasMore || state.isLoadingMore) return;
       state = state.copyWith(isLoadingMore: true);
@@ -105,5 +114,5 @@ class AuditLogNotifier extends StateNotifier<AuditLogState> {
 
 final auditLogProvider =
     StateNotifierProvider.autoDispose<AuditLogNotifier, AuditLogState>(
-  (ref) => AuditLogNotifier(AuditLogService()),
-);
+      (ref) => AuditLogNotifier(AuditLogService()),
+    );

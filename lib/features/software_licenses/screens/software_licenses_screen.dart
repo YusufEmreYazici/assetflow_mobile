@@ -13,10 +13,12 @@ class SoftwareLicensesScreen extends ConsumerStatefulWidget {
   const SoftwareLicensesScreen({super.key});
 
   @override
-  ConsumerState<SoftwareLicensesScreen> createState() => _SoftwareLicensesScreenState();
+  ConsumerState<SoftwareLicensesScreen> createState() =>
+      _SoftwareLicensesScreenState();
 }
 
-class _SoftwareLicensesScreenState extends ConsumerState<SoftwareLicensesScreen> {
+class _SoftwareLicensesScreenState
+    extends ConsumerState<SoftwareLicensesScreen> {
   final _searchCtrl = TextEditingController();
 
   @override
@@ -36,7 +38,8 @@ class _SoftwareLicensesScreenState extends ConsumerState<SoftwareLicensesScreen>
         children: [
           PageHeader(
             title: 'Yazılım Lisansları',
-            subtitle: state.result?.totalCount != null && state.result!.totalCount > 0
+            subtitle:
+                state.result?.totalCount != null && state.result!.totalCount > 0
                 ? '${state.result!.totalCount} lisans'
                 : null,
             onBack: () => context.pop(),
@@ -46,23 +49,23 @@ class _SoftwareLicensesScreenState extends ConsumerState<SoftwareLicensesScreen>
             child: state.isLoading && items.isEmpty
                 ? _buildShimmer()
                 : state.error != null && items.isEmpty
-                    ? _buildErrorState(state.error!)
-                    : items.isEmpty
-                        ? const EmptyState(
-                            icon: Icons.security_outlined,
-                            title: 'Yazılım lisansı bulunamadı',
-                            description: 'Henüz kayıtlı yazılım lisansı yok.',
-                          )
-                        : RefreshIndicator(
-                            color: AppColors.navy,
-                            onRefresh: () =>
-                                ref.read(softwareLicenseListProvider.notifier).load(),
-                            child: ListView.builder(
-                              padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
-                              itemCount: items.length,
-                              itemBuilder: (ctx, i) => _LicenseRow(license: items[i]),
-                            ),
-                          ),
+                ? _buildErrorState(state.error!)
+                : items.isEmpty
+                ? const EmptyState(
+                    icon: Icons.security_outlined,
+                    title: 'Yazılım lisansı bulunamadı',
+                    description: 'Henüz kayıtlı yazılım lisansı yok.',
+                  )
+                : RefreshIndicator(
+                    color: AppColors.navy,
+                    onRefresh: () =>
+                        ref.read(softwareLicenseListProvider.notifier).load(),
+                    child: ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+                      itemCount: items.length,
+                      itemBuilder: (ctx, i) => _LicenseRow(license: items[i]),
+                    ),
+                  ),
           ),
         ],
       ),
@@ -96,15 +99,28 @@ class _SoftwareLicensesScreenState extends ConsumerState<SoftwareLicensesScreen>
         style: GoogleFonts.inter(fontSize: 13, color: AppColors.textPrimary),
         decoration: InputDecoration(
           hintText: 'Lisans ara...',
-          hintStyle: GoogleFonts.inter(fontSize: 13, color: AppColors.textTertiary),
-          prefixIcon: const Icon(Icons.search, size: 18, color: AppColors.textTertiary),
+          hintStyle: GoogleFonts.inter(
+            fontSize: 13,
+            color: AppColors.textTertiary,
+          ),
+          prefixIcon: const Icon(
+            Icons.search,
+            size: 18,
+            color: AppColors.textTertiary,
+          ),
           suffixIcon: _searchCtrl.text.isNotEmpty
               ? IconButton(
-                  icon: const Icon(Icons.clear, size: 16, color: AppColors.textTertiary),
+                  icon: const Icon(
+                    Icons.clear,
+                    size: 16,
+                    color: AppColors.textTertiary,
+                  ),
                   onPressed: () {
                     _searchCtrl.clear();
                     setState(() {});
-                    ref.read(softwareLicenseListProvider.notifier).setSearch('');
+                    ref
+                        .read(softwareLicenseListProvider.notifier)
+                        .setSearch('');
                   },
                 )
               : null,
@@ -119,7 +135,9 @@ class _SoftwareLicensesScreenState extends ConsumerState<SoftwareLicensesScreen>
             borderRadius: BorderRadius.circular(AppRadius.md),
             borderSide: const BorderSide(color: AppColors.navy, width: 2),
           ),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppRadius.md),
+          ),
         ),
         onChanged: (v) {
           setState(() {});
@@ -136,14 +154,24 @@ class _SoftwareLicensesScreenState extends ConsumerState<SoftwareLicensesScreen>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.wifi_off_rounded, size: 48, color: AppColors.textTertiary),
+            const Icon(
+              Icons.wifi_off_rounded,
+              size: 48,
+              color: AppColors.textTertiary,
+            ),
             const SizedBox(height: 12),
-            Text(error,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 14)),
+            Text(
+              error,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 14,
+              ),
+            ),
             const SizedBox(height: 16),
             TextButton.icon(
-              onPressed: () => ref.read(softwareLicenseListProvider.notifier).load(),
+              onPressed: () =>
+                  ref.read(softwareLicenseListProvider.notifier).load(),
               icon: const Icon(Icons.refresh, size: 16),
               label: const Text('Tekrar Dene'),
             ),
@@ -166,8 +194,8 @@ class _LicenseRow extends StatelessWidget {
     final statusColor = license.isExpired
         ? AppColors.error
         : license.isExpiringSoon
-            ? AppColors.warning
-            : AppColors.success;
+        ? AppColors.warning
+        : AppColors.success;
 
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
@@ -178,7 +206,10 @@ class _LicenseRow extends StatelessWidget {
         side: const BorderSide(color: AppColors.surfaceInputBorder),
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 10,
+        ),
         leading: Container(
           width: 48,
           height: 48,
@@ -188,13 +219,20 @@ class _LicenseRow extends StatelessWidget {
           ),
           child: const Icon(Icons.security_outlined, color: AppColors.navy),
         ),
-        title: Text('${license.vendor} ${license.productName}',
-            style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600)),
+        title: Text(
+          '${license.vendor} ${license.productName}',
+          style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600),
+        ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('${license.licenseType} · ${license.usedSeats}/${license.totalSeats} koltuk',
-                style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary)),
+            Text(
+              '${license.licenseType} · ${license.usedSeats}/${license.totalSeats} koltuk',
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                color: AppColors.textSecondary,
+              ),
+            ),
             const SizedBox(height: 4),
             LinearProgressIndicator(
               value: utilPct,
@@ -210,9 +248,16 @@ class _LicenseRow extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
-            license.isExpired ? 'Sona Erdi' : license.isExpiringSoon ? 'Yakında' : 'Aktif',
+            license.isExpired
+                ? 'Sona Erdi'
+                : license.isExpiringSoon
+                ? 'Yakında'
+                : 'Aktif',
             style: GoogleFonts.inter(
-                fontSize: 11, fontWeight: FontWeight.w600, color: Colors.white),
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
           ),
         ),
         onTap: () => context.push('/software-licenses/${license.id}'),

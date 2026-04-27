@@ -55,7 +55,11 @@ class DashboardAView extends ConsumerWidget {
           // KPI Grid
           Padding(
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.xl, AppSpacing.xl, AppSpacing.xl, 0),
+              AppSpacing.xl,
+              AppSpacing.xl,
+              AppSpacing.xl,
+              0,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -100,7 +104,9 @@ class DashboardAView extends ConsumerWidget {
                     Expanded(
                       child: KpiCard(
                         label: 'Uyarılar',
-                        value: data != null ? '${data.expiringWarranties}' : '—',
+                        value: data != null
+                            ? '${data.expiringWarranties}'
+                            : '—',
                         delta: 'Garanti · 60 gün',
                         accent: AppColors.warning,
                         background: AppColors.warningBg,
@@ -116,23 +122,38 @@ class DashboardAView extends ConsumerWidget {
           // Quick Actions
           Padding(
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.xl, AppSpacing.xxl, AppSpacing.xl, 0),
+              AppSpacing.xl,
+              AppSpacing.xxl,
+              AppSpacing.xl,
+              0,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SectionHeader(title: 'HIZLI İŞLEMLER', padding: EdgeInsets.zero),
+                const SectionHeader(
+                  title: 'HIZLI İŞLEMLER',
+                  padding: EdgeInsets.zero,
+                ),
                 const SizedBox(height: 10),
                 // QR shortcut banner
                 GestureDetector(
                   onTap: () async {
-                    final code = await BarcodeScannerService.scanBarcode(context);
+                    final code = await BarcodeScannerService.scanBarcode(
+                      context,
+                    );
                     if (code != null && context.mounted) {
-                      context.go('/devices', extra: <String, dynamic>{'qrCode': code});
+                      context.go(
+                        '/devices',
+                        extra: <String, dynamic>{'qrCode': code},
+                      );
                     }
                   },
                   child: Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 14,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.primary50,
                       borderRadius: BorderRadius.circular(AppRadius.md),
@@ -141,7 +162,11 @@ class DashboardAView extends ConsumerWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.qr_code_scanner, size: 16, color: AppColors.primary600),
+                        const Icon(
+                          Icons.qr_code_scanner,
+                          size: 16,
+                          color: AppColors.primary600,
+                        ),
                         const SizedBox(width: 8),
                         Text(
                           'QR / Barkod Tara',
@@ -179,14 +204,22 @@ class DashboardAView extends ConsumerWidget {
           // Favorites
           Padding(
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.xl, AppSpacing.xxl, AppSpacing.xl, 0),
+              AppSpacing.xl,
+              AppSpacing.xxl,
+              AppSpacing.xl,
+              0,
+            ),
             child: const FavoritesSection(),
           ),
 
           // Activity feed
           Padding(
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.xl, AppSpacing.xxl, AppSpacing.xl, 0),
+              AppSpacing.xl,
+              AppSpacing.xxl,
+              AppSpacing.xl,
+              0,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -203,8 +236,10 @@ class DashboardAView extends ConsumerWidget {
                     child: Text(
                       'TÜMÜ →',
                       style: GoogleFonts.inter(
-                        fontSize: 11, fontWeight: FontWeight.w500,
-                        color: AppColors.navyLight, letterSpacing: 0.3,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.navyLight,
+                        letterSpacing: 0.3,
                       ),
                     ),
                   ),
@@ -234,11 +269,18 @@ class DashboardAView extends ConsumerWidget {
           if (data != null && data.expiringWarranties > 0)
             Padding(
               padding: const EdgeInsets.fromLTRB(
-                AppSpacing.xl, AppSpacing.xxl, AppSpacing.xl, 0),
+                AppSpacing.xl,
+                AppSpacing.xxl,
+                AppSpacing.xl,
+                0,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SectionHeader(title: 'GARANTİ UYARILARI', padding: EdgeInsets.zero),
+                  const SectionHeader(
+                    title: 'GARANTİ UYARILARI',
+                    padding: EdgeInsets.zero,
+                  ),
                   const SizedBox(height: 10),
                   Container(
                     decoration: BoxDecoration(
@@ -252,8 +294,11 @@ class DashboardAView extends ConsumerWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(Icons.warning_amber_outlined,
-                            size: 18, color: AppColors.warning),
+                        const Icon(
+                          Icons.warning_amber_outlined,
+                          size: 18,
+                          color: AppColors.warning,
+                        ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Column(
@@ -262,7 +307,8 @@ class DashboardAView extends ConsumerWidget {
                               Text(
                                 '${data.expiringWarranties} cihazın garantisi 60 gün içinde dolacak',
                                 style: GoogleFonts.inter(
-                                  fontSize: 13, fontWeight: FontWeight.w500,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
                                   color: AppColors.textPrimary,
                                 ),
                               ),
@@ -270,13 +316,19 @@ class DashboardAView extends ConsumerWidget {
                               Text(
                                 'Cihazları inceleyip uzatma talebinde bulunun.',
                                 style: GoogleFonts.inter(
-                                  fontSize: 11, color: AppColors.textSecondary, height: 1.5,
+                                  fontSize: 11,
+                                  color: AppColors.textSecondary,
+                                  height: 1.5,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        const Icon(Icons.chevron_right, size: 16, color: AppColors.warning),
+                        const Icon(
+                          Icons.chevron_right,
+                          size: 16,
+                          color: AppColors.warning,
+                        ),
                       ],
                     ),
                   ),
@@ -289,9 +341,9 @@ class DashboardAView extends ConsumerWidget {
   }
 
   String _roleLabel(String? role) => switch (role) {
-        'Admin'   => 'Yönetici',
-        'Manager' => 'Müdür',
-        'ITAdmin' => 'IT Yönetici',
-        _         => role ?? '',
-      };
+    'Admin' => 'Yönetici',
+    'Manager' => 'Müdür',
+    'ITAdmin' => 'IT Yönetici',
+    _ => role ?? '',
+  };
 }

@@ -43,7 +43,8 @@ class MiniBarChart extends StatelessWidget {
                   Text(
                     labels[i],
                     style: GoogleFonts.inter(
-                      fontSize: 9, color: AppColors.textTertiary,
+                      fontSize: 9,
+                      color: AppColors.textTertiary,
                     ),
                   ),
                 ],

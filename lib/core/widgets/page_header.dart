@@ -48,12 +48,17 @@ class PageHeader extends StatelessWidget implements PreferredSizeWidget {
               child: GestureDetector(
                 onTap: onBack,
                 child: Container(
-                  width: 36, height: 36,
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.10),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
+                  child: const Icon(
+                    Icons.chevron_left,
+                    size: 22,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -69,8 +74,10 @@ class PageHeader extends StatelessWidget implements PreferredSizeWidget {
                 Text(
                   title,
                   style: GoogleFonts.inter(
-                    fontSize: 19, fontWeight: FontWeight.w500,
-                    color: Colors.white, letterSpacing: -0.2,
+                    fontSize: 19,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                    letterSpacing: -0.2,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -100,12 +107,17 @@ class PageHeader extends StatelessWidget implements PreferredSizeWidget {
                 builder: (ctx) => GestureDetector(
                   onTap: () => Scaffold.maybeOf(ctx)?.openEndDrawer(),
                   child: Container(
-                    width: 36, height: 36,
+                    width: 36,
+                    height: 36,
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.10),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.menu, size: 18, color: Colors.white),
+                    child: const Icon(
+                      Icons.menu,
+                      size: 18,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),

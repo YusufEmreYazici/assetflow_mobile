@@ -10,7 +10,8 @@ class PasswordEmailSentScreen extends StatefulWidget {
   const PasswordEmailSentScreen({super.key, required this.email});
 
   @override
-  State<PasswordEmailSentScreen> createState() => _PasswordEmailSentScreenState();
+  State<PasswordEmailSentScreen> createState() =>
+      _PasswordEmailSentScreenState();
 }
 
 class _PasswordEmailSentScreenState extends State<PasswordEmailSentScreen> {
@@ -27,7 +28,10 @@ class _PasswordEmailSentScreenState extends State<PasswordEmailSentScreen> {
     _timer?.cancel();
     setState(() => _cooldown = 60);
     _timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (_cooldown <= 0) { t.cancel(); return; }
+      if (_cooldown <= 0) {
+        t.cancel();
+        return;
+      }
       setState(() => _cooldown--);
     });
   }
@@ -55,13 +59,18 @@ class _PasswordEmailSentScreenState extends State<PasswordEmailSentScreen> {
               children: [
                 Center(
                   child: Container(
-                    width: 72, height: 72,
+                    width: 72,
+                    height: 72,
                     decoration: BoxDecoration(
                       color: AppColors.successBg,
                       shape: BoxShape.circle,
                       border: Border.all(color: AppColors.success),
                     ),
-                    child: const Icon(Icons.check, size: 32, color: AppColors.success),
+                    child: const Icon(
+                      Icons.check,
+                      size: 32,
+                      color: AppColors.success,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 22),
@@ -69,7 +78,8 @@ class _PasswordEmailSentScreenState extends State<PasswordEmailSentScreen> {
                   'E-posta gönderildi',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.inter(
-                    fontSize: 20, fontWeight: FontWeight.w500,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
                     color: AppColors.textPrimary,
                   ),
                 ),
@@ -78,13 +88,18 @@ class _PasswordEmailSentScreenState extends State<PasswordEmailSentScreen> {
                   'Sıfırlama bağlantısı aşağıdaki adrese gönderildi. Gelen kutunuzu ve spam klasörünüzü kontrol edin.',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.inter(
-                    fontSize: 13, color: AppColors.textSecondary, height: 1.55,
+                    fontSize: 13,
+                    color: AppColors.textSecondary,
+                    height: 1.55,
                   ),
                 ),
                 const SizedBox(height: 14),
                 Center(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 10,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.surfaceLight,
                       borderRadius: BorderRadius.circular(AppRadius.md),
@@ -92,7 +107,8 @@ class _PasswordEmailSentScreenState extends State<PasswordEmailSentScreen> {
                     child: Text(
                       widget.email,
                       style: GoogleFonts.jetBrainsMono(
-                        fontSize: 12, color: AppColors.navy,
+                        fontSize: 12,
+                        color: AppColors.navy,
                       ),
                     ),
                   ),
@@ -113,12 +129,17 @@ class _PasswordEmailSentScreenState extends State<PasswordEmailSentScreen> {
                           Text(
                             'Şifreyi Sıfırla',
                             style: GoogleFonts.inter(
-                              fontSize: 14, fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
                               color: Colors.white,
                             ),
                           ),
                           const SizedBox(width: 8),
-                          const Icon(Icons.arrow_forward, size: 14, color: Colors.white),
+                          const Icon(
+                            Icons.arrow_forward,
+                            size: 14,
+                            color: Colors.white,
+                          ),
                         ],
                       ),
                     ),
@@ -140,8 +161,11 @@ class _PasswordEmailSentScreenState extends State<PasswordEmailSentScreen> {
                             ? 'Yeniden gönder ($_cooldown s)'
                             : 'Yeniden gönder',
                         style: GoogleFonts.inter(
-                          fontSize: 13, fontWeight: FontWeight.w500,
-                          color: _cooldown > 0 ? AppColors.textTertiary : AppColors.navy,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: _cooldown > 0
+                              ? AppColors.textTertiary
+                              : AppColors.navy,
                         ),
                       ),
                     ),
@@ -154,7 +178,8 @@ class _PasswordEmailSentScreenState extends State<PasswordEmailSentScreen> {
                     child: Text(
                       '← Giriş ekranına dön',
                       style: GoogleFonts.inter(
-                        fontSize: 12, color: AppColors.textSecondary,
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
                       ),
                     ),
                   ),

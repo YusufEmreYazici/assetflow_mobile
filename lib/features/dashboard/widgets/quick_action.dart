@@ -40,7 +40,9 @@ class QuickAction extends StatelessWidget {
               Text(
                 label,
                 style: GoogleFonts.inter(
-                  fontSize: 13, fontWeight: FontWeight.w500, color: fg,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: fg,
                 ),
               ),
             ],

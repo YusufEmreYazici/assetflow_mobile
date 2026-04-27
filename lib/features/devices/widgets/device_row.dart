@@ -26,23 +26,23 @@ class DeviceRow extends ConsumerWidget {
   });
 
   IconData get _typeIcon => switch (device.type) {
-        0 => Icons.laptop_outlined,
-        1 => Icons.desktop_mac_outlined,
-        2 => Icons.monitor_outlined,
-        3 => Icons.print_outlined,
-        4 => Icons.smartphone_outlined,
-        5 => Icons.tablet_outlined,
-        6 => Icons.dns_outlined,
-        7 => Icons.router_outlined,
-        _ => Icons.devices_outlined,
-      };
+    0 => Icons.laptop_outlined,
+    1 => Icons.desktop_mac_outlined,
+    2 => Icons.monitor_outlined,
+    3 => Icons.print_outlined,
+    4 => Icons.smartphone_outlined,
+    5 => Icons.tablet_outlined,
+    6 => Icons.dns_outlined,
+    7 => Icons.router_outlined,
+    _ => Icons.devices_outlined,
+  };
 
   ChipTone get _chipTone => switch (device.status) {
-        0 => ChipTone.success,
-        1 => ChipTone.info,
-        2 => ChipTone.warning,
-        _ => ChipTone.neutral,
-      };
+    0 => ChipTone.success,
+    1 => ChipTone.info,
+    2 => ChipTone.warning,
+    _ => ChipTone.neutral,
+  };
 
   String get _statusLabel => deviceStatusLabels[device.status] ?? '?';
 
@@ -50,19 +50,29 @@ class DeviceRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: onTap == null ? null : () {
-        HapticService.light();
-        onTap!();
-      },
-      onLongPress: onLongPress == null ? null : () {
-        HapticService.medium();
-        onLongPress!();
-      },
+      onTap: onTap == null
+          ? null
+          : () {
+              HapticService.light();
+              onTap!();
+            },
+      onLongPress: onLongPress == null
+          ? null
+          : () {
+              HapticService.medium();
+              onLongPress!();
+            },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.navy.withValues(alpha: 0.07) : Colors.transparent,
-          border: isLast ? null : const Border(bottom: BorderSide(color: AppColors.surfaceDivider)),
+          color: isSelected
+              ? AppColors.navy.withValues(alpha: 0.07)
+              : Colors.transparent,
+          border: isLast
+              ? null
+              : const Border(
+                  bottom: BorderSide(color: AppColors.surfaceDivider),
+                ),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
@@ -73,18 +83,22 @@ class DeviceRow extends ConsumerWidget {
               child: selectionMode
                   ? SizedBox(
                       key: const ValueKey('checkbox'),
-                      width: 40, height: 40,
+                      width: 40,
+                      height: 40,
                       child: Icon(
                         isSelected
                             ? Icons.check_circle_rounded
                             : Icons.radio_button_unchecked,
                         size: 24,
-                        color: isSelected ? AppColors.navy : AppColors.textTertiary,
+                        color: isSelected
+                            ? AppColors.navy
+                            : AppColors.textTertiary,
                       ),
                     )
                   : Container(
                       key: const ValueKey('icon'),
-                      width: 40, height: 40,
+                      width: 40,
+                      height: 40,
                       decoration: BoxDecoration(
                         color: AppColors.surfaceLight,
                         borderRadius: BorderRadius.circular(AppRadius.md),
@@ -118,17 +132,18 @@ class DeviceRow extends ConsumerWidget {
                   const SizedBox(height: 3),
                   Text(
                     '${device.assetCode ?? '—'} · ${device.assignedTo ?? 'Atanmamış'}',
-                    style: GoogleFonts.inter(fontSize: 11, color: AppColors.textSecondary),
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      color: AppColors.textSecondary,
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
             ),
             const SizedBox(width: 4),
-            if (!selectionMode)
-              FavoriteStar(deviceId: device.id, size: 20),
-            if (selectionMode)
-              const SizedBox(width: 8),
+            if (!selectionMode) FavoriteStar(deviceId: device.id, size: 20),
+            if (selectionMode) const SizedBox(width: 8),
           ],
         ),
       ),

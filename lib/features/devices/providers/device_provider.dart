@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:assetflow_mobile/core/services/offline_cache_service.dart';
 import 'package:assetflow_mobile/data/models/device_model.dart';
@@ -86,11 +87,17 @@ class DeviceNotifier extends StateNotifier<DeviceListState> {
         final items = (cached as List)
             .map((j) => Device.fromJson(j as Map<String, dynamic>))
             .toList();
-        state = state.copyWith(devices: items, isLoading: false, page: 1, hasMore: false);
+        state = state.copyWith(
+          devices: items,
+          isLoading: false,
+          page: 1,
+          hasMore: false,
+        );
         return;
       }
       state = state.copyWith(isLoading: false, error: _extractError(e));
     } catch (e) {
+      debugPrint('[DeviceProvider] loadDevices error: $e');
       if (OfflineCacheService.hasDeviceCache) {
         state = state.copyWith(
           devices: OfflineCacheService.getCachedDevices(),
@@ -105,10 +112,18 @@ class DeviceNotifier extends StateNotifier<DeviceListState> {
         final items = (cached as List)
             .map((j) => Device.fromJson(j as Map<String, dynamic>))
             .toList();
-        state = state.copyWith(devices: items, isLoading: false, page: 1, hasMore: false);
+        state = state.copyWith(
+          devices: items,
+          isLoading: false,
+          page: 1,
+          hasMore: false,
+        );
         return;
       }
-      state = state.copyWith(isLoading: false, error: 'Beklenmeyen bir hata olustu.');
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Veri yüklenemedi: ${e.toString().split('\n').first}',
+      );
     }
   }
 

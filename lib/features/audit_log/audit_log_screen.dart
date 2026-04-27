@@ -84,12 +84,17 @@ class _AuditLogScreenState extends ConsumerState<AuditLogScreen> {
                 GestureDetector(
                   onTap: goBackOrHome(context),
                   child: Container(
-                    width: 36, height: 36,
+                    width: 36,
+                    height: 36,
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.10),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
+                    child: const Icon(
+                      Icons.chevron_left,
+                      size: 22,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -97,15 +102,19 @@ class _AuditLogScreenState extends ConsumerState<AuditLogScreen> {
                   child: Text(
                     'Audit Log',
                     style: GoogleFonts.inter(
-                      fontSize: 17, fontWeight: FontWeight.w500, color: Colors.white,
+                      fontSize: 17,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
                     ),
                   ),
                 ),
                 if (state.isLoading)
                   const SizedBox(
-                    width: 18, height: 18,
+                    width: 18,
+                    height: 18,
                     child: CircularProgressIndicator(
-                      color: Colors.white, strokeWidth: 2,
+                      color: Colors.white,
+                      strokeWidth: 2,
                     ),
                   ),
               ],
@@ -126,18 +135,24 @@ class _AuditLogScreenState extends ConsumerState<AuditLogScreen> {
                 return GestureDetector(
                   onTap: () => notifier.setFilterAction(action),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: active ? AppColors.navy : AppColors.surfaceWhite,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: active ? AppColors.navy : AppColors.surfaceInputBorder,
+                        color: active
+                            ? AppColors.navy
+                            : AppColors.surfaceInputBorder,
                       ),
                     ),
                     child: Text(
                       label,
                       style: GoogleFonts.inter(
-                        fontSize: 12, fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
                         color: active ? Colors.white : AppColors.textSecondary,
                       ),
                     ),
@@ -158,17 +173,28 @@ class _AuditLogScreenState extends ConsumerState<AuditLogScreen> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.error_outline, size: 16, color: AppColors.error),
+                  const Icon(
+                    Icons.error_outline,
+                    size: 16,
+                    color: AppColors.error,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       'Yüklenemedi. Tekrar deneyin.',
-                      style: GoogleFonts.inter(fontSize: 12, color: AppColors.error),
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: AppColors.error,
+                      ),
                     ),
                   ),
                   GestureDetector(
                     onTap: () => notifier.load(reset: true),
-                    child: const Icon(Icons.refresh, size: 16, color: AppColors.error),
+                    child: const Icon(
+                      Icons.refresh,
+                      size: 16,
+                      color: AppColors.error,
+                    ),
                   ),
                 ],
               ),
@@ -179,69 +205,86 @@ class _AuditLogScreenState extends ConsumerState<AuditLogScreen> {
             child: state.isLoading
                 ? _buildShimmer()
                 : state.logs.isEmpty
-                    ? const EmptyState(
-                        icon: Icons.history_outlined,
-                        title: 'Kayıt bulunamadı',
-                        description: 'Seçili filtrelere uygun işlem kaydı yok.',
-                      )
-                    : RefreshIndicator(
-                        color: AppColors.navy,
-                        onRefresh: () => notifier.load(reset: true),
-                        child: ListView(
-                          controller: _scrollController,
-                          padding: const EdgeInsets.fromLTRB(
-                            AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 20,
-                          ),
-                          children: [
-                            ...grouped.entries.expand((e) => [
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 8, top: 8),
-                                child: Text(
-                                  e.key,
-                                  style: GoogleFonts.inter(
-                                    fontSize: 11, fontWeight: FontWeight.w500,
-                                    color: AppColors.textTertiary, letterSpacing: 0.5,
-                                  ),
+                ? const EmptyState(
+                    icon: Icons.history_outlined,
+                    title: 'Kayıt bulunamadı',
+                    description: 'Seçili filtrelere uygun işlem kaydı yok.',
+                  )
+                : RefreshIndicator(
+                    color: AppColors.navy,
+                    onRefresh: () => notifier.load(reset: true),
+                    child: ListView(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.lg,
+                        AppSpacing.md,
+                        AppSpacing.lg,
+                        20,
+                      ),
+                      children: [
+                        ...grouped.entries.expand(
+                          (e) => [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8, top: 8),
+                              child: Text(
+                                e.key,
+                                style: GoogleFonts.inter(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.textTertiary,
+                                  letterSpacing: 0.5,
                                 ),
                               ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: AppColors.surfaceWhite,
-                                  borderRadius: BorderRadius.circular(AppRadius.md),
-                                  border: Border.all(color: AppColors.surfaceDivider),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.surfaceWhite,
+                                borderRadius: BorderRadius.circular(
+                                  AppRadius.md,
                                 ),
-                                child: Column(
-                                  children: e.value.asMap().entries.map((entry) {
-                                    final isLast = entry.key == e.value.length - 1;
-                                    return _LogRow(log: entry.value, isLast: isLast);
-                                  }).toList(),
+                                border: Border.all(
+                                  color: AppColors.surfaceDivider,
                                 ),
                               ),
-                            ]),
-                            if (state.isLoadingMore)
-                              const Padding(
-                                padding: EdgeInsets.all(16),
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    color: AppColors.navy, strokeWidth: 2,
-                                  ),
-                                ),
+                              child: Column(
+                                children: e.value.asMap().entries.map((entry) {
+                                  final isLast =
+                                      entry.key == e.value.length - 1;
+                                  return _LogRow(
+                                    log: entry.value,
+                                    isLast: isLast,
+                                  );
+                                }).toList(),
                               ),
-                            if (!state.hasMore && state.logs.isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 16),
-                                child: Center(
-                                  child: Text(
-                                    'Tüm kayıtlar yüklendi (${state.logs.length})',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 11, color: AppColors.textTertiary,
-                                    ),
-                                  ),
-                                ),
-                              ),
+                            ),
                           ],
                         ),
-                      ),
+                        if (state.isLoadingMore)
+                          const Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.navy,
+                                strokeWidth: 2,
+                              ),
+                            ),
+                          ),
+                        if (!state.hasMore && state.logs.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            child: Center(
+                              child: Text(
+                                'Tüm kayıtlar yüklendi (${state.logs.length})',
+                                style: GoogleFonts.inter(
+                                  fontSize: 11,
+                                  color: AppColors.textTertiary,
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
           ),
         ],
       ),
@@ -274,22 +317,22 @@ class _LogRow extends StatelessWidget {
   const _LogRow({required this.log, required this.isLast});
 
   Color get _actionColor => switch (log.action.toLowerCase()) {
-        'create' => AppColors.success,
-        'update' => AppColors.info,
-        'delete' => AppColors.error,
-        'assign' => const Color(0xFF7C3AED),
-        'return' => const Color(0xFFF59E0B),
-        _ => AppColors.textTertiary,
-      };
+    'create' => AppColors.success,
+    'update' => AppColors.info,
+    'delete' => AppColors.error,
+    'assign' => const Color(0xFF7C3AED),
+    'return' => const Color(0xFFF59E0B),
+    _ => AppColors.textTertiary,
+  };
 
   String get _actionLabel => switch (log.action.toLowerCase()) {
-        'create' => 'OLUŞTURMA',
-        'update' => 'GÜNCELLEME',
-        'delete' => 'SİLME',
-        'assign' => 'ZİMMET',
-        'return' => 'İADE',
-        _ => log.action.toUpperCase(),
-      };
+    'create' => 'OLUŞTURMA',
+    'update' => 'GÜNCELLEME',
+    'delete' => 'SİLME',
+    'assign' => 'ZİMMET',
+    'return' => 'İADE',
+    _ => log.action.toUpperCase(),
+  };
 
   String get _relTime {
     final diff = DateTime.now().difference(log.timestamp.toLocal());
@@ -305,16 +348,22 @@ class _LogRow extends StatelessWidget {
       decoration: isLast
           ? null
           : const BoxDecoration(
-              border: Border(bottom: BorderSide(color: AppColors.surfaceDivider)),
+              border: Border(
+                bottom: BorderSide(color: AppColors.surfaceDivider),
+              ),
             ),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 8, height: 8,
+            width: 8,
+            height: 8,
             margin: const EdgeInsets.only(top: 5),
-            decoration: BoxDecoration(color: _actionColor, shape: BoxShape.circle),
+            decoration: BoxDecoration(
+              color: _actionColor,
+              shape: BoxShape.circle,
+            ),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -324,7 +373,10 @@ class _LogRow extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: _actionColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(4),
@@ -332,8 +384,10 @@ class _LogRow extends StatelessWidget {
                       child: Text(
                         _actionLabel,
                         style: GoogleFonts.inter(
-                          fontSize: 9, fontWeight: FontWeight.w600,
-                          color: _actionColor, letterSpacing: 0.5,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w600,
+                          color: _actionColor,
+                          letterSpacing: 0.5,
                         ),
                       ),
                     ),
@@ -341,7 +395,8 @@ class _LogRow extends StatelessWidget {
                     Text(
                       log.entityName,
                       style: GoogleFonts.inter(
-                        fontSize: 11, fontWeight: FontWeight.w500,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
                         color: AppColors.textSecondary,
                       ),
                     ),
@@ -350,14 +405,20 @@ class _LogRow extends StatelessWidget {
                 const SizedBox(height: 3),
                 Text(
                   log.entityId,
-                  style: GoogleFonts.inter(fontSize: 12, color: AppColors.textPrimary),
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: AppColors.textPrimary,
+                  ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 3),
                 Text(
                   '${log.userEmail ?? 'Sistem'} · $_relTime',
-                  style: GoogleFonts.inter(fontSize: 10, color: AppColors.textTertiary),
+                  style: GoogleFonts.inter(
+                    fontSize: 10,
+                    color: AppColors.textTertiary,
+                  ),
                 ),
               ],
             ),

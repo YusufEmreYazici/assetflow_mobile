@@ -62,7 +62,10 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Personel yuklenemedi'), backgroundColor: AppColors.error),
+          const SnackBar(
+            content: Text('Personel yuklenemedi'),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
     }
@@ -96,7 +99,9 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
     try {
       final data = {
         'fullName': _fullNameC.text.trim(),
-        'registrationNumber': _regNumC.text.trim().isEmpty ? null : _regNumC.text.trim(),
+        'registrationNumber': _regNumC.text.trim().isEmpty
+            ? null
+            : _regNumC.text.trim(),
         'email': _emailC.text.trim().isEmpty ? null : _emailC.text.trim(),
         'department': _deptC.text.trim().isEmpty ? null : _deptC.text.trim(),
         'title': _titleC.text.trim().isEmpty ? null : _titleC.text.trim(),
@@ -111,10 +116,12 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
       }
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(isEdit ? 'Personel guncellendi' : 'Personel eklendi'),
-          backgroundColor: AppColors.success,
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(isEdit ? 'Personel guncellendi' : 'Personel eklendi'),
+            backgroundColor: AppColors.success,
+          ),
+        );
         Navigator.pop(context, true);
       }
     } catch (e) {
@@ -139,9 +146,13 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(isEdit ? 'Personel Duzenle' : 'Yeni Personel')),
+      appBar: AppBar(
+        title: Text(isEdit ? 'Personel Duzenle' : 'Yeni Personel'),
+      ),
       body: _loadingData
-          ? const Center(child: CircularProgressIndicator(color: AppColors.primary500))
+          ? const Center(
+              child: CircularProgressIndicator(color: AppColors.primary500),
+            )
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Form(
@@ -151,44 +162,78 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
                     AppTextField(
                       label: 'Ad Soyad *',
                       controller: _fullNameC,
-                      validator: (v) => v == null || v.trim().isEmpty ? 'Zorunlu alan' : null,
+                      validator: (v) =>
+                          v == null || v.trim().isEmpty ? 'Zorunlu alan' : null,
                     ),
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        Expanded(child: AppTextField(label: 'Sicil No', controller: _regNumC)),
+                        Expanded(
+                          child: AppTextField(
+                            label: 'Sicil No',
+                            controller: _regNumC,
+                          ),
+                        ),
                         const SizedBox(width: 12),
-                        Expanded(child: AppTextField(label: 'E-posta', controller: _emailC, keyboardType: TextInputType.emailAddress)),
+                        Expanded(
+                          child: AppTextField(
+                            label: 'E-posta',
+                            controller: _emailC,
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        Expanded(child: AppTextField(label: 'Departman', controller: _deptC)),
+                        Expanded(
+                          child: AppTextField(
+                            label: 'Departman',
+                            controller: _deptC,
+                          ),
+                        ),
                         const SizedBox(width: 12),
-                        Expanded(child: AppTextField(label: 'Unvan', controller: _titleC)),
+                        Expanded(
+                          child: AppTextField(
+                            label: 'Unvan',
+                            controller: _titleC,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 12),
-                    AppTextField(label: 'Telefon', controller: _phoneC, keyboardType: TextInputType.phone),
+                    AppTextField(
+                      label: 'Telefon',
+                      controller: _phoneC,
+                      keyboardType: TextInputType.phone,
+                    ),
                     const SizedBox(height: 12),
                     InkWell(
                       onTap: _pickDate,
                       child: InputDecorator(
                         decoration: InputDecoration(
                           labelText: 'Ise Giris Tarihi',
-                          prefixIcon: const Icon(Icons.calendar_today, size: 18),
+                          prefixIcon: const Icon(
+                            Icons.calendar_today,
+                            size: 18,
+                          ),
                           suffixIcon: _hireDate != null
                               ? IconButton(
                                   icon: const Icon(Icons.clear, size: 18),
-                                  onPressed: () => setState(() => _hireDate = null),
+                                  onPressed: () =>
+                                      setState(() => _hireDate = null),
                                 )
                               : null,
                         ),
                         child: Text(
-                          _hireDate != null ? DateFormat('dd/MM/yyyy').format(_hireDate!) : 'Tarih secin...',
+                          _hireDate != null
+                              ? DateFormat('dd/MM/yyyy').format(_hireDate!)
+                              : 'Tarih secin...',
                           style: TextStyle(
-                            color: _hireDate != null ? AppColors.textPrimary : AppColors.textTertiary,
+                            color: _hireDate != null
+                                ? AppColors.textPrimary
+                                : AppColors.textTertiary,
                           ),
                         ),
                       ),

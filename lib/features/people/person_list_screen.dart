@@ -14,8 +14,8 @@ import 'package:assetflow_mobile/data/services/employee_service.dart';
 
 final _personListProvider =
     StateNotifierProvider.autoDispose<_PersonListNotifier, _PersonListState>(
-  (ref) => _PersonListNotifier(),
-);
+      (ref) => _PersonListNotifier(),
+    );
 
 class _PersonListState {
   final List<Employee> employees;
@@ -48,7 +48,10 @@ class _PersonListNotifier extends StateNotifier<_PersonListState> {
       final result = await EmployeeService().getAll(page: 1, pageSize: 200);
       state = state.copyWith(isLoading: false, employees: result.items);
     } catch (_) {
-      state = state.copyWith(isLoading: false, error: 'Personel listesi yüklenemedi.');
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Personel listesi yüklenemedi.',
+      );
     }
   }
 }
@@ -73,11 +76,15 @@ class _PersonListScreenState extends ConsumerState<PersonListScreen> {
   List<Employee> _filtered(List<Employee> all) {
     if (_query.isEmpty) return all;
     final q = _query.toLowerCase();
-    return all.where((e) =>
-        e.fullName.toLowerCase().contains(q) ||
-        (e.department ?? '').toLowerCase().contains(q) ||
-        (e.title ?? '').toLowerCase().contains(q) ||
-        (e.registrationNumber ?? '').toLowerCase().contains(q)).toList();
+    return all
+        .where(
+          (e) =>
+              e.fullName.toLowerCase().contains(q) ||
+              (e.department ?? '').toLowerCase().contains(q) ||
+              (e.title ?? '').toLowerCase().contains(q) ||
+              (e.registrationNumber ?? '').toLowerCase().contains(q),
+        )
+        .toList();
   }
 
   Map<String, List<Employee>> _grouped(List<Employee> employees) {
@@ -111,17 +118,31 @@ class _PersonListScreenState extends ConsumerState<PersonListScreen> {
             child: TextField(
               controller: _searchCtrl,
               onChanged: (v) => setState(() => _query = v),
-              style: GoogleFonts.inter(fontSize: 13, color: AppColors.textPrimary),
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                color: AppColors.textPrimary,
+              ),
               decoration: InputDecoration(
                 hintText: 'İsim, departman veya sicil ara…',
-                hintStyle: GoogleFonts.inter(fontSize: 13, color: AppColors.textTertiary),
+                hintStyle: GoogleFonts.inter(
+                  fontSize: 13,
+                  color: AppColors.textTertiary,
+                ),
                 filled: true,
                 fillColor: AppColors.surfaceWhite,
                 contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                prefixIcon: const Icon(Icons.search, size: 18, color: AppColors.textTertiary),
+                prefixIcon: const Icon(
+                  Icons.search,
+                  size: 18,
+                  color: AppColors.textTertiary,
+                ),
                 suffixIcon: _query.isNotEmpty
                     ? IconButton(
-                        icon: const Icon(Icons.clear, size: 16, color: AppColors.textTertiary),
+                        icon: const Icon(
+                          Icons.clear,
+                          size: 16,
+                          color: AppColors.textTertiary,
+                        ),
                         onPressed: () {
                           _searchCtrl.clear();
                           setState(() => _query = '');
@@ -130,7 +151,9 @@ class _PersonListScreenState extends ConsumerState<PersonListScreen> {
                     : null,
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppRadius.md),
-                  borderSide: const BorderSide(color: AppColors.surfaceInputBorder),
+                  borderSide: const BorderSide(
+                    color: AppColors.surfaceInputBorder,
+                  ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppRadius.md),
@@ -147,83 +170,97 @@ class _PersonListScreenState extends ConsumerState<PersonListScreen> {
             child: state.isLoading
                 ? const SingleChildScrollView(child: PersonListSkeleton())
                 : state.error != null
-                    ? Center(
-                        child: Text(
-                          state.error!,
-                          style: GoogleFonts.inter(
-                            fontSize: 13, color: AppColors.textSecondary,
-                          ),
-                        ),
-                      )
-                    : filtered.isEmpty
-                        ? _query.isNotEmpty
-                            ? EmptyState.noSearchResults(query: _query)
-                            : const EmptyState.noEmployees()
-                        : ListView(
-                            padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),
-                            children: () {
-                              int groupIndex = 0;
-                              return grouped.entries.expand((entry) {
-                                final letter = entry.key;
-                                final list = entry.value;
-                                final idx = groupIndex++;
-                                return [
-                                  if (letter.isNotEmpty)
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 12, bottom: 4),
-                                      child: Text(
-                                        letter,
-                                        style: GoogleFonts.inter(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w500,
-                                          color: AppColors.textTertiary,
-                                          letterSpacing: 0.8,
-                                        ),
-                                      ),
-                                    ),
-                                  if (idx < 10)
-                                    AnimatedListItem(
-                                      index: idx,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: AppColors.surfaceWhite,
-                                          borderRadius: BorderRadius.circular(AppRadius.md),
-                                          border: Border.all(color: AppColors.surfaceDivider),
-                                        ),
-                                        child: Column(
-                                          children: list.asMap().entries.map((e) {
-                                            final isLast = e.key == list.length - 1;
-                                            return _PersonRow(
-                                              employee: e.value,
-                                              isLast: isLast,
-                                              onTap: () => context.push('/person/${e.value.id}'),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ),
-                                    )
-                                  else
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: AppColors.surfaceWhite,
-                                        borderRadius: BorderRadius.circular(AppRadius.md),
-                                        border: Border.all(color: AppColors.surfaceDivider),
-                                      ),
-                                      child: Column(
-                                        children: list.asMap().entries.map((e) {
-                                          final isLast = e.key == list.length - 1;
-                                          return _PersonRow(
-                                            employee: e.value,
-                                            isLast: isLast,
-                                            onTap: () => context.push('/person/${e.value.id}'),
-                                          );
-                                        }).toList(),
-                                      ),
-                                    ),
-                                ];
-                              }).toList();
-                            }(),
-                          ),
+                ? Center(
+                    child: Text(
+                      state.error!,
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  )
+                : filtered.isEmpty
+                ? _query.isNotEmpty
+                      ? EmptyState.noSearchResults(query: _query)
+                      : const EmptyState.noEmployees()
+                : ListView(
+                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),
+                    children: () {
+                      int groupIndex = 0;
+                      return grouped.entries.expand((entry) {
+                        final letter = entry.key;
+                        final list = entry.value;
+                        final idx = groupIndex++;
+                        return [
+                          if (letter.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                top: 12,
+                                bottom: 4,
+                              ),
+                              child: Text(
+                                letter,
+                                style: GoogleFonts.inter(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.textTertiary,
+                                  letterSpacing: 0.8,
+                                ),
+                              ),
+                            ),
+                          if (idx < 10)
+                            AnimatedListItem(
+                              index: idx,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.surfaceWhite,
+                                  borderRadius: BorderRadius.circular(
+                                    AppRadius.md,
+                                  ),
+                                  border: Border.all(
+                                    color: AppColors.surfaceDivider,
+                                  ),
+                                ),
+                                child: Column(
+                                  children: list.asMap().entries.map((e) {
+                                    final isLast = e.key == list.length - 1;
+                                    return _PersonRow(
+                                      employee: e.value,
+                                      isLast: isLast,
+                                      onTap: () =>
+                                          context.push('/person/${e.value.id}'),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            )
+                          else
+                            Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.surfaceWhite,
+                                borderRadius: BorderRadius.circular(
+                                  AppRadius.md,
+                                ),
+                                border: Border.all(
+                                  color: AppColors.surfaceDivider,
+                                ),
+                              ),
+                              child: Column(
+                                children: list.asMap().entries.map((e) {
+                                  final isLast = e.key == list.length - 1;
+                                  return _PersonRow(
+                                    employee: e.value,
+                                    isLast: isLast,
+                                    onTap: () =>
+                                        context.push('/person/${e.value.id}'),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                        ];
+                      }).toList();
+                    }(),
+                  ),
           ),
         ],
       ),
@@ -243,7 +280,8 @@ class _PersonRow extends StatelessWidget {
 
   String get _initials {
     final parts = employee.fullName.trim().split(' ');
-    if (parts.length >= 2) return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
+    if (parts.length >= 2)
+      return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
     return employee.fullName.substring(0, 2).toUpperCase();
   }
 
@@ -267,7 +305,8 @@ class _PersonRow extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 40, height: 40,
+              width: 40,
+              height: 40,
               decoration: const BoxDecoration(
                 color: AppColors.surfaceLight,
                 shape: BoxShape.circle,
@@ -319,15 +358,16 @@ class _PersonRow extends StatelessWidget {
                 ),
                 child: Text(
                   '${employee.assignedDeviceCount} cihaz',
-                  style: GoogleFonts.inter(
-                    fontSize: 11,
-                    color: AppColors.navy,
-                  ),
+                  style: GoogleFonts.inter(fontSize: 11, color: AppColors.navy),
                 ),
               ),
               const SizedBox(width: 8),
             ],
-            const Icon(Icons.chevron_right, size: 16, color: AppColors.textTertiary),
+            const Icon(
+              Icons.chevron_right,
+              size: 16,
+              color: AppColors.textTertiary,
+            ),
           ],
         ),
       ),

@@ -1,11 +1,14 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:assetflow_mobile/core/services/offline_cache_service.dart';
 import 'package:assetflow_mobile/data/models/employee_model.dart';
 import 'package:assetflow_mobile/data/services/employee_service.dart';
 import 'package:assetflow_mobile/core/utils/cache_manager.dart';
 
-final employeeServiceProvider = Provider<EmployeeService>((ref) => EmployeeService());
+final employeeServiceProvider = Provider<EmployeeService>(
+  (ref) => EmployeeService(),
+);
 
 class EmployeeListState {
   final List<Employee> employees;
@@ -81,12 +84,20 @@ class EmployeeNotifier extends StateNotifier<EmployeeListState> {
       }
       final cached = await CacheManager.instance.getStale('employees_page1');
       if (cached != null) {
-        final items = (cached as List).map((j) => Employee.fromJson(j as Map<String, dynamic>)).toList();
-        state = state.copyWith(employees: items, isLoading: false, page: 1, hasMore: false);
+        final items = (cached as List)
+            .map((j) => Employee.fromJson(j as Map<String, dynamic>))
+            .toList();
+        state = state.copyWith(
+          employees: items,
+          isLoading: false,
+          page: 1,
+          hasMore: false,
+        );
         return;
       }
       state = state.copyWith(isLoading: false, error: _extractError(e));
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[EmployeeProvider] loadEmployees error: $e');
       if (OfflineCacheService.hasEmployeeCache) {
         state = state.copyWith(
           employees: OfflineCacheService.getCachedEmployees(),
@@ -98,11 +109,21 @@ class EmployeeNotifier extends StateNotifier<EmployeeListState> {
       }
       final cached = await CacheManager.instance.getStale('employees_page1');
       if (cached != null) {
-        final items = (cached as List).map((j) => Employee.fromJson(j as Map<String, dynamic>)).toList();
-        state = state.copyWith(employees: items, isLoading: false, page: 1, hasMore: false);
+        final items = (cached as List)
+            .map((j) => Employee.fromJson(j as Map<String, dynamic>))
+            .toList();
+        state = state.copyWith(
+          employees: items,
+          isLoading: false,
+          page: 1,
+          hasMore: false,
+        );
         return;
       }
-      state = state.copyWith(isLoading: false, error: 'Beklenmeyen bir hata olustu.');
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Veri yüklenemedi: ${e.toString().split('\n').first}',
+      );
     }
   }
 
@@ -142,6 +163,8 @@ class EmployeeNotifier extends StateNotifier<EmployeeListState> {
 }
 
 final employeeProvider =
-    StateNotifierProvider.autoDispose<EmployeeNotifier, EmployeeListState>((ref) {
-  return EmployeeNotifier(ref.watch(employeeServiceProvider));
-});
+    StateNotifierProvider.autoDispose<EmployeeNotifier, EmployeeListState>((
+      ref,
+    ) {
+      return EmployeeNotifier(ref.watch(employeeServiceProvider));
+    });

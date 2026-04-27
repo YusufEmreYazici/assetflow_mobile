@@ -42,11 +42,7 @@ class ShimmerList extends StatelessWidget {
   final int itemCount;
   final double itemHeight;
 
-  const ShimmerList({
-    super.key,
-    this.itemCount = 6,
-    this.itemHeight = 72,
-  });
+  const ShimmerList({super.key, this.itemCount = 6, this.itemHeight = 72});
 
   @override
   Widget build(BuildContext context) {

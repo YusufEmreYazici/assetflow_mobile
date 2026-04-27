@@ -44,10 +44,10 @@ import 'package:assetflow_mobile/features/subscriptions/screens/subscriptions_sc
 import 'package:assetflow_mobile/features/subscriptions/screens/subscription_detail_screen.dart';
 
 // Provider + loader for return flow (fetches Assignment by ID then renders ReturnDeviceScreen)
-final _assignmentForReturnProvider =
-    FutureProvider.autoDispose.family<Assignment, String>(
-  (ref, id) async => AssignmentService().getById(id),
-);
+final _assignmentForReturnProvider = FutureProvider.autoDispose
+    .family<Assignment, String>(
+      (ref, id) async => AssignmentService().getById(id),
+    );
 
 class _ReturnAssignmentLoader extends ConsumerWidget {
   final String assignmentId;
@@ -57,9 +57,8 @@ class _ReturnAssignmentLoader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final async = ref.watch(_assignmentForReturnProvider(assignmentId));
     return async.when(
-      loading: () => const Scaffold(
-        body: AnimatedLogoLoading(message: 'Yükleniyor...'),
-      ),
+      loading: () =>
+          const Scaffold(body: AnimatedLogoLoading(message: 'Yükleniyor...')),
       error: (e, _) => Scaffold(
         backgroundColor: AppColors.surfaceLight,
         body: Center(child: Text('Yüklenemedi: $e')),
@@ -68,7 +67,6 @@ class _ReturnAssignmentLoader extends ConsumerWidget {
     );
   }
 }
-
 
 final routerProvider = Provider<GoRouter>((ref) {
   final refreshNotifier = ValueNotifier(0);
@@ -85,8 +83,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       final isAuth = authState.isAuthenticated;
       final isLoading = authState.isLoading;
       final loc = state.matchedLocation;
-      final isAuthRoute = loc == '/login' || loc == '/register' ||
-          loc == '/forgot-password' || loc.startsWith('/password-sent') ||
+      final isAuthRoute =
+          loc == '/login' ||
+          loc == '/register' ||
+          loc == '/forgot-password' ||
+          loc.startsWith('/password-sent') ||
           loc == '/reset-password';
 
       if (isLoading) return null;
@@ -97,67 +98,103 @@ final routerProvider = Provider<GoRouter>((ref) {
     },
     routes: [
       // ── Auth routes ──────────────────────────────────────────────────
-      GoRoute(path: '/login',  builder: (ctx, routeState) => const LoginScreen()),
-      GoRoute(path: '/register', builder: (ctx, routeState) => const RegisterScreen()),
-      GoRoute(path: '/forgot-password', builder: (ctx, routeState) => const ForgotPasswordScreen()),
+      GoRoute(
+        path: '/login',
+        builder: (ctx, routeState) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/register',
+        builder: (ctx, routeState) => const RegisterScreen(),
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        builder: (ctx, routeState) => const ForgotPasswordScreen(),
+      ),
       GoRoute(
         path: '/password-sent',
         builder: (_, state) => PasswordEmailSentScreen(
           email: state.uri.queryParameters['email'] ?? '',
         ),
       ),
-      GoRoute(path: '/reset-password', builder: (ctx, routeState) => const ResetPasswordScreen()),
+      GoRoute(
+        path: '/reset-password',
+        builder: (ctx, routeState) => const ResetPasswordScreen(),
+      ),
 
       // ── Shell (authenticated) ────────────────────────────────────────
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
             AppShell(navigationShell: navigationShell),
         branches: [
-          StatefulShellBranch(routes: [
-            GoRoute(path: '/', builder: (ctx, routeState) => const DashboardScreen()),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: '/devices',
-              builder: (ctx, routeState) => DevicesScreen(
-                returnMode: (routeState.extra as Map<String, dynamic>?)?['returnMode'] == true,
-                initialSearch: (routeState.extra as Map<String, dynamic>?)?['qrCode'] as String?,
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (ctx, routeState) => const DashboardScreen(),
               ),
-              routes: [
-                GoRoute(
-                  path: 'new',
-                  pageBuilder: (ctx, routeState) => slideFromBottomPage(
-                    key: routeState.pageKey,
-                    child: const DeviceFormScreen(),
-                  ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/devices',
+                builder: (ctx, routeState) => DevicesScreen(
+                  returnMode:
+                      (routeState.extra
+                          as Map<String, dynamic>?)?['returnMode'] ==
+                      true,
+                  initialSearch:
+                      (routeState.extra as Map<String, dynamic>?)?['qrCode']
+                          as String?,
                 ),
-                GoRoute(
-                  path: ':id',
-                  pageBuilder: (_, state) => slideFromRightPage(
-                    key: state.pageKey,
-                    child: DeviceDetailScreen(id: state.pathParameters['id']!),
+                routes: [
+                  GoRoute(
+                    path: 'new',
+                    pageBuilder: (ctx, routeState) => slideFromBottomPage(
+                      key: routeState.pageKey,
+                      child: const DeviceFormScreen(),
+                    ),
                   ),
-                  routes: [
-                    GoRoute(
-                      path: 'edit',
-                      pageBuilder: (ctx, routeState) => slideFromBottomPage(
-                        key: routeState.pageKey,
-                        child: DeviceFormScreen(
-                          device: routeState.extra as Device?,
-                        ),
+                  GoRoute(
+                    path: ':id',
+                    pageBuilder: (_, state) => slideFromRightPage(
+                      key: state.pageKey,
+                      child: DeviceDetailScreen(
+                        id: state.pathParameters['id']!,
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(path: '/employees', builder: (ctx, routeState) => const EmployeesScreen()),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(path: '/assignments', builder: (ctx, routeState) => const AssignmentsScreen()),
-          ]),
+                    routes: [
+                      GoRoute(
+                        path: 'edit',
+                        pageBuilder: (ctx, routeState) => slideFromBottomPage(
+                          key: routeState.pageKey,
+                          child: DeviceFormScreen(
+                            device: routeState.extra as Device?,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/employees',
+                builder: (ctx, routeState) => const EmployeesScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/assignments',
+                builder: (ctx, routeState) => const AssignmentsScreen(),
+              ),
+            ],
+          ),
         ],
       ),
 
@@ -208,7 +245,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           child: const LocationListScreen(),
         ),
       ),
-      GoRoute(path: '/locations-old', builder: (ctx, routeState) => const LocationsScreen()),
+      GoRoute(
+        path: '/locations-old',
+        builder: (ctx, routeState) => const LocationsScreen(),
+      ),
       GoRoute(
         path: '/location/new',
         pageBuilder: (_, state) => slideFromBottomPage(
@@ -245,9 +285,18 @@ final routerProvider = Provider<GoRouter>((ref) {
           child: const NotificationsScreen(),
         ),
       ),
-      GoRoute(path: '/audit-log', builder: (ctx, routeState) => const AuditLogScreen()),
-      GoRoute(path: '/reports', builder: (ctx, routeState) => const ReportsScreen()),
-      GoRoute(path: '/excel-export', builder: (ctx, routeState) => const ExcelExportScreen()),
+      GoRoute(
+        path: '/audit-log',
+        builder: (ctx, routeState) => const AuditLogScreen(),
+      ),
+      GoRoute(
+        path: '/reports',
+        builder: (ctx, routeState) => const ReportsScreen(),
+      ),
+      GoRoute(
+        path: '/excel-export',
+        builder: (ctx, routeState) => const ExcelExportScreen(),
+      ),
 
       // ── Consumables ─────────────────────────────────────────────────────
       GoRoute(

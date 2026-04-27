@@ -38,22 +38,25 @@ class Subscription {
   });
 
   factory Subscription.fromJson(Map<String, dynamic> json) => Subscription(
-        id: json['id'] as String,
-        serviceName: json['serviceName'] as String,
-        provider: json['provider'] as String?,
-        billingCycle: json['billingCycle'] as String,
-        billingCycleName: json['billingCycleName'] as String? ?? json['billingCycle'] as String,
-        monthlyCost: (json['monthlyCost'] as num).toDouble(),
-        effectiveAnnualCost: (json['effectiveAnnualCost'] as num).toDouble(),
-        nextRenewalDate: json['nextRenewalDate'] as String?,
-        autoRenew: json['autoRenew'] as bool? ?? false,
-        subscriptionStatus: json['subscriptionStatus'] as String,
-        subscriptionStatusName: json['subscriptionStatusName'] as String? ?? json['subscriptionStatus'] as String,
-        costCenter: json['costCenter'] as String?,
-        currency: json['currency'] as String? ?? 'TRY',
-        notes: json['notes'] as String?,
-        daysUntilRenewal: json['daysUntilRenewal'] as int?,
-        isRenewingSoon: json['isRenewingSoon'] as bool? ?? false,
-        createdAt: json['createdAt'] as String,
-      );
+    id: json['id'] as String,
+    serviceName: json['serviceName'] as String,
+    provider: json['provider'] as String?,
+    billingCycle: json['billingCycle'] as String,
+    billingCycleName:
+        json['billingCycleName'] as String? ?? json['billingCycle'] as String,
+    monthlyCost: (json['monthlyCost'] as num).toDouble(),
+    effectiveAnnualCost: (json['effectiveAnnualCost'] as num).toDouble(),
+    nextRenewalDate: json['nextRenewalDate'] as String?,
+    autoRenew: json['autoRenew'] as bool? ?? false,
+    subscriptionStatus: json['subscriptionStatus'] as String,
+    subscriptionStatusName:
+        json['subscriptionStatusName'] as String? ??
+        json['subscriptionStatus'] as String,
+    costCenter: json['costCenter'] as String?,
+    currency: json['currency'] as String? ?? 'TRY',
+    notes: json['notes'] as String?,
+    daysUntilRenewal: json['daysUntilRenewal'] as int?,
+    isRenewingSoon: json['isRenewingSoon'] as bool? ?? false,
+    createdAt: json['createdAt'] as String,
+  );
 }

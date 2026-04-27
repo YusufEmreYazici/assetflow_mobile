@@ -17,10 +17,10 @@ class AppBottomNav extends StatelessWidget {
   });
 
   static const _tabs = [
-    (BottomNavTab.home,    'Anasayfa', Icons.home_outlined,    Icons.home),
-    (BottomNavTab.devices, 'Cihazlar', Icons.devices_outlined,  Icons.devices),
-    (BottomNavTab.people,  'Personel', Icons.people_outline,    Icons.people),
-    (BottomNavTab.more,    'Daha Fazla', Icons.menu,            Icons.menu),
+    (BottomNavTab.home, 'Anasayfa', Icons.home_outlined, Icons.home),
+    (BottomNavTab.devices, 'Cihazlar', Icons.devices_outlined, Icons.devices),
+    (BottomNavTab.people, 'Personel', Icons.people_outline, Icons.people),
+    (BottomNavTab.more, 'Daha Fazla', Icons.menu, Icons.menu),
   ];
 
   @override
@@ -34,7 +34,8 @@ class AppBottomNav extends StatelessWidget {
       ),
       padding: EdgeInsets.only(
         top: 8,
-        left: 4, right: 4,
+        left: 4,
+        right: 4,
         bottom: MediaQuery.of(context).padding.bottom + 10,
       ),
       child: Row(
@@ -59,15 +60,21 @@ class AppBottomNav extends StatelessWidget {
                     Icon(
                       isActive ? iconFilled : iconOutline,
                       size: 20,
-                      color: isActive ? Colors.white : Colors.white.withValues(alpha: 0.5),
+                      color: isActive
+                          ? Colors.white
+                          : Colors.white.withValues(alpha: 0.5),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       label,
                       style: GoogleFonts.inter(
                         fontSize: 10,
-                        fontWeight: isActive ? FontWeight.w500 : FontWeight.w400,
-                        color: isActive ? Colors.white : Colors.white.withValues(alpha: 0.5),
+                        fontWeight: isActive
+                            ? FontWeight.w500
+                            : FontWeight.w400,
+                        color: isActive
+                            ? Colors.white
+                            : Colors.white.withValues(alpha: 0.5),
                         letterSpacing: 0.1,
                       ),
                     ),

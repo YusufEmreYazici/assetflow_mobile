@@ -19,9 +19,7 @@ class AppTabBar extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.surfaceWhite,
-        border: Border(
-          bottom: BorderSide(color: AppColors.surfaceDivider),
-        ),
+        border: Border(bottom: BorderSide(color: AppColors.surfaceDivider)),
       ),
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Row(

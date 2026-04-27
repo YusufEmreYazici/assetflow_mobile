@@ -17,8 +17,14 @@ class AssignmentService {
     final params = <String, dynamic>{'page': page, 'pageSize': pageSize};
     if (search != null && search.isNotEmpty) params['search'] = search;
     if (isActive != null) params['isActive'] = isActive;
-    final response = await _dio.get(ApiConstants.assignments, queryParameters: params);
-    return PagedResult.fromJson(response.data as Map<String, dynamic>, (json) => Assignment.fromJson(json));
+    final response = await _dio.get(
+      ApiConstants.assignments,
+      queryParameters: params,
+    );
+    return PagedResult.fromJson(
+      response.data as Map<String, dynamic>,
+      (json) => Assignment.fromJson(json),
+    );
   }
 
   Future<Assignment> getById(String id) async {

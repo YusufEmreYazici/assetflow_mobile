@@ -45,8 +45,7 @@ class NotificationSettings {
   Future<Map<String, bool>> getAll() async {
     final prefs = await SharedPreferences.getInstance();
     return {
-      for (final ch in allChannels)
-        ch: prefs.getBool('$_prefix$ch') ?? true,
+      for (final ch in allChannels) ch: prefs.getBool('$_prefix$ch') ?? true,
     };
   }
 }

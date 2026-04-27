@@ -20,20 +20,20 @@ class _AppShellState extends ConsumerState<AppShell> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   BottomNavTab get _activeTab => switch (widget.navigationShell.currentIndex) {
-        0 => BottomNavTab.home,
-        1 => BottomNavTab.devices,
-        2 => BottomNavTab.people,
-        _ => BottomNavTab.more,
-      };
+    0 => BottomNavTab.home,
+    1 => BottomNavTab.devices,
+    2 => BottomNavTab.people,
+    _ => BottomNavTab.more,
+  };
 
   static const _branchPaths = ['/', '/devices', '/employees', '/assignments'];
 
   void _onTabChange(BottomNavTab tab) {
     final index = switch (tab) {
-      BottomNavTab.home    => 0,
+      BottomNavTab.home => 0,
       BottomNavTab.devices => 1,
-      BottomNavTab.people  => 2,
-      BottomNavTab.more    => -1,
+      BottomNavTab.people => 2,
+      BottomNavTab.more => -1,
     };
     if (index < 0) return;
 
@@ -92,10 +92,14 @@ class _AppShellState extends ConsumerState<AppShell> {
 
   String _currentDrawerKey() {
     switch (widget.navigationShell.currentIndex) {
-      case 0: return 'home';
-      case 1: return 'devices';
-      case 2: return 'people';
-      default: return 'home';
+      case 0:
+        return 'home';
+      case 1:
+        return 'devices';
+      case 2:
+        return 'people';
+      default:
+        return 'home';
     }
   }
 
@@ -134,10 +138,10 @@ class _AppShellState extends ConsumerState<AppShell> {
 
   String _roleLabel(String? role) {
     return switch (role) {
-      'Admin'   => 'Yönetici',
+      'Admin' => 'Yönetici',
       'Manager' => 'Müdür',
       'ITAdmin' => 'IT Yönetici',
-      _         => role ?? 'Kullanıcı',
+      _ => role ?? 'Kullanıcı',
     };
   }
 }

@@ -16,7 +16,10 @@ class PersonListSkeleton extends StatelessWidget {
         border: Border.all(color: AppColors.surfaceDivider),
       ),
       child: Column(
-        children: List.generate(itemCount, (i) => _PersonRowSkeleton(isLast: i == itemCount - 1)),
+        children: List.generate(
+          itemCount,
+          (i) => _PersonRowSkeleton(isLast: i == itemCount - 1),
+        ),
       ),
     );
   }
@@ -33,7 +36,9 @@ class _PersonRowSkeleton extends StatelessWidget {
       decoration: isLast
           ? null
           : const BoxDecoration(
-              border: Border(bottom: BorderSide(color: AppColors.surfaceDivider)),
+              border: Border(
+                bottom: BorderSide(color: AppColors.surfaceDivider),
+              ),
             ),
       child: const Row(
         children: [

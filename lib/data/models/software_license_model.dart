@@ -45,7 +45,8 @@ class SoftwareLicense {
     required this.createdAt,
   });
 
-  factory SoftwareLicense.fromJson(Map<String, dynamic> json) => SoftwareLicense(
+  factory SoftwareLicense.fromJson(Map<String, dynamic> json) =>
+      SoftwareLicense(
         id: json['id'] as String,
         productName: json['productName'] as String,
         vendor: json['vendor'] as String,

@@ -35,7 +35,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   void _onRegister() {
     if (_formKey.currentState?.validate() ?? false) {
-      ref.read(authProvider.notifier).register(
+      ref
+          .read(authProvider.notifier)
+          .register(
             email: _emailController.text.trim(),
             password: _passwordController.text,
             fullName: _fullNameController.text.trim(),
@@ -169,8 +171,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         if (value == null || value.trim().isEmpty) {
                           return 'E-posta adresi gerekli';
                         }
-                        if (!RegExp(r'^[\w\-.]+@([\w\-]+\.)+[\w\-]{2,4}$')
-                            .hasMatch(value.trim())) {
+                        if (!RegExp(
+                          r'^[\w\-.]+@([\w\-]+\.)+[\w\-]{2,4}$',
+                        ).hasMatch(value.trim())) {
                           return 'Gecerli bir e-posta adresi girin';
                         }
                         return null;

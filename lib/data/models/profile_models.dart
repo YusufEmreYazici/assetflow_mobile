@@ -38,35 +38,35 @@ class ProfileDto {
   });
 
   factory ProfileDto.fromJson(Map<String, dynamic> json) => ProfileDto(
-        id: json['id'] as String,
-        email: json['email'] as String,
-        fullName: json['fullName'] as String,
-        phoneNumber: json['phoneNumber'] as String?,
-        avatarUrl: json['avatarUrl'] as String?,
-        role: (json['role'] is int)
-            ? _roleFromInt(json['role'] as int)
-            : (json['role'] as String? ?? 'Admin'),
-        companyName: json['companyName'] as String? ?? '',
-        companyId: json['companyId'] as String,
-        department: json['department'] as String?,
-        title: json['title'] as String?,
-        language: json['language'] as String? ?? 'tr',
-        timeZone: json['timeZone'] as String? ?? 'Europe/Istanbul',
-        isActive: json['isActive'] as bool? ?? true,
-        createdAt: DateTime.parse(json['createdAt'] as String),
-        lastLoginAt: json['lastLoginAt'] != null
-            ? DateTime.parse(json['lastLoginAt'] as String)
-            : null,
-        activeAssignmentCount: json['activeAssignmentCount'] as int? ?? 0,
-        totalAssignmentCount: json['totalAssignmentCount'] as int? ?? 0,
-      );
+    id: json['id'] as String,
+    email: json['email'] as String,
+    fullName: json['fullName'] as String,
+    phoneNumber: json['phoneNumber'] as String?,
+    avatarUrl: json['avatarUrl'] as String?,
+    role: (json['role'] is int)
+        ? _roleFromInt(json['role'] as int)
+        : (json['role'] as String? ?? 'Admin'),
+    companyName: json['companyName'] as String? ?? '',
+    companyId: json['companyId'] as String,
+    department: json['department'] as String?,
+    title: json['title'] as String?,
+    language: json['language'] as String? ?? 'tr',
+    timeZone: json['timeZone'] as String? ?? 'Europe/Istanbul',
+    isActive: json['isActive'] as bool? ?? true,
+    createdAt: DateTime.parse(json['createdAt'] as String),
+    lastLoginAt: json['lastLoginAt'] != null
+        ? DateTime.parse(json['lastLoginAt'] as String)
+        : null,
+    activeAssignmentCount: json['activeAssignmentCount'] as int? ?? 0,
+    totalAssignmentCount: json['totalAssignmentCount'] as int? ?? 0,
+  );
 
   static String _roleFromInt(int v) => switch (v) {
-        0 => 'User',
-        1 => 'Admin',
-        2 => 'SuperAdmin',
-        _ => 'Admin',
-      };
+    0 => 'User',
+    1 => 'Admin',
+    2 => 'SuperAdmin',
+    _ => 'Admin',
+  };
 
   ProfileDto copyWith({
     String? fullName,
@@ -74,26 +74,25 @@ class ProfileDto {
     String? avatarUrl,
     String? language,
     String? timeZone,
-  }) =>
-      ProfileDto(
-        id: id,
-        email: email,
-        fullName: fullName ?? this.fullName,
-        phoneNumber: phoneNumber ?? this.phoneNumber,
-        avatarUrl: avatarUrl ?? this.avatarUrl,
-        role: role,
-        companyName: companyName,
-        companyId: companyId,
-        department: department,
-        title: title,
-        language: language ?? this.language,
-        timeZone: timeZone ?? this.timeZone,
-        isActive: isActive,
-        createdAt: createdAt,
-        lastLoginAt: lastLoginAt,
-        activeAssignmentCount: activeAssignmentCount,
-        totalAssignmentCount: totalAssignmentCount,
-      );
+  }) => ProfileDto(
+    id: id,
+    email: email,
+    fullName: fullName ?? this.fullName,
+    phoneNumber: phoneNumber ?? this.phoneNumber,
+    avatarUrl: avatarUrl ?? this.avatarUrl,
+    role: role,
+    companyName: companyName,
+    companyId: companyId,
+    department: department,
+    title: title,
+    language: language ?? this.language,
+    timeZone: timeZone ?? this.timeZone,
+    isActive: isActive,
+    createdAt: createdAt,
+    lastLoginAt: lastLoginAt,
+    activeAssignmentCount: activeAssignmentCount,
+    totalAssignmentCount: totalAssignmentCount,
+  );
 }
 
 class UpdateProfileRequest {
@@ -110,9 +109,9 @@ class UpdateProfileRequest {
   });
 
   Map<String, dynamic> toJson() => {
-        'fullName': fullName,
-        if (phoneNumber != null) 'phoneNumber': phoneNumber,
-        'language': language,
-        'timeZone': timeZone,
-      };
+    'fullName': fullName,
+    if (phoneNumber != null) 'phoneNumber': phoneNumber,
+    'language': language,
+    'timeZone': timeZone,
+  };
 }

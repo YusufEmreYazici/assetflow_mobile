@@ -11,7 +11,10 @@ class DeviceService {
       ApiConstants.devices,
       queryParameters: {'page': page, 'pageSize': pageSize},
     );
-    return PagedResult.fromJson(response.data as Map<String, dynamic>, (json) => Device.fromJson(json));
+    return PagedResult.fromJson(
+      response.data as Map<String, dynamic>,
+      (json) => Device.fromJson(json),
+    );
   }
 
   Future<Device> getById(String id) async {

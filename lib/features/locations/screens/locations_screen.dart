@@ -23,17 +23,26 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
         title: const Text('Lokasyonu Sil'),
         content: Text('"$name" lokasyonunu silmek istediginize emin misiniz?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Iptal')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Iptal'),
+          ),
           TextButton(
             onPressed: () async {
               Navigator.pop(ctx);
-              final success = await ref.read(locationProvider.notifier).deleteLocation(id);
+              final success = await ref
+                  .read(locationProvider.notifier)
+                  .deleteLocation(id);
               if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text(success ? 'Lokasyon silindi' : 'Hata olustu'),
-                  backgroundColor: success ? AppColors.success : AppColors.error,
-                  behavior: SnackBarBehavior.floating,
-                ));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(success ? 'Lokasyon silindi' : 'Hata olustu'),
+                    backgroundColor: success
+                        ? AppColors.success
+                        : AppColors.error,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
               }
             },
             child: const Text('Sil', style: TextStyle(color: AppColors.error)),
@@ -46,7 +55,9 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
   Future<void> _navigateToForm({String? locationId}) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => LocationFormScreen(locationId: locationId)),
+      MaterialPageRoute(
+        builder: (_) => LocationFormScreen(locationId: locationId),
+      ),
     );
     if (result == true) ref.read(locationProvider.notifier).refresh();
   }
@@ -60,7 +71,9 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
         title: const Text('Lokasyonlar'),
         actions: [
           IconButton(
-            icon: Icon(_hierarchyMode ? Icons.list : Icons.account_tree_outlined),
+            icon: Icon(
+              _hierarchyMode ? Icons.list : Icons.account_tree_outlined,
+            ),
             tooltip: _hierarchyMode ? 'Liste görünümü' : 'Hiyerarşi görünümü',
             onPressed: () => setState(() => _hierarchyMode = !_hierarchyMode),
           ),
@@ -69,17 +82,17 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
       body: state.isLoading
           ? _buildShimmer()
           : state.error != null
-              ? _buildError(state.error!)
-              : state.locations.isEmpty
-                  ? _buildEmpty()
-                  : RefreshIndicator(
-                      color: AppColors.primary500,
-                      backgroundColor: AppColors.dark800,
-                      onRefresh: () => ref.read(locationProvider.notifier).refresh(),
-                      child: _hierarchyMode
-                          ? _buildHierarchy(state.locations)
-                          : _buildFlatList(state.locations),
-                    ),
+          ? _buildError(state.error!)
+          : state.locations.isEmpty
+          ? _buildEmpty()
+          : RefreshIndicator(
+              color: AppColors.primary500,
+              backgroundColor: AppColors.dark800,
+              onRefresh: () => ref.read(locationProvider.notifier).refresh(),
+              child: _hierarchyMode
+                  ? _buildHierarchy(state.locations)
+                  : _buildFlatList(state.locations),
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _navigateToForm(),
         child: const Icon(Icons.add),
@@ -101,11 +114,12 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
       tree[building]![floor]!.add(loc);
     }
 
-    final buildings = tree.keys.toList()..sort((a, b) {
-      if (a == ungrouped) return 1;
-      if (b == ungrouped) return -1;
-      return a.compareTo(b);
-    });
+    final buildings = tree.keys.toList()
+      ..sort((a, b) {
+        if (a == ungrouped) return 1;
+        if (b == ungrouped) return -1;
+        return a.compareTo(b);
+      });
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -116,11 +130,12 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
             .fold<int>(0, (sum, l) => sum + l.deviceCount);
 
         // If only one floor and it's ungrouped, flatten to building level
-        final floorKeys = floors.keys.toList()..sort((a, b) {
-          if (a == ungrouped) return 1;
-          if (b == ungrouped) return -1;
-          return a.compareTo(b);
-        });
+        final floorKeys = floors.keys.toList()
+          ..sort((a, b) {
+            if (a == ungrouped) return 1;
+            if (b == ungrouped) return -1;
+            return a.compareTo(b);
+          });
 
         return Container(
           margin: const EdgeInsets.only(bottom: 10),
@@ -133,7 +148,10 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
             data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
             child: ExpansionTile(
               initiallyExpanded: true,
-              tilePadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+              tilePadding: const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 4,
+              ),
               childrenPadding: const EdgeInsets.only(bottom: 8),
               leading: Container(
                 width: 38,
@@ -142,7 +160,11 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
                   color: AppColors.info.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(9),
                 ),
-                child: const Icon(Icons.apartment, color: AppColors.info, size: 20),
+                child: const Icon(
+                  Icons.apartment,
+                  color: AppColors.info,
+                  size: 20,
+                ),
               ),
               title: Text(
                 building == ungrouped ? 'Bilinmeyen Bina' : building,
@@ -154,23 +176,37 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
               ),
               subtitle: Text(
                 '${floors.values.expand((l) => l).length} lokasyon · $totalDevices cihaz',
-                style: const TextStyle(fontSize: 11, color: AppColors.textTertiary),
+                style: const TextStyle(
+                  fontSize: 11,
+                  color: AppColors.textTertiary,
+                ),
               ),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _deviceCountBadge(totalDevices),
                   const SizedBox(width: 4),
-                  const Icon(Icons.keyboard_arrow_down, color: AppColors.textTertiary, size: 20),
+                  const Icon(
+                    Icons.keyboard_arrow_down,
+                    color: AppColors.textTertiary,
+                    size: 20,
+                  ),
                 ],
               ),
               children: floorKeys.map((floor) {
                 final locs = floors[floor]!;
-                final floorDevices = locs.fold<int>(0, (sum, l) => sum + l.deviceCount);
+                final floorDevices = locs.fold<int>(
+                  0,
+                  (sum, l) => sum + l.deviceCount,
+                );
 
                 if (floor == ungrouped && floorKeys.length == 1) {
                   // No floor grouping — show locations directly
-                  return Column(children: locs.map((l) => _locationTile(l, indent: 16)).toList());
+                  return Column(
+                    children: locs
+                        .map((l) => _locationTile(l, indent: 16))
+                        .toList(),
+                  );
                 }
 
                 return Padding(
@@ -179,28 +215,49 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
                     decoration: BoxDecoration(
                       color: AppColors.background,
                       borderRadius: BorderRadius.circular(9),
-                      border: Border.all(color: AppColors.border.withValues(alpha: 0.6)),
+                      border: Border.all(
+                        color: AppColors.border.withValues(alpha: 0.6),
+                      ),
                     ),
                     child: Theme(
-                      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                      data: Theme.of(
+                        context,
+                      ).copyWith(dividerColor: Colors.transparent),
                       child: ExpansionTile(
                         initiallyExpanded: true,
-                        tilePadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                        tilePadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 2,
+                        ),
                         childrenPadding: EdgeInsets.zero,
-                        leading: const Icon(Icons.layers_outlined, color: AppColors.primary400, size: 18),
+                        leading: const Icon(
+                          Icons.layers_outlined,
+                          color: AppColors.primary400,
+                          size: 18,
+                        ),
                         title: Text(
                           floor == ungrouped ? 'Kat belirtilmemiş' : floor,
-                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.textSecondary),
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.textSecondary,
+                          ),
                         ),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             _deviceCountBadge(floorDevices, small: true),
                             const SizedBox(width: 4),
-                            const Icon(Icons.keyboard_arrow_down, color: AppColors.textTertiary, size: 18),
+                            const Icon(
+                              Icons.keyboard_arrow_down,
+                              color: AppColors.textTertiary,
+                              size: 18,
+                            ),
                           ],
                         ),
-                        children: locs.map((l) => _locationTile(l, indent: 12)).toList(),
+                        children: locs
+                            .map((l) => _locationTile(l, indent: 12))
+                            .toList(),
                       ),
                     ),
                   ),
@@ -234,10 +291,19 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
         onTap: () => _navigateToForm(locationId: loc.id),
         borderRadius: BorderRadius.circular(8),
         child: Padding(
-          padding: EdgeInsets.only(left: indent + 8, right: 12, top: 8, bottom: 8),
+          padding: EdgeInsets.only(
+            left: indent + 8,
+            right: 12,
+            top: 8,
+            bottom: 8,
+          ),
           child: Row(
             children: [
-              const Icon(Icons.meeting_room_outlined, size: 16, color: AppColors.textTertiary),
+              const Icon(
+                Icons.meeting_room_outlined,
+                size: 16,
+                color: AppColors.textTertiary,
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: Column(
@@ -254,14 +320,21 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
                     if (loc.room != null)
                       Text(
                         'Oda: ${loc.room}',
-                        style: const TextStyle(fontSize: 11, color: AppColors.textTertiary),
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: AppColors.textTertiary,
+                        ),
                       ),
                   ],
                 ),
               ),
               _deviceCountBadge(loc.deviceCount, small: true),
               const SizedBox(width: 6),
-              const Icon(Icons.chevron_right, size: 16, color: AppColors.textTertiary),
+              const Icon(
+                Icons.chevron_right,
+                size: 16,
+                color: AppColors.textTertiary,
+              ),
             ],
           ),
         ),
@@ -283,7 +356,10 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.only(right: 20),
             margin: const EdgeInsets.only(bottom: 8),
-            decoration: BoxDecoration(color: AppColors.error, borderRadius: BorderRadius.circular(12)),
+            decoration: BoxDecoration(
+              color: AppColors.error,
+              borderRadius: BorderRadius.circular(12),
+            ),
             child: const Icon(Icons.delete, color: Colors.white),
           ),
           confirmDismiss: (_) async {
@@ -306,27 +382,45 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
                         color: AppColors.primary600.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(Icons.location_on, color: AppColors.primary400, size: 22),
+                      child: const Icon(
+                        Icons.location_on,
+                        color: AppColors.primary400,
+                        size: 22,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(loc.name,
-                              style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
+                          Text(
+                            loc.name,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
                           if (loc.address != null) ...[
                             const SizedBox(height: 2),
-                            Text(loc.address!,
-                                style: const TextStyle(fontSize: 12, color: AppColors.textTertiary),
-                                maxLines: 1, overflow: TextOverflow.ellipsis),
+                            Text(
+                              loc.address!,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: AppColors.textTertiary,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ],
                           const SizedBox(height: 4),
                           Row(
                             children: [
-                              if (loc.building != null) _infoChip(Icons.apartment, loc.building!),
-                              if (loc.floor != null) _infoChip(Icons.layers, loc.floor!),
-                              if (loc.room != null) _infoChip(Icons.meeting_room, loc.room!),
+                              if (loc.building != null)
+                                _infoChip(Icons.apartment, loc.building!),
+                              if (loc.floor != null)
+                                _infoChip(Icons.layers, loc.floor!),
+                              if (loc.room != null)
+                                _infoChip(Icons.meeting_room, loc.room!),
                             ],
                           ),
                         ],
@@ -346,7 +440,10 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
   // ── Yardımcı widgetlar ────────────────────────────────────
   Widget _deviceCountBadge(int count, {bool small = false}) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: small ? 6 : 8, vertical: small ? 2 : 4),
+      padding: EdgeInsets.symmetric(
+        horizontal: small ? 6 : 8,
+        vertical: small ? 2 : 4,
+      ),
       decoration: BoxDecoration(
         color: AppColors.surfaceLight,
         borderRadius: BorderRadius.circular(8),
@@ -354,7 +451,11 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.computer, size: small ? 10 : 12, color: AppColors.textTertiary),
+          Icon(
+            Icons.computer,
+            size: small ? 10 : 12,
+            color: AppColors.textTertiary,
+          ),
           const SizedBox(width: 3),
           Text(
             '$count',
@@ -377,7 +478,13 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
         children: [
           Icon(icon, size: 11, color: AppColors.textTertiary),
           const SizedBox(width: 2),
-          Text(text, style: const TextStyle(fontSize: 11, color: AppColors.textSecondary)),
+          Text(
+            text,
+            style: const TextStyle(
+              fontSize: 11,
+              color: AppColors.textSecondary,
+            ),
+          ),
         ],
       ),
     );
@@ -393,7 +500,10 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
         itemBuilder: (context, index) => Container(
           margin: const EdgeInsets.only(bottom: 10),
           height: 140,
-          decoration: BoxDecoration(color: AppColors.dark800, borderRadius: BorderRadius.circular(12)),
+          decoration: BoxDecoration(
+            color: AppColors.dark800,
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       ),
     );
@@ -425,7 +535,10 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
         children: [
           Icon(Icons.location_off, size: 64, color: AppColors.textTertiary),
           const SizedBox(height: 16),
-          const Text('Henuz lokasyon eklenmemis', style: TextStyle(fontSize: 16, color: AppColors.textSecondary)),
+          const Text(
+            'Henuz lokasyon eklenmemis',
+            style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
+          ),
         ],
       ),
     );

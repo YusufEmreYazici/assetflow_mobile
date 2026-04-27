@@ -63,8 +63,8 @@ class FilterPresetsNotifier extends StateNotifier<List<FilterPreset>> {
 
 final filterPresetsProvider =
     StateNotifierProvider<FilterPresetsNotifier, List<FilterPreset>>((ref) {
-  return FilterPresetsNotifier();
-});
+      return FilterPresetsNotifier();
+    });
 
 // ── Filtered device list ──────────────────────────────────────────────────────
 

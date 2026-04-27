@@ -57,10 +57,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
       ),
       body: Stack(
         children: [
-          MobileScanner(
-            controller: _controller,
-            onDetect: _onDetect,
-          ),
+          MobileScanner(controller: _controller, onDetect: _onDetect),
           // Overlay
           CustomPaint(
             painter: _ScannerOverlayPainter(),
@@ -73,7 +70,10 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
             right: 0,
             child: Center(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.black54,
                   borderRadius: BorderRadius.circular(20),
@@ -104,9 +104,23 @@ class _ScannerOverlayPainter extends CustomPainter {
 
     // Draw 4 dark regions around the scan window
     canvas.drawRect(Rect.fromLTWH(0, 0, size.width, window.top), paint);
-    canvas.drawRect(Rect.fromLTWH(0, window.bottom, size.width, size.height - window.bottom), paint);
-    canvas.drawRect(Rect.fromLTWH(0, window.top, window.left, windowSize), paint);
-    canvas.drawRect(Rect.fromLTWH(window.right, window.top, size.width - window.right, windowSize), paint);
+    canvas.drawRect(
+      Rect.fromLTWH(0, window.bottom, size.width, size.height - window.bottom),
+      paint,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(0, window.top, window.left, windowSize),
+      paint,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(
+        window.right,
+        window.top,
+        size.width - window.right,
+        windowSize,
+      ),
+      paint,
+    );
 
     // Corner brackets
     const cornerLen = 28.0;
@@ -118,17 +132,49 @@ class _ScannerOverlayPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     // Top-left
-    canvas.drawLine(Offset(window.left, window.top + cornerLen), Offset(window.left, window.top), cornerPaint);
-    canvas.drawLine(Offset(window.left, window.top), Offset(window.left + cornerLen, window.top), cornerPaint);
+    canvas.drawLine(
+      Offset(window.left, window.top + cornerLen),
+      Offset(window.left, window.top),
+      cornerPaint,
+    );
+    canvas.drawLine(
+      Offset(window.left, window.top),
+      Offset(window.left + cornerLen, window.top),
+      cornerPaint,
+    );
     // Top-right
-    canvas.drawLine(Offset(window.right - cornerLen, window.top), Offset(window.right, window.top), cornerPaint);
-    canvas.drawLine(Offset(window.right, window.top), Offset(window.right, window.top + cornerLen), cornerPaint);
+    canvas.drawLine(
+      Offset(window.right - cornerLen, window.top),
+      Offset(window.right, window.top),
+      cornerPaint,
+    );
+    canvas.drawLine(
+      Offset(window.right, window.top),
+      Offset(window.right, window.top + cornerLen),
+      cornerPaint,
+    );
     // Bottom-left
-    canvas.drawLine(Offset(window.left, window.bottom - cornerLen), Offset(window.left, window.bottom), cornerPaint);
-    canvas.drawLine(Offset(window.left, window.bottom), Offset(window.left + cornerLen, window.bottom), cornerPaint);
+    canvas.drawLine(
+      Offset(window.left, window.bottom - cornerLen),
+      Offset(window.left, window.bottom),
+      cornerPaint,
+    );
+    canvas.drawLine(
+      Offset(window.left, window.bottom),
+      Offset(window.left + cornerLen, window.bottom),
+      cornerPaint,
+    );
     // Bottom-right
-    canvas.drawLine(Offset(window.right - cornerLen, window.bottom), Offset(window.right, window.bottom), cornerPaint);
-    canvas.drawLine(Offset(window.right, window.bottom), Offset(window.right, window.bottom - cornerLen), cornerPaint);
+    canvas.drawLine(
+      Offset(window.right - cornerLen, window.bottom),
+      Offset(window.right, window.bottom),
+      cornerPaint,
+    );
+    canvas.drawLine(
+      Offset(window.right, window.bottom),
+      Offset(window.right, window.bottom - cornerLen),
+      cornerPaint,
+    );
   }
 
   @override

@@ -31,9 +31,6 @@ class HapticButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onPressed == null ? null : _handleTap,
-      child: child,
-    );
+    return InkWell(onTap: onPressed == null ? null : _handleTap, child: child);
   }
 }

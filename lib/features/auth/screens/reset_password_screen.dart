@@ -37,10 +37,22 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   Future<void> _submit() async {
     final p1 = _p1Ctrl.text;
     final p2 = _p2Ctrl.text;
-    if (p1.length < 8) { setState(() => _error = 'Şifre en az 8 karakter olmalı.'); return; }
-    if (p1 != p2)       { setState(() => _error = 'Şifreler eşleşmiyor.'); return; }
-    if (_strength(p1) < 2) { setState(() => _error = 'Daha güçlü bir şifre seçin.'); return; }
-    setState(() { _error = null; _isDone = true; });
+    if (p1.length < 8) {
+      setState(() => _error = 'Şifre en az 8 karakter olmalı.');
+      return;
+    }
+    if (p1 != p2) {
+      setState(() => _error = 'Şifreler eşleşmiyor.');
+      return;
+    }
+    if (_strength(p1) < 2) {
+      setState(() => _error = 'Daha güçlü bir şifre seçin.');
+      return;
+    }
+    setState(() {
+      _error = null;
+      _isDone = true;
+    });
     await Future.delayed(const Duration(milliseconds: 900));
     if (!mounted) return;
     context.go('/login');
@@ -50,8 +62,16 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   Widget build(BuildContext context) {
     final p1 = _p1Ctrl.text;
     final s = _strength(p1);
-    final strengthLabel = s <= 1 ? 'Zayıf' : s == 2 ? 'Orta' : 'Güçlü';
-    final strengthColor = s <= 1 ? AppColors.error : s == 2 ? AppColors.warning : AppColors.success;
+    final strengthLabel = s <= 1
+        ? 'Zayıf'
+        : s == 2
+        ? 'Orta'
+        : 'Güçlü';
+    final strengthColor = s <= 1
+        ? AppColors.error
+        : s == 2
+        ? AppColors.warning
+        : AppColors.success;
 
     return Scaffold(
       backgroundColor: AppColors.surfaceWhite,
@@ -71,15 +91,19 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       Text(
                         'Yeni şifre belirle',
                         style: GoogleFonts.inter(
-                          fontSize: 20, fontWeight: FontWeight.w500,
-                          color: AppColors.textPrimary, letterSpacing: -0.2,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.textPrimary,
+                          letterSpacing: -0.2,
                         ),
                       ),
                       const SizedBox(height: 10),
                       Text(
                         'En az 8 karakter, büyük harf, sayı ve özel karakter içermesi önerilir.',
                         style: GoogleFonts.inter(
-                          fontSize: 13, color: AppColors.textSecondary, height: 1.55,
+                          fontSize: 13,
+                          color: AppColors.textSecondary,
+                          height: 1.55,
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -89,22 +113,28 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       if (p1.isNotEmpty) ...[
                         const SizedBox(height: 10),
                         Row(
-                          children: List.generate(4, (i) => Expanded(
-                            child: Container(
-                              height: 4,
-                              margin: EdgeInsets.only(right: i < 3 ? 4 : 0),
-                              decoration: BoxDecoration(
-                                color: i < s ? strengthColor : AppColors.surfaceLight,
-                                borderRadius: BorderRadius.circular(2),
+                          children: List.generate(
+                            4,
+                            (i) => Expanded(
+                              child: Container(
+                                height: 4,
+                                margin: EdgeInsets.only(right: i < 3 ? 4 : 0),
+                                decoration: BoxDecoration(
+                                  color: i < s
+                                      ? strengthColor
+                                      : AppColors.surfaceLight,
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
                               ),
                             ),
-                          )),
+                          ),
                         ),
                         const SizedBox(height: 6),
                         Text(
                           strengthLabel,
                           style: GoogleFonts.inter(
-                            fontSize: 11, fontWeight: FontWeight.w500,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
                             color: strengthColor,
                           ),
                         ),
@@ -115,17 +145,32 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       _buildPassField(_p2Ctrl),
                       if (_error != null) ...[
                         const SizedBox(height: 10),
-                        Text(_error!, style: GoogleFonts.inter(fontSize: 11, color: AppColors.error)),
+                        Text(
+                          _error!,
+                          style: GoogleFonts.inter(
+                            fontSize: 11,
+                            color: AppColors.error,
+                          ),
+                        ),
                       ],
-                      if (_p2Ctrl.text.isNotEmpty && _p1Ctrl.text == _p2Ctrl.text && _error == null) ...[
+                      if (_p2Ctrl.text.isNotEmpty &&
+                          _p1Ctrl.text == _p2Ctrl.text &&
+                          _error == null) ...[
                         const SizedBox(height: 10),
                         Row(
                           children: [
-                            const Icon(Icons.check, size: 12, color: AppColors.success),
+                            const Icon(
+                              Icons.check,
+                              size: 12,
+                              color: AppColors.success,
+                            ),
                             const SizedBox(width: 6),
                             Text(
                               'Şifreler eşleşiyor',
-                              style: GoogleFonts.inter(fontSize: 11, color: AppColors.success),
+                              style: GoogleFonts.inter(
+                                fontSize: 11,
+                                color: AppColors.success,
+                              ),
                             ),
                           ],
                         ),
@@ -143,7 +188,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             child: Text(
                               'Şifreyi Güncelle',
                               style: GoogleFonts.inter(
-                                fontSize: 14, fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
                                 color: Colors.white,
                               ),
                             ),
@@ -162,13 +208,18 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     return Text(
       text,
       style: GoogleFonts.inter(
-        fontSize: 11, fontWeight: FontWeight.w500,
-        color: AppColors.textSecondary, letterSpacing: 1,
+        fontSize: 11,
+        fontWeight: FontWeight.w500,
+        color: AppColors.textSecondary,
+        letterSpacing: 1,
       ),
     );
   }
 
-  Widget _buildPassField(TextEditingController ctrl, {bool showToggle = false}) {
+  Widget _buildPassField(
+    TextEditingController ctrl, {
+    bool showToggle = false,
+  }) {
     return TextFormField(
       controller: ctrl,
       obscureText: !_showPass,
@@ -176,12 +227,19 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       onChanged: (_) => setState(() {}),
       decoration: InputDecoration(
         hintText: '••••••••',
-        hintStyle: GoogleFonts.inter(fontSize: 14, color: AppColors.textTertiary),
+        hintStyle: GoogleFonts.inter(
+          fontSize: 14,
+          color: AppColors.textTertiary,
+        ),
         filled: true,
         fillColor: AppColors.surfaceWhite,
         prefixIcon: const Padding(
           padding: EdgeInsets.symmetric(horizontal: 14),
-          child: Icon(Icons.lock_outline, size: 18, color: AppColors.textTertiary),
+          child: Icon(
+            Icons.lock_outline,
+            size: 18,
+            color: AppColors.textTertiary,
+          ),
         ),
         prefixIconConstraints: const BoxConstraints(minWidth: 46),
         suffixIcon: showToggle
@@ -190,13 +248,19 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Icon(
-                    _showPass ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                    size: 18, color: AppColors.textTertiary,
+                    _showPass
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
+                    size: 18,
+                    color: AppColors.textTertiary,
                   ),
                 ),
               )
             : null,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
           borderSide: const BorderSide(color: AppColors.surfaceInputBorder),
@@ -205,7 +269,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           borderRadius: BorderRadius.circular(AppRadius.md),
           borderSide: const BorderSide(color: AppColors.navy, width: 2),
         ),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+        ),
       ),
     );
   }
@@ -218,26 +284,35 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 72, height: 72,
+              width: 72,
+              height: 72,
               decoration: BoxDecoration(
                 color: AppColors.successBg,
                 shape: BoxShape.circle,
                 border: Border.all(color: AppColors.success),
               ),
-              child: const Icon(Icons.check, size: 32, color: AppColors.success),
+              child: const Icon(
+                Icons.check,
+                size: 32,
+                color: AppColors.success,
+              ),
             ),
             const SizedBox(height: 20),
             Text(
               'Şifre güncellendi',
               style: GoogleFonts.inter(
-                fontSize: 20, fontWeight: FontWeight.w500,
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
                 color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'Yeni şifrenizle giriş yapabilirsiniz.',
-              style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary),
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                color: AppColors.textSecondary,
+              ),
             ),
           ],
         ),

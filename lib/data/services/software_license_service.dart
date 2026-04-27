@@ -12,7 +12,10 @@ class SoftwareLicenseService {
   }) async {
     final params = <String, dynamic>{'page': page, 'pageSize': pageSize};
     if (search != null && search.isNotEmpty) params['search'] = search;
-    final response = await _dio.get('/api/assets/software', queryParameters: params);
+    final response = await _dio.get(
+      '/api/assets/software',
+      queryParameters: params,
+    );
     return PagedResult.fromJson(
       response.data as Map<String, dynamic>,
       (json) => SoftwareLicense.fromJson(json),

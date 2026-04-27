@@ -12,8 +12,13 @@ class AuthService {
       ApiConstants.login,
       data: request.toJson(),
     );
-    final authResponse = AuthResponse.fromJson(response.data as Map<String, dynamic>);
-    await _tokenManager.saveTokens(authResponse.token, authResponse.refreshToken);
+    final authResponse = AuthResponse.fromJson(
+      response.data as Map<String, dynamic>,
+    );
+    await _tokenManager.saveTokens(
+      authResponse.token,
+      authResponse.refreshToken,
+    );
     await _tokenManager.saveUser(
       email: authResponse.email,
       fullName: authResponse.fullName,
@@ -28,8 +33,13 @@ class AuthService {
       ApiConstants.register,
       data: request.toJson(),
     );
-    final authResponse = AuthResponse.fromJson(response.data as Map<String, dynamic>);
-    await _tokenManager.saveTokens(authResponse.token, authResponse.refreshToken);
+    final authResponse = AuthResponse.fromJson(
+      response.data as Map<String, dynamic>,
+    );
+    await _tokenManager.saveTokens(
+      authResponse.token,
+      authResponse.refreshToken,
+    );
     await _tokenManager.saveUser(
       email: authResponse.email,
       fullName: authResponse.fullName,
@@ -44,13 +54,15 @@ class AuthService {
     final refreshToken = await _tokenManager.getRefreshToken();
     final response = await _dio.post(
       ApiConstants.refresh,
-      data: {
-        'token': accessToken,
-        'refreshToken': refreshToken,
-      },
+      data: {'token': accessToken, 'refreshToken': refreshToken},
     );
-    final authResponse = AuthResponse.fromJson(response.data as Map<String, dynamic>);
-    await _tokenManager.saveTokens(authResponse.token, authResponse.refreshToken);
+    final authResponse = AuthResponse.fromJson(
+      response.data as Map<String, dynamic>,
+    );
+    await _tokenManager.saveTokens(
+      authResponse.token,
+      authResponse.refreshToken,
+    );
     return authResponse;
   }
 
@@ -64,13 +76,13 @@ class AuthService {
     }
   }
 
-  Future<void> changePassword(String currentPassword, String newPassword) async {
+  Future<void> changePassword(
+    String currentPassword,
+    String newPassword,
+  ) async {
     await _dio.post(
       ApiConstants.changePassword,
-      data: {
-        'currentPassword': currentPassword,
-        'newPassword': newPassword,
-      },
+      data: {'currentPassword': currentPassword, 'newPassword': newPassword},
     );
   }
 

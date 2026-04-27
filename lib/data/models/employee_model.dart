@@ -26,13 +26,13 @@ class Employee {
   factory Employee.fromJson(Map<String, dynamic> json) {
     return Employee(
       id: json['id'].toString(),
-      fullName: json['fullName'] as String,
+      fullName: json['fullName'] as String? ?? '',
       registrationNumber: json['registrationNumber'] as String?,
       email: json['email'] as String?,
       department: json['department'] as String?,
       title: json['title'] as String?,
       phone: json['phone'] as String?,
-      isActive: json['isActive'] as bool,
+      isActive: json['isActive'] as bool? ?? true,
       hireDate: json['hireDate'] != null
           ? DateTime.parse(json['hireDate'] as String)
           : null,

@@ -6,12 +6,18 @@ import 'package:assetflow_mobile/data/models/paged_result.dart';
 class LocationService {
   final _dio = ApiClient.instance.dio;
 
-  Future<PagedResult<Location>> getAll({int page = 1, int pageSize = 50}) async {
+  Future<PagedResult<Location>> getAll({
+    int page = 1,
+    int pageSize = 50,
+  }) async {
     final response = await _dio.get(
       ApiConstants.locations,
       queryParameters: {'page': page, 'pageSize': pageSize},
     );
-    return PagedResult.fromJson(response.data as Map<String, dynamic>, (json) => Location.fromJson(json));
+    return PagedResult.fromJson(
+      response.data as Map<String, dynamic>,
+      (json) => Location.fromJson(json),
+    );
   }
 
   Future<Location> getById(String id) async {

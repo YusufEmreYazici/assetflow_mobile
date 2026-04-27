@@ -31,9 +31,7 @@ class PersonPickRow extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: selected
-              ? AppColors.infoBg
-              : AppColors.surfaceWhite,
+          color: selected ? AppColors.infoBg : AppColors.surfaceWhite,
           border: Border.all(
             color: selected ? AppColors.navy : AppColors.surfaceDivider,
           ),
@@ -71,12 +69,14 @@ class PersonPickRow extends StatelessWidget {
                       color: AppColors.textPrimary,
                     ),
                   ),
-                  if (employee.title != null || employee.department != null) ...[
+                  if (employee.title != null ||
+                      employee.department != null) ...[
                     const SizedBox(height: 2),
                     Text(
-                      [employee.title, employee.department]
-                          .whereType<String>()
-                          .join(' · '),
+                      [
+                        employee.title,
+                        employee.department,
+                      ].whereType<String>().join(' · '),
                       style: GoogleFonts.inter(
                         fontSize: 11,
                         color: AppColors.textSecondary,

@@ -6,12 +6,18 @@ import 'package:assetflow_mobile/data/models/paged_result.dart';
 class EmployeeService {
   final _dio = ApiClient.instance.dio;
 
-  Future<PagedResult<Employee>> getAll({int page = 1, int pageSize = 15}) async {
+  Future<PagedResult<Employee>> getAll({
+    int page = 1,
+    int pageSize = 15,
+  }) async {
     final response = await _dio.get(
       ApiConstants.employees,
       queryParameters: {'page': page, 'pageSize': pageSize},
     );
-    return PagedResult.fromJson(response.data as Map<String, dynamic>, (json) => Employee.fromJson(json));
+    return PagedResult.fromJson(
+      response.data as Map<String, dynamic>,
+      (json) => Employee.fromJson(json),
+    );
   }
 
   Future<Employee> getById(String id) async {

@@ -18,14 +18,16 @@ class ApiClient {
       ),
     );
     if (kDebugMode) {
-      _dio.interceptors.add(LogInterceptor(
-        requestBody: true,
-        responseBody: true,
-        requestHeader: false,
-        responseHeader: false,
-        error: true,
-        logPrint: (obj) => debugPrint('[Dio] $obj'),
-      ));
+      _dio.interceptors.add(
+        LogInterceptor(
+          requestBody: true,
+          responseBody: true,
+          requestHeader: false,
+          responseHeader: false,
+          error: true,
+          logPrint: (obj) => debugPrint('[Dio] $obj'),
+        ),
+      );
     }
     _dio.interceptors.add(_authInterceptor());
   }
@@ -52,7 +54,8 @@ class ApiClient {
         handler.next(options);
       },
       onError: (error, handler) async {
-        if (error.response?.statusCode == 401 && !_isRetryRequest(error.requestOptions)) {
+        if (error.response?.statusCode == 401 &&
+            !_isRetryRequest(error.requestOptions)) {
           if (!_isRefreshing) {
             _isRefreshing = true;
             final refreshed = await _refreshToken();
@@ -74,7 +77,8 @@ class ApiClient {
 
               // Retry the original request
               final newToken = await TokenManager.instance.getAccessToken();
-              error.requestOptions.headers['Authorization'] = 'Bearer $newToken';
+              error.requestOptions.headers['Authorization'] =
+                  'Bearer $newToken';
               error.requestOptions.extra['_retried'] = true;
               try {
                 final response = await _dio.fetch(error.requestOptions);
@@ -110,7 +114,9 @@ class ApiClient {
               requestOptions: error.requestOptions,
               error: ApiException(
                 statusCode: 400,
-                message: (data is Map ? data['error'] ?? data['message'] : null) as String? ??
+                message:
+                    (data is Map ? data['error'] ?? data['message'] : null)
+                        as String? ??
                     'İstek geçersiz.',
                 details: data is Map ? data['details'] : null,
               ),
@@ -127,7 +133,9 @@ class ApiClient {
               requestOptions: error.requestOptions,
               error: ApiException(
                 statusCode: 409,
-                message: (data is Map ? data['error'] ?? data['message'] : null) as String? ??
+                message:
+                    (data is Map ? data['error'] ?? data['message'] : null)
+                        as String? ??
                     'Bu kayıt başka biri tarafından değiştirildi. Sayfayı yenileyip tekrar deneyin.',
                 details: data is Map ? data['details'] : null,
                 isConflict: true,
@@ -140,7 +148,9 @@ class ApiClient {
         }
         if (statusCode == 422) {
           final data = error.response?.data;
-          final errors = (data is Map ? data['errors'] : null) as Map<String, dynamic>? ?? {};
+          final errors =
+              (data is Map ? data['errors'] : null) as Map<String, dynamic>? ??
+              {};
           handler.reject(
             DioException(
               requestOptions: error.requestOptions,
@@ -152,38 +162,50 @@ class ApiClient {
           return;
         }
         if (statusCode == 403) {
-          handler.reject(DioException(
-            requestOptions: error.requestOptions,
-            error: const ApiException(statusCode: 403, message: 'Bu işlem için yetkiniz yok.'),
-            response: error.response,
-            type: DioExceptionType.badResponse,
-          ));
+          handler.reject(
+            DioException(
+              requestOptions: error.requestOptions,
+              error: const ApiException(
+                statusCode: 403,
+                message: 'Bu işlem için yetkiniz yok.',
+              ),
+              response: error.response,
+              type: DioExceptionType.badResponse,
+            ),
+          );
           return;
         }
         if (statusCode == 404) {
           final data = error.response?.data;
-          handler.reject(DioException(
-            requestOptions: error.requestOptions,
-            error: ApiException(
-              statusCode: 404,
-              message: (data is Map ? data['message'] ?? data['error'] : null) as String? ??
-                  'İstenen kaynak bulunamadı.',
+          handler.reject(
+            DioException(
+              requestOptions: error.requestOptions,
+              error: ApiException(
+                statusCode: 404,
+                message:
+                    (data is Map ? data['message'] ?? data['error'] : null)
+                        as String? ??
+                    'İstenen kaynak bulunamadı.',
+              ),
+              response: error.response,
+              type: DioExceptionType.badResponse,
             ),
-            response: error.response,
-            type: DioExceptionType.badResponse,
-          ));
+          );
           return;
         }
         if (statusCode != null && statusCode >= 500) {
-          handler.reject(DioException(
-            requestOptions: error.requestOptions,
-            error: ApiException(
-              statusCode: statusCode,
-              message: 'Sunucuda bir hata oluştu. Lütfen birazdan tekrar deneyin.',
+          handler.reject(
+            DioException(
+              requestOptions: error.requestOptions,
+              error: ApiException(
+                statusCode: statusCode,
+                message:
+                    'Sunucuda bir hata oluştu. Lütfen birazdan tekrar deneyin.',
+              ),
+              response: error.response,
+              type: DioExceptionType.badResponse,
             ),
-            response: error.response,
-            type: DioExceptionType.badResponse,
-          ));
+          );
           return;
         }
         // Network / timeout
@@ -191,14 +213,17 @@ class ApiClient {
             error.type == DioExceptionType.receiveTimeout ||
             error.type == DioExceptionType.sendTimeout ||
             error.type == DioExceptionType.connectionError) {
-          handler.reject(DioException(
-            requestOptions: error.requestOptions,
-            error: const ApiException(
-              statusCode: 0,
-              message: 'İnternet bağlantısı yok. Lütfen bağlantınızı kontrol edin.',
+          handler.reject(
+            DioException(
+              requestOptions: error.requestOptions,
+              error: const ApiException(
+                statusCode: 0,
+                message:
+                    'İnternet bağlantısı yok. Lütfen bağlantınızı kontrol edin.',
+              ),
+              type: error.type,
             ),
-            type: error.type,
-          ));
+          );
           return;
         }
         handler.next(error);
@@ -216,21 +241,19 @@ class ApiClient {
       final accessToken = await TokenManager.instance.getAccessToken();
       if (refreshToken == null || accessToken == null) return false;
 
-      final response = await Dio(
-        BaseOptions(
-          baseUrl: ApiConstants.baseUrl,
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-        ),
-      ).post(
-        ApiConstants.refresh,
-        data: {
-          'token': accessToken,
-          'refreshToken': refreshToken,
-        },
-      );
+      final response =
+          await Dio(
+            BaseOptions(
+              baseUrl: ApiConstants.baseUrl,
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+              },
+            ),
+          ).post(
+            ApiConstants.refresh,
+            data: {'token': accessToken, 'refreshToken': refreshToken},
+          );
 
       if (response.statusCode == 200) {
         final data = response.data;

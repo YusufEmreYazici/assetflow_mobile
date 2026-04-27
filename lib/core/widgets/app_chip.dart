@@ -21,8 +21,8 @@ class AppChip extends StatelessWidget {
     final (bg, fg) = switch (tone) {
       ChipTone.success => (AppColors.successBg, AppColors.success),
       ChipTone.warning => (AppColors.warningBg, AppColors.warning),
-      ChipTone.error   => (AppColors.errorBg,   AppColors.error),
-      ChipTone.info    => (AppColors.infoBg,     AppColors.info),
+      ChipTone.error => (AppColors.errorBg, AppColors.error),
+      ChipTone.info => (AppColors.infoBg, AppColors.info),
       ChipTone.neutral => (AppColors.surfaceLight, AppColors.textSecondary),
     };
 
@@ -30,34 +30,35 @@ class AppChip extends StatelessWidget {
       label: 'Durum: $label',
       excludeSemantics: true,
       child: Container(
-      height: 22,
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (dot) ...[
-            Container(
-              width: 6, height: 6,
-              decoration: BoxDecoration(color: fg, shape: BoxShape.circle),
+        height: 22,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (dot) ...[
+              Container(
+                width: 6,
+                height: 6,
+                decoration: BoxDecoration(color: fg, shape: BoxShape.circle),
+              ),
+              const SizedBox(width: 6),
+            ],
+            Text(
+              label.toUpperCase(),
+              style: GoogleFonts.inter(
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                color: fg,
+                letterSpacing: 0.4,
+              ),
             ),
-            const SizedBox(width: 6),
           ],
-          Text(
-            label.toUpperCase(),
-            style: GoogleFonts.inter(
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
-              color: fg,
-              letterSpacing: 0.4,
-            ),
-          ),
-        ],
+        ),
       ),
-    ),
     );
   }
 }

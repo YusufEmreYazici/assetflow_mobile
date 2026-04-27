@@ -20,13 +20,13 @@ class ProfileService {
     return ProfileDto.fromJson(res.data!);
   }
 
-  Future<void> changePassword(String currentPassword, String newPassword) async {
+  Future<void> changePassword(
+    String currentPassword,
+    String newPassword,
+  ) async {
     await _dio.post<void>(
       ApiConstants.userMeChangePassword,
-      data: {
-        'currentPassword': currentPassword,
-        'newPassword': newPassword,
-      },
+      data: {'currentPassword': currentPassword, 'newPassword': newPassword},
     );
   }
 
@@ -34,7 +34,8 @@ class ProfileService {
     final formData = FormData.fromMap({
       'file': await MultipartFile.fromFile(
         imageFile.path,
-        filename: 'avatar${imageFile.path.split('.').last.isEmpty ? '.jpg' : '.${imageFile.path.split('.').last}'}',
+        filename:
+            'avatar${imageFile.path.split('.').last.isEmpty ? '.jpg' : '.${imageFile.path.split('.').last}'}',
       ),
     });
     final res = await _dio.post<Map<String, dynamic>>(

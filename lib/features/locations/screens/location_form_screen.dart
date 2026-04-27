@@ -59,7 +59,10 @@ class _LocationFormScreenState extends State<LocationFormScreen> {
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Lokasyon yuklenemedi'), backgroundColor: AppColors.error),
+          const SnackBar(
+            content: Text('Lokasyon yuklenemedi'),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
     }
@@ -73,7 +76,9 @@ class _LocationFormScreenState extends State<LocationFormScreen> {
       final data = {
         'name': _nameC.text.trim(),
         'address': _addressC.text.trim().isEmpty ? null : _addressC.text.trim(),
-        'building': _buildingC.text.trim().isEmpty ? null : _buildingC.text.trim(),
+        'building': _buildingC.text.trim().isEmpty
+            ? null
+            : _buildingC.text.trim(),
         'floor': _floorC.text.trim().isEmpty ? null : _floorC.text.trim(),
         'room': _roomC.text.trim().isEmpty ? null : _roomC.text.trim(),
         'description': _descC.text.trim().isEmpty ? null : _descC.text.trim(),
@@ -86,10 +91,12 @@ class _LocationFormScreenState extends State<LocationFormScreen> {
       }
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(isEdit ? 'Lokasyon guncellendi' : 'Lokasyon eklendi'),
-          backgroundColor: AppColors.success,
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(isEdit ? 'Lokasyon guncellendi' : 'Lokasyon eklendi'),
+            backgroundColor: AppColors.success,
+          ),
+        );
         Navigator.pop(context, true);
       }
     } catch (e) {
@@ -114,9 +121,13 @@ class _LocationFormScreenState extends State<LocationFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(isEdit ? 'Lokasyon Duzenle' : 'Yeni Lokasyon')),
+      appBar: AppBar(
+        title: Text(isEdit ? 'Lokasyon Duzenle' : 'Yeni Lokasyon'),
+      ),
       body: _loadingData
-          ? const Center(child: CircularProgressIndicator(color: AppColors.primary500))
+          ? const Center(
+              child: CircularProgressIndicator(color: AppColors.primary500),
+            )
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Form(
@@ -127,7 +138,8 @@ class _LocationFormScreenState extends State<LocationFormScreen> {
                       label: 'Lokasyon Adi *',
                       controller: _nameC,
                       prefixIcon: const Icon(Icons.location_on, size: 18),
-                      validator: (v) => v == null || v.trim().isEmpty ? 'Zorunlu alan' : null,
+                      validator: (v) =>
+                          v == null || v.trim().isEmpty ? 'Zorunlu alan' : null,
                     ),
                     const SizedBox(height: 12),
                     AppTextField(
@@ -138,9 +150,21 @@ class _LocationFormScreenState extends State<LocationFormScreen> {
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        Expanded(child: AppTextField(label: 'Bina', controller: _buildingC, prefixIcon: const Icon(Icons.apartment, size: 18))),
+                        Expanded(
+                          child: AppTextField(
+                            label: 'Bina',
+                            controller: _buildingC,
+                            prefixIcon: const Icon(Icons.apartment, size: 18),
+                          ),
+                        ),
                         const SizedBox(width: 12),
-                        Expanded(child: AppTextField(label: 'Kat', controller: _floorC, prefixIcon: const Icon(Icons.layers, size: 18))),
+                        Expanded(
+                          child: AppTextField(
+                            label: 'Kat',
+                            controller: _floorC,
+                            prefixIcon: const Icon(Icons.layers, size: 18),
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 12),

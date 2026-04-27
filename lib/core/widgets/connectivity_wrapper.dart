@@ -16,10 +16,12 @@ class ConnectivityNotifier extends StateNotifier<bool> {
   /// Test için — timer başlatmadan sabit durum döner
   ConnectivityNotifier.forTest({required bool isOnline}) : super(isOnline);
 
-
   void _startChecking() {
     _checkConnection();
-    _timer = Timer.periodic(const Duration(seconds: 10), (_) => _checkConnection());
+    _timer = Timer.periodic(
+      const Duration(seconds: 10),
+      (_) => _checkConnection(),
+    );
   }
 
   Future<void> _checkConnection() async {
@@ -46,7 +48,9 @@ class ConnectivityNotifier extends StateNotifier<bool> {
   }
 }
 
-final connectivityProvider = StateNotifierProvider<ConnectivityNotifier, bool>((ref) {
+final connectivityProvider = StateNotifierProvider<ConnectivityNotifier, bool>((
+  ref,
+) {
   return ConnectivityNotifier();
 });
 
@@ -74,7 +78,11 @@ class OfflineBanner extends ConsumerWidget {
           Flexible(
             child: Text(
               'Çevrimdışı — kayıtlı veriler gösteriliyor$syncText',
-              style: const TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.w500),
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.black87,
+                fontWeight: FontWeight.w500,
+              ),
               overflow: TextOverflow.ellipsis,
             ),
           ),

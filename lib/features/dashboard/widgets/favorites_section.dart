@@ -38,8 +38,10 @@ class FavoritesSection extends ConsumerWidget {
                   child: Text(
                     'TÜMÜ →',
                     style: GoogleFonts.inter(
-                      fontSize: 11, fontWeight: FontWeight.w500,
-                      color: AppColors.navyLight, letterSpacing: 0.3,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.navyLight,
+                      letterSpacing: 0.3,
                     ),
                   ),
                 )
@@ -58,12 +60,17 @@ class FavoritesSection extends ConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.star_border_rounded, size: 28, color: AppColors.navyLight),
+                const Icon(
+                  Icons.star_border_rounded,
+                  size: 28,
+                  color: AppColors.navyLight,
+                ),
                 const SizedBox(height: 8),
                 Text(
                   'Favori cihaz yok',
                   style: GoogleFonts.inter(
-                    fontSize: 13, fontWeight: FontWeight.w500,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
                     color: AppColors.textPrimary,
                   ),
                 ),
@@ -72,7 +79,9 @@ class FavoritesSection extends ConsumerWidget {
                   'Sık eriştiğin cihazları ★ ile işaretleyerek buraya ekleyebilirsin.',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.inter(
-                    fontSize: 11, color: AppColors.textSecondary, height: 1.4,
+                    fontSize: 11,
+                    color: AppColors.textSecondary,
+                    height: 1.4,
                   ),
                 ),
               ],
@@ -98,23 +107,23 @@ class _FavoriteCard extends StatelessWidget {
   const _FavoriteCard({required this.device});
 
   IconData get _typeIcon => switch (device.type) {
-        0 => Icons.laptop_outlined,
-        1 => Icons.desktop_mac_outlined,
-        2 => Icons.monitor_outlined,
-        3 => Icons.print_outlined,
-        4 => Icons.smartphone_outlined,
-        5 => Icons.tablet_outlined,
-        6 => Icons.dns_outlined,
-        7 => Icons.router_outlined,
-        _ => Icons.devices_outlined,
-      };
+    0 => Icons.laptop_outlined,
+    1 => Icons.desktop_mac_outlined,
+    2 => Icons.monitor_outlined,
+    3 => Icons.print_outlined,
+    4 => Icons.smartphone_outlined,
+    5 => Icons.tablet_outlined,
+    6 => Icons.dns_outlined,
+    7 => Icons.router_outlined,
+    _ => Icons.devices_outlined,
+  };
 
   ChipTone get _chipTone => switch (device.status) {
-        0 => ChipTone.success,
-        1 => ChipTone.info,
-        2 => ChipTone.warning,
-        _ => ChipTone.neutral,
-      };
+    0 => ChipTone.success,
+    1 => ChipTone.info,
+    2 => ChipTone.warning,
+    _ => ChipTone.neutral,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +145,8 @@ class _FavoriteCard extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  width: 28, height: 28,
+                  width: 28,
+                  height: 28,
                   decoration: BoxDecoration(
                     color: AppColors.surfaceLight,
                     borderRadius: BorderRadius.circular(6),
@@ -151,7 +161,8 @@ class _FavoriteCard extends StatelessWidget {
             Text(
               device.name,
               style: GoogleFonts.inter(
-                fontSize: 12, fontWeight: FontWeight.w500,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
                 color: AppColors.textPrimary,
               ),
               maxLines: 1,
@@ -161,7 +172,8 @@ class _FavoriteCard extends StatelessWidget {
             Text(
               device.assetCode ?? '—',
               style: GoogleFonts.inter(
-                fontSize: 10, color: AppColors.textSecondary,
+                fontSize: 10,
+                color: AppColors.textSecondary,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,

@@ -43,8 +43,10 @@ class KpiCard extends StatelessWidget {
                 child: Text(
                   label.toUpperCase(),
                   style: GoogleFonts.inter(
-                    fontSize: 10, fontWeight: FontWeight.w500,
-                    color: AppColors.textSecondary, letterSpacing: 1,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textSecondary,
+                    letterSpacing: 1,
                   ),
                 ),
               ),
@@ -61,8 +63,11 @@ class KpiCard extends StatelessWidget {
               builder: (context, animValue, _) => Text(
                 '$animValue',
                 style: GoogleFonts.inter(
-                  fontSize: 24, fontWeight: FontWeight.w500,
-                  color: AppColors.textPrimary, letterSpacing: -0.6, height: 1.1,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textPrimary,
+                  letterSpacing: -0.6,
+                  height: 1.1,
                 ),
               ),
             )
@@ -70,8 +75,11 @@ class KpiCard extends StatelessWidget {
             Text(
               value,
               style: GoogleFonts.inter(
-                fontSize: 24, fontWeight: FontWeight.w500,
-                color: AppColors.textPrimary, letterSpacing: -0.6, height: 1.1,
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textPrimary,
+                letterSpacing: -0.6,
+                height: 1.1,
               ),
             ),
           if (delta != null) ...[
@@ -79,7 +87,9 @@ class KpiCard extends StatelessWidget {
             Text(
               delta!,
               style: GoogleFonts.inter(
-                fontSize: 10, color: AppColors.textSecondary, letterSpacing: 0.1,
+                fontSize: 10,
+                color: AppColors.textSecondary,
+                letterSpacing: 0.1,
               ),
             ),
           ],

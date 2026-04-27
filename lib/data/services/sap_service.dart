@@ -31,6 +31,8 @@ class SapService {
   Future<List<SapBudgetItem>> getBudgets() async {
     final res = await _dio.get(ApiConstants.sapBudgets);
     final list = res.data as List<dynamic>;
-    return list.map((e) => SapBudgetItem.fromJson(e as Map<String, dynamic>)).toList();
+    return list
+        .map((e) => SapBudgetItem.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 }

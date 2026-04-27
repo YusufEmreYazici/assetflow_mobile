@@ -111,10 +111,7 @@ class ReportsScreen extends ConsumerWidget {
       final dir = await getTemporaryDirectory();
       final filePath = '${dir.path}/${template.fileName}';
 
-      final params = <String, dynamic>{
-        'ids': <String>[],
-        ...template.params,
-      };
+      final params = <String, dynamic>{'ids': <String>[], ...template.params};
 
       final response = await dio.post<List<int>>(
         template.endpoint,
@@ -159,7 +156,8 @@ class ReportsScreen extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 36, height: 4,
+              width: 36,
+              height: 4,
               margin: const EdgeInsets.only(bottom: 20),
               decoration: BoxDecoration(
                 color: AppColors.surfaceDivider,
@@ -170,7 +168,10 @@ class ReportsScreen extends ConsumerWidget {
             const SizedBox(height: 12),
             Text(
               '$title indirildi',
-              style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600),
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: 24),
             Row(
@@ -195,10 +196,7 @@ class ReportsScreen extends ConsumerWidget {
                   child: ElevatedButton.icon(
                     onPressed: () {
                       Navigator.pop(ctx);
-                      Share.shareXFiles(
-                        [XFile(filePath)],
-                        subject: title,
-                      );
+                      Share.shareXFiles([XFile(filePath)], subject: title);
                     },
                     icon: const Icon(Icons.share, size: 18),
                     label: const Text('Paylaş'),
@@ -239,19 +237,26 @@ class ReportsScreen extends ConsumerWidget {
                 GestureDetector(
                   onTap: goBackOrHome(context),
                   child: Container(
-                    width: 36, height: 36,
+                    width: 36,
+                    height: 36,
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.10),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.chevron_left, size: 22, color: Colors.white),
+                    child: const Icon(
+                      Icons.chevron_left,
+                      size: 22,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Text(
                   'Raporlar',
                   style: GoogleFonts.inter(
-                    fontSize: 17, fontWeight: FontWeight.w500, color: Colors.white,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
                   ),
                 ),
               ],
@@ -274,7 +279,10 @@ class ReportsScreen extends ConsumerWidget {
                 Expanded(
                   child: Text(
                     'Raporlar Excel formatında indirilir ve paylaşılabilir.',
-                    style: GoogleFonts.inter(fontSize: 12, color: AppColors.info),
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      color: AppColors.info,
+                    ),
                   ),
                 ),
               ],
@@ -300,17 +308,23 @@ class ReportsScreen extends ConsumerWidget {
                   child: ListTile(
                     contentPadding: const EdgeInsets.fromLTRB(14, 10, 12, 10),
                     leading: Container(
-                      width: 44, height: 44,
+                      width: 44,
+                      height: 44,
                       decoration: BoxDecoration(
                         color: template.color.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Icon(template.icon, color: template.color, size: 22),
+                      child: Icon(
+                        template.icon,
+                        color: template.color,
+                        size: 22,
+                      ),
                     ),
                     title: Text(
                       template.title,
                       style: GoogleFonts.inter(
-                        fontSize: 14, fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
                         color: AppColors.textPrimary,
                       ),
                     ),
@@ -319,21 +333,25 @@ class ReportsScreen extends ConsumerWidget {
                       child: Text(
                         template.subtitle,
                         style: GoogleFonts.inter(
-                          fontSize: 11.5, color: AppColors.textSecondary,
+                          fontSize: 11.5,
+                          color: AppColors.textSecondary,
                         ),
                       ),
                     ),
                     trailing: isDownloading
                         ? const SizedBox(
-                            width: 20, height: 20,
+                            width: 20,
+                            height: 20,
                             child: CircularProgressIndicator(
-                              color: AppColors.navy, strokeWidth: 2,
+                              color: AppColors.navy,
+                              strokeWidth: 2,
                             ),
                           )
                         : IconButton(
                             icon: const Icon(
                               Icons.download_outlined,
-                              color: AppColors.navy, size: 22,
+                              color: AppColors.navy,
+                              size: 22,
                             ),
                             onPressed: downloading != null
                                 ? null

@@ -38,8 +38,8 @@ class StepIndicator extends StatelessWidget {
             state: stepIndex < currentStep
                 ? _StepState.done
                 : stepIndex == currentStep
-                    ? _StepState.active
-                    : _StepState.idle,
+                ? _StepState.active
+                : _StepState.idle,
           );
         }),
       ),
@@ -76,8 +76,8 @@ class _StepDot extends StatelessWidget {
             color: isDone
                 ? AppColors.navy
                 : isActive
-                    ? AppColors.navy
-                    : AppColors.surfaceDivider,
+                ? AppColors.navy
+                : AppColors.surfaceDivider,
             border: Border.all(
               color: isDone || isActive
                   ? AppColors.navy
@@ -104,9 +104,7 @@ class _StepDot extends StatelessWidget {
           style: GoogleFonts.inter(
             fontSize: 10,
             fontWeight: isActive ? FontWeight.w500 : FontWeight.w400,
-            color: isActive || isDone
-                ? AppColors.navy
-                : AppColors.textTertiary,
+            color: isActive || isDone ? AppColors.navy : AppColors.textTertiary,
             letterSpacing: 0.2,
           ),
         ),
