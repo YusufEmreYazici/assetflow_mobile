@@ -22,12 +22,25 @@ class NotificationItem {
     this.relatedEntityId,
   });
 
+  static int _parseType(dynamic v) {
+    if (v is int) return v;
+    if (v is double) return v.toInt();
+    const map = {
+      'WarrantyExpiring': 0,
+      'WarrantyExpired': 1,
+      'DeviceAssigned': 2,
+      'DeviceUnassigned': 3,
+      'System': 4,
+    };
+    return map[v?.toString() ?? ''] ?? 0;
+  }
+
   factory NotificationItem.fromJson(Map<String, dynamic> json) {
     return NotificationItem(
       id: json['id']?.toString() ?? '',
       title: json['title'] as String? ?? '',
       message: json['message'] as String? ?? '',
-      type: (json['type'] as num?)?.toInt() ?? 0,
+      type: _parseType(json['type']),
       isRead: json['isRead'] as bool? ?? false,
       readAt: json['readAt'] != null ? DateTime.tryParse(json['readAt']) : null,
       createdAt:
