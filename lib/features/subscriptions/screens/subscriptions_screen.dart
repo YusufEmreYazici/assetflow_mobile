@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/widgets/empty_state.dart';
 import 'package:assetflow_mobile/core/widgets/page_header.dart';
@@ -43,9 +44,7 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
           _buildSearchBar(),
           Expanded(
             child: state.isLoading && items.isEmpty
-                ? const Center(
-                    child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2),
-                  )
+                ? _buildShimmer()
                 : state.error != null && items.isEmpty
                     ? _buildErrorState(state.error!)
                     : items.isEmpty
@@ -66,6 +65,25 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
                           ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildShimmer() {
+    return Shimmer.fromColors(
+      baseColor: AppColors.surfaceDivider,
+      highlightColor: AppColors.surfaceWhite,
+      child: ListView.builder(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+        itemCount: 7,
+        itemBuilder: (_, _) => Container(
+          margin: const EdgeInsets.only(bottom: 8),
+          height: 72,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(AppRadius.md),
+          ),
+        ),
       ),
     );
   }

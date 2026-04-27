@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:intl/intl.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/navigation/nav_helpers.dart';
+import 'package:assetflow_mobile/core/widgets/empty_state.dart';
 import 'package:assetflow_mobile/data/models/audit_log_model.dart';
 import 'package:assetflow_mobile/features/audit_log/providers/audit_log_provider.dart';
 
@@ -175,22 +177,12 @@ class _AuditLogScreenState extends ConsumerState<AuditLogScreen> {
           // List
           Expanded(
             child: state.isLoading
-                ? const Center(
-                    child: CircularProgressIndicator(color: AppColors.navy, strokeWidth: 2),
-                  )
+                ? _buildShimmer()
                 : state.logs.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.history, size: 48, color: AppColors.textTertiary),
-                            const SizedBox(height: 12),
-                            Text(
-                              'Kayıt bulunamadı.',
-                              style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary),
-                            ),
-                          ],
-                        ),
+                    ? const EmptyState(
+                        icon: Icons.history_outlined,
+                        title: 'Kayıt bulunamadı',
+                        description: 'Seçili filtrelere uygun işlem kaydı yok.',
                       )
                     : RefreshIndicator(
                         color: AppColors.navy,
@@ -252,6 +244,25 @@ class _AuditLogScreenState extends ConsumerState<AuditLogScreen> {
                       ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildShimmer() {
+    return Shimmer.fromColors(
+      baseColor: AppColors.surfaceDivider,
+      highlightColor: AppColors.surfaceWhite,
+      child: ListView.builder(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+        itemCount: 8,
+        itemBuilder: (_, _) => Container(
+          margin: const EdgeInsets.only(bottom: 8),
+          height: 64,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(AppRadius.md),
+          ),
+        ),
       ),
     );
   }

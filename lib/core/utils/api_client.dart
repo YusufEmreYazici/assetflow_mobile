@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:assetflow_mobile/core/constants/api_constants.dart';
 import 'package:assetflow_mobile/core/utils/api_exception.dart';
 import 'package:assetflow_mobile/core/utils/token_manager.dart';
@@ -16,6 +17,16 @@ class ApiClient {
         },
       ),
     );
+    if (kDebugMode) {
+      _dio.interceptors.add(LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+        requestHeader: false,
+        responseHeader: false,
+        error: true,
+        logPrint: (obj) => debugPrint('[Dio] $obj'),
+      ));
+    }
     _dio.interceptors.add(_authInterceptor());
   }
 
@@ -138,6 +149,56 @@ class ApiClient {
               type: DioExceptionType.badResponse,
             ),
           );
+          return;
+        }
+        if (statusCode == 403) {
+          handler.reject(DioException(
+            requestOptions: error.requestOptions,
+            error: const ApiException(statusCode: 403, message: 'Bu işlem için yetkiniz yok.'),
+            response: error.response,
+            type: DioExceptionType.badResponse,
+          ));
+          return;
+        }
+        if (statusCode == 404) {
+          final data = error.response?.data;
+          handler.reject(DioException(
+            requestOptions: error.requestOptions,
+            error: ApiException(
+              statusCode: 404,
+              message: (data is Map ? data['message'] ?? data['error'] : null) as String? ??
+                  'İstenen kaynak bulunamadı.',
+            ),
+            response: error.response,
+            type: DioExceptionType.badResponse,
+          ));
+          return;
+        }
+        if (statusCode != null && statusCode >= 500) {
+          handler.reject(DioException(
+            requestOptions: error.requestOptions,
+            error: ApiException(
+              statusCode: statusCode,
+              message: 'Sunucuda bir hata oluştu. Lütfen birazdan tekrar deneyin.',
+            ),
+            response: error.response,
+            type: DioExceptionType.badResponse,
+          ));
+          return;
+        }
+        // Network / timeout
+        if (error.type == DioExceptionType.connectionTimeout ||
+            error.type == DioExceptionType.receiveTimeout ||
+            error.type == DioExceptionType.sendTimeout ||
+            error.type == DioExceptionType.connectionError) {
+          handler.reject(DioException(
+            requestOptions: error.requestOptions,
+            error: const ApiException(
+              statusCode: 0,
+              message: 'İnternet bağlantısı yok. Lütfen bağlantınızı kontrol edin.',
+            ),
+            type: error.type,
+          ));
           return;
         }
         handler.next(error);

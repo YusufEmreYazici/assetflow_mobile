@@ -1,6 +1,7 @@
 import 'dart:async' show unawaited;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -139,7 +140,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           // List
           Expanded(
             child: notifState.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
+              loading: () => _buildShimmer(),
               error: (e, _) => Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -175,6 +176,25 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildShimmer() {
+    return Shimmer.fromColors(
+      baseColor: AppColors.surfaceDivider,
+      highlightColor: AppColors.surfaceWhite,
+      child: ListView.builder(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+        itemCount: 8,
+        itemBuilder: (_, _) => Container(
+          margin: const EdgeInsets.only(bottom: 8),
+          height: 68,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(AppRadius.md),
+          ),
+        ),
       ),
     );
   }
