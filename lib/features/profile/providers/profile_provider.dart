@@ -112,6 +112,10 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     }
   }
 
+  Future<void> deleteAccount() async {
+    await _service.deleteAccount();
+  }
+
   void clearMessages() {
     state = state.copyWith(clearError: true, clearSuccess: true);
   }

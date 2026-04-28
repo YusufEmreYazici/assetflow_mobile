@@ -365,6 +365,33 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           ),
                         ),
                       ),
+                      const SizedBox(height: 12),
+                      // Hesabı Sil
+                      GestureDetector(
+                        onTap: () {
+                          HapticService.heavy();
+                          _confirmDeleteAccount(context);
+                        },
+                        child: Container(
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(AppRadius.md),
+                            border: Border.all(
+                              color: AppColors.error.withValues(alpha: 0.2),
+                            ),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Hesabımı Sil',
+                            style: GoogleFonts.inter(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.error.withValues(alpha: 0.7),
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
           ),
@@ -948,6 +975,53 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ],
       ),
     );
+  }
+
+  void _confirmDeleteAccount(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Hesabı Sil'),
+        content: const Text(
+          'Hesabınızı kalıcı olarak silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('İptal'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              await _deleteAccount(context);
+            },
+            child: const Text(
+              'Hesabı Sil',
+              style: TextStyle(color: AppColors.error),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _deleteAccount(BuildContext context) async {
+    try {
+      await ref.read(profileProvider.notifier).deleteAccount();
+      if (context.mounted) {
+        ref.read(authProvider.notifier).logout();
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Hesap silinemedi. Lütfen tekrar deneyin.'),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
   }
 
   void _clearCache(BuildContext context) async {

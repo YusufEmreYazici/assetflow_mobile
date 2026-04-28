@@ -30,6 +30,10 @@ class ProfileService {
     );
   }
 
+  Future<void> deleteAccount() async {
+    await _dio.delete<void>(ApiConstants.userMe);
+  }
+
   Future<String> uploadAvatar(File imageFile) async {
     final formData = FormData.fromMap({
       'file': await MultipartFile.fromFile(
