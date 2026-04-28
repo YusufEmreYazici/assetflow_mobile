@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "AssetFlow (Fiziksel Cihaz - LAN)",
+      "type": "dart",
+      "request": "launch",
+      "args": [
+        "--dart-define=API_BASE_URL=http://10.34.0.194:5160"
+      ]
+    },
+    {
+      "name": "AssetFlow (Emülatör)",
+      "type": "dart",
+      "request": "launch"
+    }
+  ]
+}

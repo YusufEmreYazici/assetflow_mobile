@@ -57,8 +57,9 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
         await svc.update(id, {'status': newStatus});
       } catch (_) {}
       done++;
-      if (mounted)
+      if (mounted) {
         setState(() => _busyText = '$done/${selected.length} güncelleniyor…');
+      }
     }
 
     if (!mounted) return;
@@ -163,8 +164,9 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
         await svc.update(id, {'locationId': locationId});
       } catch (_) {}
       done++;
-      if (mounted)
+      if (mounted) {
         setState(() => _busyText = '$done/${selected.length} güncelleniyor…');
+      }
     }
 
     if (!mounted) return;
@@ -305,8 +307,9 @@ class _BulkActionBarState extends ConsumerState<BulkActionBar> {
     for (final id in selected) {
       await notifier.deleteDevice(id);
       done++;
-      if (mounted)
+      if (mounted) {
         setState(() => _busyText = '$done/${selected.length} siliniyor…');
+      }
     }
 
     if (!mounted) return;

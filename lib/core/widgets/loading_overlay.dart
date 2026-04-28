@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/core/widgets/animated_logo_loading.dart';
 
 class LoadingOverlay extends StatelessWidget {
   final bool isLoading;
   final Widget child;
+  final String? message;
 
   const LoadingOverlay({
     super.key,
     required this.isLoading,
     required this.child,
+    this.message,
   });
 
   @override
@@ -16,13 +18,12 @@ class LoadingOverlay extends StatelessWidget {
     return Stack(
       children: [
         child,
-        if (isLoading)
-          Container(
-            color: Colors.black.withValues(alpha: 0.5),
-            child: const Center(
-              child: CircularProgressIndicator(color: AppColors.primary500),
-            ),
-          ),
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 250),
+          child: isLoading
+              ? AnimatedLogoLoading(message: message ?? 'Yükleniyor...')
+              : const SizedBox.shrink(),
+        ),
       ],
     );
   }

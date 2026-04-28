@@ -23,11 +23,12 @@ class _NotificationSettingsScreenState
 
   Future<void> _load() async {
     final settings = await NotificationSettings.instance.getAll();
-    if (mounted)
+    if (mounted) {
       setState(() {
         _settings = settings;
         _loading = false;
       });
+    }
   }
 
   Future<void> _toggle(String channel, bool value) async {

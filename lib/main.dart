@@ -8,6 +8,8 @@ import 'package:assetflow_mobile/core/theme/app_theme.dart';
 import 'package:assetflow_mobile/core/providers/locale_provider.dart';
 import 'package:assetflow_mobile/core/services/haptic_service.dart';
 import 'package:assetflow_mobile/core/services/offline_cache_service.dart';
+import 'package:assetflow_mobile/core/services/signalr_service.dart';
+import 'package:assetflow_mobile/core/utils/token_manager.dart';
 import 'package:assetflow_mobile/core/utils/api_client.dart';
 import 'package:assetflow_mobile/core/utils/notification_service.dart';
 import 'package:assetflow_mobile/app_router.dart';
@@ -53,11 +55,28 @@ class _AssetFlowAppState extends ConsumerState<AssetFlowApp> {
 
     ApiClient.instance.onLogout = () {
       ref.read(authProvider.notifier).logout();
+      ref.read(signalRServiceProvider).dispose();
     };
+  }
+
+  Future<void> _connectSignalR() async {
+    final token = await TokenManager.instance.getAccessToken();
+    if (token != null && mounted) {
+      await ref.read(signalRServiceProvider).connect(token);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<AuthState>(authProvider, (prev, next) {
+      final wasAuth = prev?.isAuthenticated ?? false;
+      if (!wasAuth && next.isAuthenticated) {
+        _connectSignalR();
+      } else if (wasAuth && !next.isAuthenticated) {
+        ref.read(signalRServiceProvider).dispose();
+      }
+    });
+
     final router = ref.watch(routerProvider);
     final locale = ref.watch(localeProvider);
 

@@ -119,14 +119,16 @@ class DeviceFilter {
   bool matches(Device d, {Set<String> favorites = const {}}) {
     if (types.isNotEmpty && !types.contains(d.type)) return false;
     if (statuses.isNotEmpty && !statuses.contains(d.status)) return false;
-    if (locations.isNotEmpty && !locations.contains(d.locationName))
+    if (locations.isNotEmpty && !locations.contains(d.locationName)) {
       return false;
+    }
     if (brands.isNotEmpty && !brands.contains(d.brand)) return false;
     if (assigneeQuery != null && assigneeQuery!.isNotEmpty) {
       if (!(d.assignedTo ?? '').toLowerCase().contains(
         assigneeQuery!.toLowerCase(),
-      ))
+      )) {
         return false;
+      }
     }
     if (purchaseDateRange != null) {
       if (d.purchaseDate == null) return false;

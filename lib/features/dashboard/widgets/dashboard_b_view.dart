@@ -26,24 +26,33 @@ class DashboardBView extends ConsumerWidget {
     final authState = ref.watch(authProvider);
     final dashAsync = ref.watch(dashboardProvider);
 
-    return CustomScrollView(
-      slivers: [
-        SliverToBoxAdapter(
-          child: AppHeader(
-            userName: authState.fullName ?? authState.email ?? 'Kullanıcı',
-            role: _roleLabel(authState.role),
-            onMenu: onMenuTap,
-            onNotif: () => context.push('/notifications'),
+    return RefreshIndicator(
+      onRefresh: () async {
+        ref.invalidate(dashboardProvider);
+        ref.invalidate(recentAssignmentsProvider);
+        await ref.read(dashboardProvider.future).catchError((e) => throw e);
+      },
+      color: AppColors.navy,
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverToBoxAdapter(
+            child: AppHeader(
+              userName: authState.fullName ?? authState.email ?? 'Kullanıcı',
+              role: _roleLabel(authState.role),
+              onMenu: onMenuTap,
+              onNotif: () => context.push('/notifications'),
+            ),
           ),
-        ),
-        SliverToBoxAdapter(
-          child: dashAsync.when(
-            loading: () => const DashboardShimmer(),
-            error: (err, stack) => _buildContent(context, null),
-            data: (d) => _buildContent(context, d),
+          SliverToBoxAdapter(
+            child: dashAsync.when(
+              loading: () => const DashboardShimmer(),
+              error: (err, stack) => _buildContent(context, null),
+              data: (d) => _buildContent(context, d),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

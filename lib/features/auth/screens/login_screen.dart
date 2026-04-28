@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:assetflow_mobile/core/services/haptic_service.dart';
 import 'package:assetflow_mobile/core/theme/app_theme.dart';
+import 'package:assetflow_mobile/core/widgets/animated_logo_loading.dart';
 import 'package:assetflow_mobile/features/auth/providers/auth_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -53,10 +54,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.surfaceWhite,
-      body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: ListView(
+      body: Stack(
+        children: [
+          SafeArea(
+            child: Form(
+              key: _formKey,
+              child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 28),
             children: [
               const SizedBox(height: 60),
@@ -139,7 +142,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: _buildFooter(),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: authState.isLoading
+                ? const AnimatedLogoLoading(message: 'Giriş yapılıyor...')
+                : const SizedBox.shrink(),
+          ),
+        ],
+      ),
+      bottomNavigationBar: authState.isLoading ? null : _buildFooter(),
     );
   }
 
@@ -224,8 +235,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       keyboardType: TextInputType.emailAddress,
       style: GoogleFonts.inter(fontSize: 14, color: AppColors.textPrimary),
       validator: (v) {
-        if (v == null || v.trim().isEmpty)
+        if (v == null || v.trim().isEmpty) {
           return 'E-posta veya sicil numarası gerekli';
+        }
         return null;
       },
       decoration: _inputDeco(
@@ -365,35 +377,22 @@ class _LoginButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadius.md),
         ),
         child: Center(
-          child: isLoading
-              ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation(Colors.white),
-                  ),
-                )
-              : Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Giriş Yap',
-                      style: GoogleFonts.inter(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                        letterSpacing: 0.2,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    const Icon(
-                      Icons.arrow_forward,
-                      size: 16,
-                      color: Colors.white,
-                    ),
-                  ],
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Giriş Yap',
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
+                  letterSpacing: 0.2,
                 ),
+              ),
+              const SizedBox(width: 8),
+              const Icon(Icons.arrow_forward, size: 16, color: Colors.white),
+            ],
+          ),
         ),
       ),
     );

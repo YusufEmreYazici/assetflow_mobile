@@ -86,10 +86,12 @@ class NotificationService {
 
   /// Maps internal channelId to NotificationSettings key
   static String? _settingsKey(String channelId) {
-    if (channelId == _Channels.assignment)
+    if (channelId == _Channels.assignment) {
       return ns.NotificationSettings.assignments;
-    if (channelId == _Channels.warranty)
+    }
+    if (channelId == _Channels.warranty) {
       return ns.NotificationSettings.warranty;
+    }
     if (channelId == _Channels.device) return ns.NotificationSettings.devices;
     if (channelId == _Channels.sap) return ns.NotificationSettings.sap;
     if (channelId == _Channels.system) return ns.NotificationSettings.system;

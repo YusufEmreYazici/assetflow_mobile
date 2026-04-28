@@ -54,6 +54,8 @@ class _PersonListNotifier extends StateNotifier<_PersonListState> {
       );
     }
   }
+
+  Future<void> refresh() => _load();
 }
 
 class PersonListScreen extends ConsumerStatefulWidget {
@@ -179,11 +181,15 @@ class _PersonListScreenState extends ConsumerState<PersonListScreen> {
                       ),
                     ),
                   )
-                : filtered.isEmpty
-                ? _query.isNotEmpty
-                      ? EmptyState.noSearchResults(query: _query)
-                      : const EmptyState.noEmployees()
-                : ListView(
+                : RefreshIndicator(
+                    onRefresh: () =>
+                        ref.read(_personListProvider.notifier).refresh(),
+                    color: AppColors.navy,
+                    child: filtered.isEmpty
+                      ? _query.isNotEmpty
+                            ? EmptyState.noSearchResults(query: _query)
+                            : const EmptyState.noEmployees()
+                      : ListView(
                     padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),
                     children: () {
                       int groupIndex = 0;
@@ -261,6 +267,7 @@ class _PersonListScreenState extends ConsumerState<PersonListScreen> {
                       }).toList();
                     }(),
                   ),
+            ),
           ),
         ],
       ),
@@ -280,8 +287,9 @@ class _PersonRow extends StatelessWidget {
 
   String get _initials {
     final parts = employee.fullName.trim().split(' ');
-    if (parts.length >= 2)
+    if (parts.length >= 2) {
       return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
+    }
     return employee.fullName.substring(0, 2).toUpperCase();
   }
 

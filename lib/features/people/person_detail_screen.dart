@@ -118,8 +118,9 @@ class _PersonHeader extends StatelessWidget {
 
   String get _initials {
     final parts = employee.fullName.trim().split(' ');
-    if (parts.length >= 2)
+    if (parts.length >= 2) {
       return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
+    }
     return employee.fullName.substring(0, 2).toUpperCase();
   }
 

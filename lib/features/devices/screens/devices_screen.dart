@@ -546,7 +546,10 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
 
                 // Device list
                 Expanded(
-                  child: state.isLoading && state.devices.isEmpty
+                  child: RefreshIndicator(
+                    onRefresh: () => ref.read(deviceProvider.notifier).refresh(),
+                    color: AppColors.navy,
+                    child: state.isLoading && state.devices.isEmpty
                       ? const SingleChildScrollView(child: DeviceListSkeleton())
                       : state.error != null && state.devices.isEmpty
                       ? _buildErrorState(state.error!)
@@ -620,6 +623,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                             return rowWidget;
                           },
                         ),
+                  ),
                 ),
               ],
             ),

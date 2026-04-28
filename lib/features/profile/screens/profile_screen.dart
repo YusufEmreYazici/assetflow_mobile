@@ -901,8 +901,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   String _initials(String name) {
     final parts = name.trim().split(' ');
-    if (parts.length >= 2)
+    if (parts.length >= 2) {
       return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
+    }
     if (name.length >= 2) return name.substring(0, 2).toUpperCase();
     return name.toUpperCase();
   }
