@@ -1,4 +1,4 @@
-package com.assetflow.assetflow_mobile
+package com.tcode.assetflow
 
 import io.flutter.embedding.android.FlutterActivity
 
