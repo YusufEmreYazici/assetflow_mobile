@@ -421,6 +421,8 @@ class _ContactTab extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           child: Column(
             children: [
+              if (employee.locationName != null)
+                KvRow(label: 'Lokasyon', value: employee.locationName!),
               if (employee.email != null)
                 KvRow(label: 'E-posta', value: employee.email!),
               if (employee.phone != null)

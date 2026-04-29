@@ -357,6 +357,25 @@ class _PersonRow extends StatelessWidget {
                 ],
               ),
             ),
+            if (employee.locationName != null) ...[
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceLight,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.surfaceDivider),
+                ),
+                child: Text(
+                  employee.locationName!,
+                  style: GoogleFonts.inter(
+                    fontSize: 10,
+                    color: AppColors.textSecondary,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(width: 6),
+            ],
             if (employee.assignedDeviceCount > 0) ...[
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),

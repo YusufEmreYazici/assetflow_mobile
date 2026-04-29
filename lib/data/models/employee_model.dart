@@ -9,6 +9,8 @@ class Employee {
   final bool isActive;
   final DateTime? hireDate;
   final int assignedDeviceCount;
+  final String? locationId;
+  final String? locationName;
 
   Employee({
     required this.id,
@@ -21,6 +23,8 @@ class Employee {
     required this.isActive,
     this.hireDate,
     required this.assignedDeviceCount,
+    this.locationId,
+    this.locationName,
   });
 
   factory Employee.fromJson(Map<String, dynamic> json) {
@@ -37,6 +41,8 @@ class Employee {
           ? DateTime.parse(json['hireDate'] as String)
           : null,
       assignedDeviceCount: json['assignedDeviceCount'] as int? ?? 0,
+      locationId: json['locationId'] as String?,
+      locationName: json['locationName'] as String?,
     );
   }
 
@@ -51,5 +57,7 @@ class Employee {
     'isActive': isActive,
     'hireDate': hireDate?.toIso8601String(),
     'assignedDeviceCount': assignedDeviceCount,
+    'locationId': locationId,
+    'locationName': locationName,
   };
 }

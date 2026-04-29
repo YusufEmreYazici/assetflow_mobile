@@ -62,69 +62,71 @@ class DashboardAView extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // KPI Grid
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.xl,
-              AppSpacing.xl,
-              AppSpacing.xl,
-              0,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SectionHeader(title: 'ÖZET', padding: EdgeInsets.zero),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: KpiCard(
-                        label: 'Toplam Cihaz',
-                        value: data != null ? '${data.totalDevices}' : '—',
-                        delta: '▲ 3 bu ay',
-                        accent: AppColors.navy,
-                        icon: Icons.devices_outlined,
+          RepaintBoundary(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.xl,
+                AppSpacing.xl,
+                AppSpacing.xl,
+                0,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SectionHeader(title: 'ÖZET', padding: EdgeInsets.zero),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: KpiCard(
+                          label: 'Toplam Cihaz',
+                          value: data != null ? '${data.totalDevices}' : '—',
+                          delta: '▲ 3 bu ay',
+                          accent: AppColors.navy,
+                          icon: Icons.devices_outlined,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: KpiCard(
-                        label: 'Aktif Zimmet',
-                        value: data != null ? '${data.assignedDevices}' : '—',
-                        delta: '▲ 5 bu hafta',
-                        accent: AppColors.success,
-                        icon: Icons.assignment_outlined,
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: KpiCard(
+                          label: 'Aktif Zimmet',
+                          value: data != null ? '${data.assignedDevices}' : '—',
+                          delta: '▲ 5 bu hafta',
+                          accent: AppColors.success,
+                          icon: Icons.assignment_outlined,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: KpiCard(
-                        label: 'Personel',
-                        value: data != null ? '${data.totalEmployees}' : '—',
-                        delta: '22 lokasyon',
-                        accent: AppColors.textSecondary,
-                        icon: Icons.people_outline,
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: KpiCard(
+                          label: 'Personel',
+                          value: data != null ? '${data.totalEmployees}' : '—',
+                          delta: '22 lokasyon',
+                          accent: AppColors.textSecondary,
+                          icon: Icons.people_outline,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: KpiCard(
-                        label: 'Uyarılar',
-                        value: data != null
-                            ? '${data.expiringWarranties}'
-                            : '—',
-                        delta: 'Garanti · 60 gün',
-                        accent: AppColors.warning,
-                        background: AppColors.warningBg,
-                        icon: Icons.warning_amber_outlined,
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: KpiCard(
+                          label: 'Uyarılar',
+                          value: data != null
+                              ? '${data.expiringWarranties}'
+                              : '—',
+                          delta: 'Garanti · 60 gün',
+                          accent: AppColors.warning,
+                          background: AppColors.warningBg,
+                          icon: Icons.warning_amber_outlined,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
 
