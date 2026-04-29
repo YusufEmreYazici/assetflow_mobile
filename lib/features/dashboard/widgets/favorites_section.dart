@@ -89,7 +89,7 @@ class FavoritesSection extends ConsumerWidget {
           )
         else
           SizedBox(
-            height: 88,
+            height: 96,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: favorites.length,
@@ -159,7 +159,7 @@ class _FavoriteCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              device.name,
+              device.displayName,
               style: GoogleFonts.inter(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,

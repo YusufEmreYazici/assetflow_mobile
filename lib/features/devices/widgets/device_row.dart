@@ -116,7 +116,7 @@ class DeviceRow extends ConsumerWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          device.name,
+                          device.displayName,
                           style: GoogleFonts.inter(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,

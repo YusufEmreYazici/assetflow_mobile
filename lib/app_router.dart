@@ -28,6 +28,7 @@ import 'package:assetflow_mobile/features/locations/screens/location_list_screen
 import 'package:assetflow_mobile/features/locations/screens/location_detail_screen.dart';
 import 'package:assetflow_mobile/features/locations/screens/location_form_screen.dart';
 import 'package:assetflow_mobile/features/profile/screens/profile_screen.dart';
+import 'package:assetflow_mobile/features/profile/screens/privacy_policy_screen.dart';
 import 'package:assetflow_mobile/features/people/person_list_screen.dart';
 import 'package:assetflow_mobile/features/people/person_detail_screen.dart';
 import 'package:assetflow_mobile/features/sap/screens/sap_screen.dart';
@@ -344,6 +345,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         pageBuilder: (ctx, routeState) => slideFromRightPage(
           key: routeState.pageKey,
           child: const SettingsScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/privacy-policy',
+        pageBuilder: (ctx, routeState) => slideFromRightPage(
+          key: routeState.pageKey,
+          child: const PrivacyPolicyScreen(),
         ),
       ),
     ],

@@ -313,16 +313,23 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             label: 'AssetFlow Mobile',
                             caption: 'v2.3.0',
                           ),
-                          const _Row(
+                          _Row(
                             icon: Icons.info_outline,
                             label: 'Lisans Bilgisi',
                             chevron: true,
+                            onTap: () => showLicensePage(
+                              context: context,
+                              applicationName: 'AssetFlow',
+                              applicationLegalese:
+                                  '© 2026 AssetFlow. Tüm hakları saklıdır.',
+                            ),
                           ),
-                          const _Row(
+                          _Row(
                             icon: Icons.policy_outlined,
                             label: 'Gizlilik Politikası',
                             chevron: true,
                             isLast: true,
+                            onTap: () => context.push('/privacy-policy'),
                           ),
                         ],
                       ),

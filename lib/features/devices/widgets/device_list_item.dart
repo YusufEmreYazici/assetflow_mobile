@@ -31,7 +31,7 @@ class DeviceListItem extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    device.name,
+                    device.displayName,
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,

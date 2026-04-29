@@ -82,7 +82,7 @@ class DeviceDetailHeader extends ConsumerWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      device.name,
+                      device.displayName,
                       style: GoogleFonts.inter(
                         fontSize: 19,
                         fontWeight: FontWeight.w500,

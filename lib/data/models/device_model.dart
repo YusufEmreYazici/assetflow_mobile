@@ -138,6 +138,13 @@ class Device {
     return m[v as String? ?? ''] ?? 0;
   }
 
+  String get displayName {
+    if (name.isNotEmpty) return name;
+    final bm = [brand, model].where((s) => s != null && s.isNotEmpty).join(' ');
+    if (bm.isNotEmpty) return bm;
+    return assetCode ?? id;
+  }
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'name': name,
