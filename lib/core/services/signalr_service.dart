@@ -33,8 +33,8 @@ class SignalRService {
           _hubUrl,
           options: HttpConnectionOptions(
             accessTokenFactory: () async => token,
-            transport: HttpTransportType.WebSockets,
-            skipNegotiation: true,
+            // skipNegotiation YOK — negotiate → WebSocket/SSE/LongPolling otomatik seçilir
+            // IIS'de WebSocket manuel aktifleştirilmeden skipNegotiation crash eder
           ),
         )
         .withAutomaticReconnect()
@@ -43,10 +43,28 @@ class SignalRService {
     _connection!.on('DataChanged', _onDataChanged);
     _connection!.on('NewNotification', _onNewNotification);
 
+    _connection!.onclose(({error}) {
+      // ignore: avoid_print
+      print('[SignalR] bağlantı kapandı: $error');
+    });
+
+    _connection!.onreconnecting(({error}) {
+      // ignore: avoid_print
+      print('[SignalR] yeniden bağlanıyor: $error');
+    });
+
+    _connection!.onreconnected(({connectionId}) {
+      // ignore: avoid_print
+      print('[SignalR] bağlandı: $connectionId');
+    });
+
     try {
       await _connection!.start();
-    } catch (_) {
-      // Offline modda sessizce devam et
+      // ignore: avoid_print
+      print('[SignalR] bağlantı kuruldu → $_hubUrl');
+    } catch (e) {
+      // ignore: avoid_print
+      print('[SignalR] bağlantı hatası: $e');
     }
   }
 
