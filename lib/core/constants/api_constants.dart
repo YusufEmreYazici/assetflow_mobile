@@ -14,7 +14,7 @@ class ApiConstants {
   ///     flutter build apk --dart-define=API_BASE_URL=https://api.assetflow.io
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://10.0.2.2:5160',
+    defaultValue: 'https://api.mobnet.online/t/guvenok',
   );
 
   // Auth
