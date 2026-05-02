@@ -38,8 +38,9 @@ class SignalRService {
             _hubUrl,
             options: HttpConnectionOptions(
               accessTokenFactory: () async => token,
-              // skipNegotiation YOK — negotiate → WebSocket/SSE/LongPolling otomatik seçilir
-              // IIS'de WebSocket manuel aktifleştirilmeden skipNegotiation crash eder
+              // LongPolling: Cloudflare+IIS ortamında WebSocket frame drop sorununu bypass eder
+              // WebSocket negotiate başarılı ama frame iletilmiyor → "Server timeout" hatası
+              transport: HttpTransportType.longPolling,
             ),
           )
           .withAutomaticReconnect()
