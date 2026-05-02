@@ -40,7 +40,7 @@ class SignalRService {
               accessTokenFactory: () async => token,
               // LongPolling: Cloudflare+IIS ortamında WebSocket frame drop sorununu bypass eder
               // WebSocket negotiate başarılı ama frame iletilmiyor → "Server timeout" hatası
-              transport: HttpTransportType.longPolling,
+              transport: HttpTransportType.LongPolling,
             ),
           )
           .withAutomaticReconnect()
