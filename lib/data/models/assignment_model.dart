@@ -58,7 +58,7 @@ class Assignment {
       employeeRegistrationNumber: json['employeeRegistrationNumber'] as String?,
       employeeDepartment: json['employeeDepartment'] as String?,
       employeeTitle: json['employeeTitle'] as String?,
-      assignedAt: DateTime.parse(json['assignedAt'] as String),
+      assignedAt: DateTime.parse(json['assignedDate'] as String),
       expectedReturnDate: json['expectedReturnDate'] != null
           ? DateTime.parse(json['expectedReturnDate'] as String)
           : null,
@@ -86,7 +86,7 @@ class Assignment {
     'employeeRegistrationNumber': employeeRegistrationNumber,
     'employeeDepartment': employeeDepartment,
     'employeeTitle': employeeTitle,
-    'assignedAt': assignedAt.toIso8601String(),
+    'assignedDate': assignedAt.toIso8601String(),
     'expectedReturnDate': expectedReturnDate?.toIso8601String(),
     'returnedAt': returnedAt?.toIso8601String(),
     'returnCondition': returnCondition,

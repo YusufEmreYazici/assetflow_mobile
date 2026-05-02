@@ -19,6 +19,9 @@ class MiniBarChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final maxVal = data.isEmpty ? 1 : data.reduce((a, b) => a > b ? a : b);
+    const labelHeight = 13.0;
+    const gapHeight = 3.0;
+    final maxBarHeight = (height - labelHeight - gapHeight).clamp(4.0, height);
     return SizedBox(
       height: height,
       child: Row(
@@ -33,7 +36,7 @@ class MiniBarChart extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Container(
-                    height: (frac * 30).clamp(2.0, 30.0),
+                    height: (frac * maxBarHeight).clamp(2.0, maxBarHeight),
                     decoration: BoxDecoration(
                       color: isLast ? accent : AppColors.surfaceDivider,
                       borderRadius: BorderRadius.circular(2),

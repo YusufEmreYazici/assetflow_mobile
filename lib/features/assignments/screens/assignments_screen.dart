@@ -404,24 +404,18 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
                     color: AppColors.textTertiary,
                   ),
                   const SizedBox(width: 6),
-                  Text(
-                    a.employeeName ?? '',
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: AppColors.textSecondary,
+                  Expanded(
+                    child: Text(
+                      a.employeeRegistrationNumber != null
+                          ? '${a.employeeName ?? ''} (${a.employeeRegistrationNumber})'
+                          : a.employeeName ?? '',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: AppColors.textSecondary,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  if (a.employeeRegistrationNumber != null) ...[
-                    const SizedBox(width: 6),
-                    Text(
-                      '(${a.employeeRegistrationNumber})',
-                      style: const TextStyle(
-                        fontSize: 11,
-                        color: AppColors.textTertiary,
-                        fontFamily: 'monospace',
-                      ),
-                    ),
-                  ],
                 ],
               ),
               const SizedBox(height: 4),
