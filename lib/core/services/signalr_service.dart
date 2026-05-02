@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 import 'package:assetflow_mobile/core/constants/api_constants.dart';
 import 'package:assetflow_mobile/core/utils/notification_service.dart';
+import 'package:assetflow_mobile/core/utils/token_manager.dart';
 import 'package:assetflow_mobile/features/dashboard/providers/dashboard_provider.dart';
 import 'package:assetflow_mobile/features/devices/providers/device_provider.dart';
 import 'package:assetflow_mobile/features/notifications/providers/notification_provider.dart';
@@ -19,17 +20,14 @@ class SignalRService {
 
   SignalRService(this._ref);
 
-  // Hub URL: baseUrl'deki tenant path'ini çıkar, sadece origin + /hubs/activity
-  // Örnek: https://api.mobnet.online/t/guvenok → https://api.mobnet.online/hubs/activity
   static String get _hubUrl {
     final base = Uri.parse(ApiConstants.baseUrl);
     return '${base.scheme}://${base.host}/hubs/activity';
   }
 
-  Future<void> connect(String token) async {
-    // Eş zamanlı çift çağrıyı engelle (ref.listen + initState microtask race)
+  Future<void> connect() async {
     if (_isConnecting) return;
-    if (_connection != null) return; // zaten bağlı
+    if (_connection != null) return;
 
     _isConnecting = true;
     try {
@@ -37,9 +35,10 @@ class SignalRService {
           .withUrl(
             _hubUrl,
             options: HttpConnectionOptions(
-              accessTokenFactory: () async => token,
-              // LongPolling: Cloudflare+IIS ortamında WebSocket frame drop sorununu bypass eder
-              // WebSocket negotiate başarılı ama frame iletilmiyor → "Server timeout" hatası
+              // Her bağlantı/yeniden bağlantıda storage'dan taze token oku
+              // Token süresi dolmuşsa Dio interceptor zaten yenilemiş olur
+              accessTokenFactory: () async =>
+                  (await TokenManager.instance.getAccessToken()) ?? '',
               transport: HttpTransportType.LongPolling,
             ),
           )
@@ -70,9 +69,20 @@ class SignalRService {
     } catch (e) {
       // ignore: avoid_print
       print('[SignalR] bağlantı hatası: $e');
-      _connection = null; // hata durumunda reset — retry mümkün olsun
+      _connection = null;
+      // 5 sn sonra tekrar dene — Dio interceptor token'ı yenilemiş olabilir
+      Future.delayed(const Duration(seconds: 5), _retryConnect);
     } finally {
       _isConnecting = false;
+    }
+  }
+
+  Future<void> _retryConnect() async {
+    final token = await TokenManager.instance.getAccessToken();
+    if (token != null && _connection == null && !_isConnecting) {
+      // ignore: avoid_print
+      print('[SignalR] yeniden bağlanma denemesi...');
+      await connect();
     }
   }
 

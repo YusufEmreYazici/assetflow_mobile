@@ -9,7 +9,6 @@ import 'package:assetflow_mobile/core/providers/locale_provider.dart';
 import 'package:assetflow_mobile/core/services/haptic_service.dart';
 import 'package:assetflow_mobile/core/services/offline_cache_service.dart';
 import 'package:assetflow_mobile/core/services/signalr_service.dart';
-import 'package:assetflow_mobile/core/utils/token_manager.dart';
 import 'package:assetflow_mobile/core/utils/api_client.dart';
 import 'package:assetflow_mobile/core/utils/notification_service.dart';
 import 'package:assetflow_mobile/app_router.dart';
@@ -64,10 +63,8 @@ class _AssetFlowAppState extends ConsumerState<AssetFlowApp> {
   }
 
   Future<void> _connectSignalR() async {
-    final token = await TokenManager.instance.getAccessToken();
-    if (token != null && mounted) {
-      await ref.read(signalRServiceProvider).connect(token);
-    }
+    if (!mounted) return;
+    await ref.read(signalRServiceProvider).connect();
   }
 
   @override
