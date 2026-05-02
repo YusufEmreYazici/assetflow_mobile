@@ -140,6 +140,85 @@ class NotificationService {
   }
 
   // ─────────────────────────────────────────────
+  //  BACKEND PUSH — SignalR NewNotification
+  // ─────────────────────────────────────────────
+
+  /// Backend'den gelen NewNotification event'ini yerel bildirime çevirir.
+  /// notificationType: backend NotificationType enum int değeri
+  ///   0=WarrantyExpiring, 1=WarrantyExpired
+  ///   2=DeviceAssigned, 3=DeviceUnassigned
+  ///   4=System
+  ///   5=LicenseRenewalDue, 6=SubscriptionRenewalDue
+  ///   7=LowStock, 8=AssignmentLongTerm, 9=DeviceIdle, 10=MaintenanceDue
+  ///   11=SecurityAlert
+  Future<void> showFromBackend({
+    required String title,
+    required String message,
+    required int notificationType,
+  }) async {
+    final channelId = _channelForBackendType(notificationType);
+    final channelName = _channelNameForBackendType(notificationType);
+    final importance = notificationType == 11 // SecurityAlert
+        ? Importance.max
+        : Importance.high;
+    final priority = notificationType == 11 ? Priority.max : Priority.high;
+
+    await _show(
+      id: 2000 + notificationType,
+      title: title,
+      body: message,
+      channelId: channelId,
+      channelName: channelName,
+      importance: importance,
+      priority: priority,
+    );
+  }
+
+  String _channelForBackendType(int type) {
+    switch (type) {
+      case 0:
+      case 1:
+        return _Channels.warranty;
+      case 2:
+      case 3:
+      case 8:
+        return _Channels.assignment;
+      case 4:
+      case 11:
+        return _Channels.system;
+      default:
+        return _Channels.device;
+    }
+  }
+
+  String _channelNameForBackendType(int type) {
+    switch (type) {
+      case 0:
+      case 1:
+        return 'Garanti Bildirimleri';
+      case 2:
+      case 3:
+        return 'Zimmet Bildirimleri';
+      case 5:
+        return 'Lisans Yenileme';
+      case 6:
+        return 'Abonelik Yenileme';
+      case 7:
+        return 'Stok Uyarıları';
+      case 8:
+        return 'Zimmet Bildirimleri';
+      case 9:
+        return 'Atıl Cihaz Uyarıları';
+      case 10:
+        return 'Bakım Bildirimleri';
+      case 11:
+        return 'Güvenlik Uyarıları';
+      default:
+        return 'Sistem Bildirimleri';
+    }
+  }
+
+  // ─────────────────────────────────────────────
   //  1. ZIMMET (ASSIGNMENT) BILDIRIMLERI
   // ─────────────────────────────────────────────
 

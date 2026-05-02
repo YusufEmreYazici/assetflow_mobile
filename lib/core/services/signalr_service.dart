@@ -1,9 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:signalr_netcore/signalr_client.dart';
+import 'package:assetflow_mobile/core/constants/api_constants.dart';
+import 'package:assetflow_mobile/core/utils/notification_service.dart';
 import 'package:assetflow_mobile/features/dashboard/providers/dashboard_provider.dart';
 import 'package:assetflow_mobile/features/devices/providers/device_provider.dart';
-
-const _hubUrl = 'http://10.0.2.2:5160/hubs/activity';
+import 'package:assetflow_mobile/features/notifications/providers/notification_provider.dart';
 
 final signalRServiceProvider = Provider<SignalRService>((ref) {
   final service = SignalRService(ref);
@@ -16,6 +17,13 @@ class SignalRService {
   HubConnection? _connection;
 
   SignalRService(this._ref);
+
+  // Hub URL: baseUrl'deki tenant path'ini çıkar, sadece origin + /hubs/activity
+  // Örnek: https://api.mobnet.online/t/guvenok → https://api.mobnet.online/hubs/activity
+  static String get _hubUrl {
+    final base = Uri.parse(ApiConstants.baseUrl);
+    return '${base.scheme}://${base.host}/hubs/activity';
+  }
 
   Future<void> connect(String token) async {
     if (_connection != null) await dispose();
@@ -33,11 +41,12 @@ class SignalRService {
         .build();
 
     _connection!.on('DataChanged', _onDataChanged);
+    _connection!.on('NewNotification', _onNewNotification);
 
     try {
       await _connection!.start();
     } catch (_) {
-      // Bağlantı kurulamazsa sessizce geç — offline modda çalışmaya devam et
+      // Offline modda sessizce devam et
     }
   }
 
@@ -58,6 +67,25 @@ class SignalRService {
         _ref.invalidate(dashboardProvider);
         _ref.invalidate(recentAssignmentsProvider);
     }
+  }
+
+  void _onNewNotification(List<Object?>? args) {
+    if (args == null || args.isEmpty) return;
+    final payload = args[0];
+    if (payload is! Map) return;
+
+    final title = payload['title']?.toString() ?? 'Bildirim';
+    final message = payload['message']?.toString() ?? '';
+    final type = (payload['type'] as num?)?.toInt() ?? 4; // 4 = System
+
+    NotificationService.instance.showFromBackend(
+      title: title,
+      message: message,
+      notificationType: type,
+    );
+
+    // Bildirim listesini ve badge'i güncelle
+    _ref.read(notificationProvider.notifier).load();
   }
 
   Future<void> dispose() async {
