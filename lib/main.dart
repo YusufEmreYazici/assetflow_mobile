@@ -48,9 +48,12 @@ class _AssetFlowAppState extends ConsumerState<AssetFlowApp> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      ref.read(authProvider.notifier).checkAuth();
+    Future.microtask(() async {
+      await ref.read(authProvider.notifier).checkAuth();
       NotificationService.instance.init();
+      // checkAuth tamamlandıktan sonra her zaman SignalR bağlantısı kur
+      // ref.listen bazı senaryolarda (cached token) geçişi yakalayamıyor
+      await _connectSignalR();
     });
 
     ApiClient.instance.onLogout = () {
