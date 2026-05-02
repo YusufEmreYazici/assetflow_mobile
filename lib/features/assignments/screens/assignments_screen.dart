@@ -383,7 +383,17 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      '${a.deviceName ?? ''} ${[a.deviceBrand, a.deviceModel].where((s) => s != null).join(' ')}',
+                      () {
+                        final parts = [a.deviceBrand, a.deviceModel]
+                            .whereType<String>()
+                            .where((s) => s.isNotEmpty)
+                            .toList();
+                        if (parts.isNotEmpty) return parts.join(' ');
+                        final fallback = a.deviceName;
+                        return (fallback != null && fallback.isNotEmpty)
+                            ? fallback
+                            : (a.assetTag ?? '-');
+                      }(),
                       style: const TextStyle(
                         fontSize: 13,
                         color: AppColors.textPrimary,

@@ -15,6 +15,7 @@ final signalRServiceProvider = Provider<SignalRService>((ref) {
 class SignalRService {
   final Ref _ref;
   HubConnection? _connection;
+  bool _isConnecting = false;
 
   SignalRService(this._ref);
 
@@ -26,45 +27,51 @@ class SignalRService {
   }
 
   Future<void> connect(String token) async {
-    if (_connection != null) await dispose();
+    // Eş zamanlı çift çağrıyı engelle (ref.listen + initState microtask race)
+    if (_isConnecting) return;
+    if (_connection != null) return; // zaten bağlı
 
-    _connection = HubConnectionBuilder()
-        .withUrl(
-          _hubUrl,
-          options: HttpConnectionOptions(
-            accessTokenFactory: () async => token,
-            // skipNegotiation YOK — negotiate → WebSocket/SSE/LongPolling otomatik seçilir
-            // IIS'de WebSocket manuel aktifleştirilmeden skipNegotiation crash eder
-          ),
-        )
-        .withAutomaticReconnect()
-        .build();
-
-    _connection!.on('DataChanged', _onDataChanged);
-    _connection!.on('NewNotification', _onNewNotification);
-
-    _connection!.onclose(({error}) {
-      // ignore: avoid_print
-      print('[SignalR] bağlantı kapandı: $error');
-    });
-
-    _connection!.onreconnecting(({error}) {
-      // ignore: avoid_print
-      print('[SignalR] yeniden bağlanıyor: $error');
-    });
-
-    _connection!.onreconnected(({connectionId}) {
-      // ignore: avoid_print
-      print('[SignalR] bağlandı: $connectionId');
-    });
-
+    _isConnecting = true;
     try {
+      _connection = HubConnectionBuilder()
+          .withUrl(
+            _hubUrl,
+            options: HttpConnectionOptions(
+              accessTokenFactory: () async => token,
+              // skipNegotiation YOK — negotiate → WebSocket/SSE/LongPolling otomatik seçilir
+              // IIS'de WebSocket manuel aktifleştirilmeden skipNegotiation crash eder
+            ),
+          )
+          .withAutomaticReconnect()
+          .build();
+
+      _connection!.on('DataChanged', _onDataChanged);
+      _connection!.on('NewNotification', _onNewNotification);
+
+      _connection!.onclose(({error}) {
+        // ignore: avoid_print
+        print('[SignalR] bağlantı kapandı: $error');
+      });
+
+      _connection!.onreconnecting(({error}) {
+        // ignore: avoid_print
+        print('[SignalR] yeniden bağlanıyor: $error');
+      });
+
+      _connection!.onreconnected(({connectionId}) {
+        // ignore: avoid_print
+        print('[SignalR] bağlandı: $connectionId');
+      });
+
       await _connection!.start();
       // ignore: avoid_print
       print('[SignalR] bağlantı kuruldu → $_hubUrl');
     } catch (e) {
       // ignore: avoid_print
       print('[SignalR] bağlantı hatası: $e');
+      _connection = null; // hata durumunda reset — retry mümkün olsun
+    } finally {
+      _isConnecting = false;
     }
   }
 
