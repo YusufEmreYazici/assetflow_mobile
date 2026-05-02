@@ -50,7 +50,8 @@ class _AssetFlowAppState extends ConsumerState<AssetFlowApp> {
     super.initState();
     Future.microtask(() async {
       await ref.read(authProvider.notifier).checkAuth();
-      NotificationService.instance.init();
+      // init() ÖNCE await edilmeli — _initialized = false iken gelen push sessizce düşer
+      await NotificationService.instance.init();
       // checkAuth tamamlandıktan sonra her zaman SignalR bağlantısı kur
       // ref.listen bazı senaryolarda (cached token) geçişi yakalayamıyor
       await _connectSignalR();
